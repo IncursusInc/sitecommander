@@ -2,7 +2,7 @@ jQuery(document).ready(function($){
 
 	var timer = setInterval( function() {
 
-		$('#loading-message-container').fadeOut("medium", function() {
+		$('#drupalstat-loading-message-container').fadeOut("medium", function() {
 
 			var g = new JustGage({
 				id: "loadAverage1",
