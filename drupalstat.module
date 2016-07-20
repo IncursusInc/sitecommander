@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Contains drupalstat.module
+ */
+
+/**
+ * Theme hook
+ */
+function drupalstat_theme($existing, $type, $theme, $path) {
+
+	$variables = array(
+		'drupalstat' => array(
+			'variables' => array(
+				'drupalInfo' => null
+			),
+			'title' => 'Drupal Status',
+			'template' => 'block--drupalstat',
+		),
+	);
+
+	return $variables;
+
+}

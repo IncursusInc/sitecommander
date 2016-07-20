@@ -1,0 +1,7 @@
+drupalstat.ajaxToggleMaintenanceMode:
+    path: '/drupalstat/toggle-maintenance-mode'
+    defaults:
+        _controller: '\Drupal\drupalstat\Controller\DrupalStatController::toggleMaintenanceMode'
+        _title: 'Toggle Maintenance Mode'
+    requirements:
+        _permission: 'access administration pages'

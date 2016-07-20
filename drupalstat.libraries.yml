@@ -1,0 +1,14 @@
+drupalstat:
+  version: 1.0
+  css:
+    theme:
+      css/drupalstat.css: {}
+      css/bootstrap.min.css: {}
+  js:
+    js/justgage.js: {}
+    js/raphael-2.1.4.min.js: {}
+    js/drupalstat.js: {}
+    https://use.fontawesome.com/2675f3c443.js: { type: external, minified: true }
+  dependencies:
+    - core/jquery
+
