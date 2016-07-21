@@ -5,6 +5,7 @@ namespace Drupal\drupalstat\Plugin\Block;
 use Drupal\Core\Url;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Extension\ModuleHandler;
+use Drupal\drupalstat\DrupalStatUtils;
 
 /**
  * Provides a DrupalStat Block
@@ -25,30 +26,6 @@ class DrupalStatBlock extends BlockBase {
 		$suffixes = array('', 'K', 'M', 'G', 'T');   
 
 		return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
-	}
-
-	public function elapsedTime( $pastTimeStamp )
-	{
-    $seconds  = strtotime(date('Y-m-d H:i:s')) - $pastTimeStamp;
-
-		$months = floor($seconds / (3600*24*30));
-		$day = floor($seconds / (3600*24));
-		$hours = floor($seconds / 3600);
-		$mins = floor(($seconds - ($hours*3600)) / 60);
-		$secs = floor($seconds % 60);
-
-		if($seconds < 60)
-			$time = $secs." seconds ago";
-		else if($seconds < 60*60 )
-			$time = $mins." min ago";
-		else if($seconds < 24*60*60)
-			$time = $hours." hours ago";
-		else if($seconds < 24*60*60)
-			$time = $day." day ago";
-		else
-			$time = $months." month ago";
-
-		return $time;
 	}
 
   public function build() {
@@ -121,10 +98,10 @@ class DrupalStatBlock extends BlockBase {
 
 		// Cron info
 		$drupalInfo['cron']['cron_key'] = \Drupal::state()->get('system.cron_key');
-		$drupalInfo['cron']['cron_last'] = $this->elapsedTime(\Drupal::state()->get('system.cron_last'));
+		$drupalInfo['cron']['cron_last'] = DrupalStatUtils::elapsedTime(\Drupal::state()->get('system.cron_last'));
 
 		// Last time Drupal/Modules were checked for updates
-		$drupalInfo['update_last_check'] = $this->elapsedTime(\Drupal::state()->get('update.last_check'));
+		$drupalInfo['update_last_check'] = DrupalStatUtils::elapsedTime(\Drupal::state()->get('update.last_check'));
 		// The line below will send the admin user back to the status page, which may not be desirable
 		//$destination = \Drupal::destination('/admin/reports/updates')->getAsArray();
 		$destination = array('destination' => '/admin/reports/updates');
@@ -132,6 +109,13 @@ class DrupalStatBlock extends BlockBase {
 
 		// Maintenance mode status
 		$drupalInfo['maintenance_mode'] = \Drupal::state()->get('system.maintenance_mode') ? 'On' : 'Off';
+
+		// Get timestamp of last cache rebuild
+		$timestamp = \Drupal::state()->get('drupalstat.timestamp_cache_last_rebuild');
+		if(!$timestamp)
+			 $drupalInfo['timestamp_cache_last_rebuild'] = 'Unknown';
+		else
+			 $drupalInfo['timestamp_cache_last_rebuild'] = DrupalStatUtils::elapsedTime($timestamp);
 
 		// If MailChimp is installed, get all MailChimp lists and total # of subscribers for each
 		if (\Drupal::moduleHandler()->moduleExists('mailchimp'))

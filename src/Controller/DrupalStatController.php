@@ -10,6 +10,7 @@ namespace Drupal\drupalstat\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\drupalstat\Ajax\ReadMessageCommand;
+use Drupal\drupalstat\DrupalStatUtils;
 
 class DrupalStatController extends ControllerBase {
 
@@ -33,7 +34,28 @@ class DrupalStatController extends ControllerBase {
 
     // Call the DrupalStatAjaxCommand javascript function.
 		$responseData->command = 'readMessage';
+		$responseData->drupalStatCommand = 'toggleMaintenanceMode';
 		$responseData->mode = $mode;
+    $response->addCommand( new ReadMessageCommand($responseData));
+
+		// Return ajax response.
+		return $response;
+	}
+
+	// Flush/rebuild Drupal cache from within DrupalStat
+
+  public function rebuildDrupalCache() {
+		
+		// Flush caches
+		drupal_flush_all_caches();
+
+    // Create AJAX Response object.
+    $response = new AjaxResponse();
+
+    // Call the DrupalStatAjaxCommand javascript function.
+		$responseData->command = 'readMessage';
+		$responseData->drupalStatCommand = 'rebuildDrupalCache';
+		$responseData->last_cache_rebuild = DrupalStatUtils::elapsedTime(\Drupal::state()->get('drupalstat.timestamp_cache_last_rebuild'));
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.

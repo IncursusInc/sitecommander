@@ -1,6 +1,19 @@
 # drupalstat
 DrupalStat is an interactive dashboard module to manage and monitor your Drupal 8 installs.
 
+DrupalStat features include:
+
+* CPU load average gauges, so you can monitor your server's workload
+* Implemented as a Drupal block, so you can put it on the same page as our Redistat block module, or other blocks to make your own dashboard
+* Breakdown of published nodes by type, with shortcuts to create new nodes, or browse nodes by type
+* Quickly see how many modules you have installed and a shortcut to install new ones
+* See when cron last ran and a shortcut to manually run it
+* See when the updates checker last ran, and a shortcut to manually check for updates
+* Shortcut to clear/rebuild the Drupal cache
+* See how much disk space your full Drupal install is taking up
+* Integration with the MailChimp module to see some high level statistics about your lists, subscribers, open rates, and click through rates.
+* More to come!
+
 ![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/drupalstat-screenshot_2.png?itok=1HZBcaut "DrupalStat Screenshot")
 
 # Notes

@@ -8,6 +8,7 @@
 /**
  * Theme hook
  */
+
 function drupalstat_theme($existing, $type, $theme, $path) {
 
 	$variables = array(
@@ -22,4 +23,13 @@ function drupalstat_theme($existing, $type, $theme, $path) {
 
 	return $variables;
 
+}
+
+/**
+ * Called after cache has been cleared so we can store the timestamp for reporting purposes in DrupalStat
+ */
+
+function drupalstat_rebuild() {
+	// Store the current timestamp in a state variable
+	\Drupal::state()->set('drupalstat.timestamp_cache_last_rebuild', time());
 }
