@@ -4,8 +4,10 @@ namespace Drupal\drupalstat\Plugin\Block;
 
 use Drupal\Core\Url;
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Extension\ModuleHandler;
 use Drupal\drupalstat\DrupalStatUtils;
+use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
 
 /**
  * Provides a DrupalStat Block
@@ -16,9 +18,16 @@ use Drupal\drupalstat\DrupalStatUtils;
  * )
  */
 class DrupalStatBlock extends BlockBase {
+
   /**
    * {@inheritdoc}
    */
+
+	protected $connection;
+
+	public function __construct() {
+		$this->connection = \Drupal::database();
+	}
 
   public function build() {
 
@@ -124,6 +133,13 @@ class DrupalStatBlock extends BlockBase {
 			 $drupalInfo['timestamp_cache_last_rebuild'] = 'Unknown';
 		else
 			 $drupalInfo['timestamp_cache_last_rebuild'] = DrupalStatUtils::elapsedTime($timestamp);
+
+		// Get # of authenticated users online right now (we look at the number of sessions that were last updated within the past 15 minutes)
+		$query = $this->connection->select('sessions','s');
+		$query->addExpression('COUNT( uid )');
+		$query->condition('timestamp', strtotime('15 minutes ago'), '>');
+
+		$drupalInfo['numAuthUsersOnline'] = $query->execute()->fetchField();
 
 		// If MailChimp is installed, get all MailChimp lists and total # of subscribers for each
 		if (\Drupal::moduleHandler()->moduleExists('mailchimp'))
