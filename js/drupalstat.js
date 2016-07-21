@@ -31,17 +31,17 @@ jQuery(document).ready(function($){
 				label: "Percentage",
 			});
 
-			$('#toggleMaintenanceMode').click(function(e) {
-				$.get( "/drupalstat/toggle-maintenance-mode", {
-				}, function( resp ) {
-					$('#maintenanceModeIcon').toggleClass('fa-toggle-on fa-toggle-off');
-					$('#maintenanceModeBadge').toggleClass('badge-active badge-green');
-					if($('#maintenanceModeBadge').hasClass('badge-green'))
-						$('#maintenanceModeBadge').html('On');
-					else
-						$('#maintenanceModeBadge').html('Off');
-				});
-			});
+			//$('#toggleMaintenanceMode').click(function(e) {
+				//$.get( "/drupalstat/toggle-maintenance-mode", {
+				//}, function( resp ) {
+					//$('#maintenanceModeIcon').toggleClass('fa-toggle-on fa-toggle-off');
+					//$('#maintenanceModeBadge').toggleClass('badge-active badge-green');
+					//if($('#maintenanceModeBadge').hasClass('badge-green'))
+						//$('#maintenanceModeBadge').html('On');
+					//else
+						//$('#maintenanceModeBadge').html('Off');
+				//});
+			//});
 
 			clearInterval( timer );
 		});

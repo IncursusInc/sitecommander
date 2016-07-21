@@ -9,17 +9,13 @@ namespace Drupal\drupalstat\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\drupalstat\Ajax\ReadMessageCommand;
 
 class DrupalStatController extends ControllerBase {
 
 	// AJAX Callback to toggle maintenance mode
+  //public function toggleMaintenanceMode() {
   public function toggleMaintenanceMode() {
-
-    // Create AJAX Response object.
-    $response = new AjaxResponse();
-
-    // Call the readMessage javascript function.
-    //$response->addCommand( new ReadMessageCommand($message));
 
 		// Toggle maintenance mode via Drupal CLI
 		
@@ -31,6 +27,14 @@ class DrupalStatController extends ControllerBase {
 			$mode = 1;
 
 		\Drupal::state()->set('system.maintenance_mode', $mode);
+
+    // Create AJAX Response object.
+    $response = new AjaxResponse();
+
+    // Call the DrupalStatAjaxCommand javascript function.
+		$responseData->command = 'readMessage';
+		$responseData->mode = $mode;
+    $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.
 		return $response;

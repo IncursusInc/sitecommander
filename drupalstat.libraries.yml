@@ -8,7 +8,10 @@ drupalstat:
     js/justgage.js: {}
     js/raphael-2.1.4.min.js: {}
     js/drupalstat.js: {}
+    js/hideThrobber.js: {}
+    js/commands.js: {}
     https://use.fontawesome.com/2675f3c443.js: { type: external, minified: true }
   dependencies:
     - core/jquery
+    - core/drupal.ajax
 

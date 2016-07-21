@@ -40,7 +40,7 @@
 				{% set maintIcon = 'fa-toggle-on' %}
 			{% endif %}
 
-			<li class="list-group-item"> <span id="toggleMaintenanceMode" title="Toggle maintenance mode"><span id="maintenanceModeIcon" class="fa {{ maintIcon }} fa-fw"></span>&nbsp;</span> Maintenance Mode: <span id="maintenanceModeBadge" class="badge badge-active">{{ drupalInfo.maintenance_mode }}</span></li>
+			<li class="list-group-item"> <a href="/drupalstat/toggle-maintenance-mode" class="use-ajax"><span id="toggleMaintenanceMode" title="Toggle maintenance mode"><span id="maintenanceModeIcon" class="fa {{ maintIcon }} fa-fw"></span></span></a>&nbsp; Maintenance Mode: <span id="maintenanceModeBadge" class="badge badge-active">{{ drupalInfo.maintenance_mode }}</span></li>
 			<li class="list-group-item"> <span class="fa fa-fw">&nbsp;</span> Install Size: <span class="badge badge-active">{{ drupalInfo.installSize }}</span></li>
 		</ul>
 	</div>
