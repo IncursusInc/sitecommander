@@ -72,3 +72,15 @@
 	cursor: pointer; 
 	cursor: hand;
 }
+
+.list-group-divider {
+	position: relative;
+	display: block;
+	padding: 3px 15px;
+	margin-bottom: -1px;
+	border: 1px solid #ddd;
+
+	height: 1px !important;
+	overflow: hidden !important;
+	background-color: #ccc !important;
+}

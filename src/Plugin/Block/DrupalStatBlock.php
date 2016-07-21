@@ -20,14 +20,6 @@ class DrupalStatBlock extends BlockBase {
    * {@inheritdoc}
    */
 
-	public function formatBytes($size, $precision = 2)
-	{
-		$base = log($size, 1024);
-		$suffixes = array('', 'K', 'M', 'G', 'T');   
-
-		return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
-	}
-
   public function build() {
 
 		// TODO - split this shit up into subfunctions
@@ -73,6 +65,22 @@ class DrupalStatBlock extends BlockBase {
 		else
 		{
 			$drupalInfo['installSize'] = 'Unknown';
+		}
+
+		// Get size of temporary file storage
+		if(preg_match('/.*nux.*/', php_uname()))
+		{
+			$publicPath = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+
+			ob_start();
+			$tmp = preg_split('/\s+/', system('du -shc ' . $publicPath . '/css ' . $publicPath . '/js '));
+			ob_end_clean();
+
+			$drupalInfo['oldFilesStorageSize'] = $tmp[ 0 ];
+		}
+		else
+		{
+			$drupalInfo['oldFilesStorageSize'] = 'Unknown';
 		}
 
 		// Get CPU load average
