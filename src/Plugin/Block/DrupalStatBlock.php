@@ -2,6 +2,8 @@
 
 namespace Drupal\drupalstat\Plugin\Block;
 
+use Drupal\Component\Utility\Unicode;
+use Drupal\Component\Utility\Xss;
 use Drupal\Core\Url;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Database\Connection;
@@ -27,6 +29,27 @@ class DrupalStatBlock extends BlockBase {
 
 	public function __construct() {
 		$this->connection = \Drupal::database();
+	}
+
+	public function formatMessage($row) {
+		// Check for required properties.
+		if (isset($row->message) && isset($row->variables)) {
+
+			// Messages without variables or user specified text.
+			if ($row->variables === 'N;') {
+				$message = Xss::filterAdmin($row->message);
+			}
+
+			// Message to translate with injected variables.
+			else {
+				$message = $this->t(Xss::filterAdmin($row->message), unserialize($row->variables));
+			}
+		}
+		else {
+			$message = FALSE;
+		}
+	
+		return $message;
 	}
 
   public function build() {
@@ -152,6 +175,38 @@ class DrupalStatBlock extends BlockBase {
 
 			//echo '<pre>'; print_r($mcLists); exit;
 			$drupalInfo['mailchimp'] = $mcLists;
+		}
+
+		// Get top 15 search phrases done today
+
+		$header = array(
+			array('data' => $this->t('Count'), 'field' => 'count', 'sort' => 'desc'),
+			array('data' => $this->t('Message'), 'field' => 'message'),
+		);
+
+		$count_query = $this->connection->select('watchdog');
+		$count_query->addExpression('COUNT(DISTINCT(message))');
+		$count_query->condition('type', 'search');
+
+		$query = $this->connection->select('watchdog', 'w')
+					->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
+					->extend('\Drupal\Core\Database\Query\TableSortExtender');
+		$query->addExpression('COUNT(wid)', 'count');
+		$query = $query
+					->fields('w', array('message', 'variables'))
+					->condition('timestamp', strtotime('today'), '>=')
+					->condition('w.type', 'search')
+					->groupBy('message')
+					->groupBy('variables')
+					->limit(15)
+					->orderByHeader($header);
+		$query->setCountQuery($count_query);
+		$result = $query->execute();
+
+		$drupalInfo['topSearches'] = array();
+		foreach ($result as $dblog) {
+			$unSerializedData = unserialize($dblog->variables);	
+			$drupalInfo['topSearches'][] = array('searchPhrase' => $unSerializedData['%keys'], 'count' => $dblog->count);
 		}
 
 		// TODO: Get some PHP config info?

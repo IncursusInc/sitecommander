@@ -61,6 +61,17 @@
 				<li class="list-group-item"> {{ list.name }} <span title="Number of subscribers" class="badge badge-active">{{ list.stats.member_count }} Subs</span> <span title="Average click through rate (CTR)" class="badge badge-clickrate">{{ list.stats.click_rate }}</span> <span title="Average open rate" class="badge badge-openrate">{{ list.stats.open_rate }}</span></li>
 			{% endfor %}
 		</ul>
+
+		<ul class="list-group">
+			<li class="list-group-item active"><span class="fa fa-search"></span>&nbsp; <strong>Top Site Searches Today <a href="/admin/reports/search" target="_blank" class="pull-right btn btn-sm btn-default btn-search-more" alt="Click for more ..." title="Click for more ..."><span class="fa fa-search"></span></a></strong></li>
+			{% if drupalInfo.topSearches %}
+				{% for search in drupalInfo.topSearches %}
+					<li class="list-group-item">{{ search.searchPhrase }} <span class="badge badge-active">{{ search.count }}</span></li>
+				{% endfor %}
+			{% else %}
+				<li class="list-group-item">No searches performed yet today!</li>
+			{% endif %}
+		</ul>
 	</div>
 
 </div>

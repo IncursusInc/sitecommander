@@ -84,3 +84,8 @@
 	overflow: hidden !important;
 	background-color: #ccc !important;
 }
+
+.btn-search-more {
+	margin-top: -4px;
+	color: white;
+}
