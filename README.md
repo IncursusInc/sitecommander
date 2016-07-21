@@ -1,5 +1,5 @@
 # drupalstat
-DrupalStat is an interactive dashboard module to manage and monitor your Drupal 8 installs.
+DrupalStat is an interactive dashboard module to manage and monitor your Drupal 8 sites.
 
 DrupalStat features include:
 
