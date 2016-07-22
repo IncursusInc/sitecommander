@@ -34,25 +34,10 @@
 	<div class="drupalstat-text-stats-column">
 		<ul class="list-group">
 
-			{% if drupalInfo.maintenance_mode %}
-				{% set maintIcon = 'fa-toggle-off' %}
-			{% else %}
-				{% set maintIcon = 'fa-toggle-on' %}
-			{% endif %}
-
 			<li class="list-group-item active"><span class="fa fa-drupal"></span>&nbsp; <strong>Site Data/Tasks</strong></li>
 			<li class="list-group-item"> <a href="/admin/config/system/site-information" alt="Edit" title="Edit"><span class="fa fa-edit fa-fw"></span></a> Site Name: <span class="badge badge-active">{{ drupalInfo.settings.system.site.name }}</span></li>
 			<li class="list-group-item"> <a href="/admin/appearance" alt="Edit" title="Edit"><span class="fa fa-edit fa-fw"></span></a> Site Theme: <span class="badge badge-active">{{ drupalInfo.settings.theme.default }}</span></li>
 			<li class="list-group-item"> <a href="/admin/modules/install" alt="Install new module" title="Install new module"><span class="fa fa-plus fa-fw"></span></a> <a href="/admin/modules" alt="Browse installed modules" title="Browse installed modules">Enabled Modules</a>: <span class="badge badge-active">{{ drupalInfo.enabledModulesCount }}</span></li>
-
-			{%if drupalInfo.maintenance_mode == 'On' %}
-				{% set maintenanceModeClass = 'badge-green' %}
-			{% else %}
-				{% set maintenanceModeClass = 'badge-default' %}
-			{% endif %}
-
-			<li class="list-group-item"> <a href="/admin/people/create"><span class="fa fa-plus fa-fw"></span></a> Total # Users: <span class="badge badge-active">{{ drupalInfo.userCount }}</span></li>
-			<li class="list-group-item"> <a href="/drupalstat/toggle-maintenance-mode" class="use-ajax"><span id="toggleMaintenanceMode" title="Toggle maintenance mode"><span id="maintenanceModeIcon" class="fa {{ maintIcon }} fa-fw"></span></span></a>&nbsp; Maintenance Mode: <span id="maintenanceModeBadge" class="badge {{ maintenanceModeClass }}">{{ drupalInfo.maintenance_mode }}</span></li>
 
 			<li class="list-group-divider"></li>
 
@@ -69,6 +54,15 @@
 
 			<li class="list-group-divider"></li>
 
+			{%if drupalInfo.maintenance_mode == 'On' %}
+				{% set maintenanceModeClass = 'badge-green' %}
+				{% set maintIcon = 'fa-toggle-on' %}
+			{% else %}
+				{% set maintenanceModeClass = 'badge-default' %}
+				{% set maintIcon = 'fa-toggle-off' %}
+			{% endif %}
+
+			<li class="list-group-item"> <a href="/drupalstat/toggle-maintenance-mode" class="use-ajax"><span id="toggleMaintenanceMode" title="Toggle maintenance mode"><span id="maintenanceModeIcon" class="fa {{ maintIcon }} fa-fw"></span></span></a>&nbsp; Maintenance Mode: <span id="maintenanceModeBadge" class="badge {{ maintenanceModeClass }}">{{ drupalInfo.maintenance_mode }}</span></li>
 			<li class="list-group-item"> <a href="/cron/{{ drupalInfo.cron.cron_key }}" alt="Run cron now" title="Run cron now"><span class="fa fa-clock-o fa-fw"></span></a> Cron Last Run: <span class="badge badge-active">{{ drupalInfo.cron.cron_last }}</span></li>
 			<li class="list-group-item"> <a href="{{ drupalInfo.updateCheckURL }}"><span class="fa fa-gears fa-fw"></span></a> Last Checked for Updates: <span class="badge badge-active">{{ drupalInfo.update_last_check }}</span></li>
 
