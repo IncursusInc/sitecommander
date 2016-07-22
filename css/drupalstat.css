@@ -68,6 +68,11 @@
   margin-top: 3px !important;
 }
 
+.badge-default {
+  color: white !important;
+  margin-top: 3px !important;
+}
+
 #toggleMaintenanceMode:hover {
 	cursor: pointer; 
 	cursor: hand;

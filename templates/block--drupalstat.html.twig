@@ -16,7 +16,15 @@
 				<span class="list-group-item">
 					<a class="pull-left" alt="Add New" title="Add New" href="/node/add/{{ nodeType.type }}"><span class="fa fa-plus"></span></a>&nbsp;
 					<a href="/admin/content?status=1&type={{ nodeType.type }}&title=&langcode=All" class="" alt="View all" title="View all">
-						<span class="badge badge-active pull-right">{{ nodeType.type_count }}</span>
+
+						
+						{% if nodeType.type_count %}
+							{% set nodeCountClass = 'badge-active' %}
+						{% else %}
+							{% set nodeCountClass = 'badge-default' %}
+						{% endif %}
+
+						<span class="badge {{ nodeCountClass }} pull-right">{{ nodeType.type_count }}</span>
 						{{ drupalInfo.nodeTypeNames[ nodeType.type ] }}
 					</a>
 				</span>
@@ -37,17 +45,35 @@
 			<li class="list-group-item"> <a href="/admin/config/system/site-information" alt="Edit" title="Edit"><span class="fa fa-edit fa-fw"></span></a> Site Name: <span class="badge badge-active">{{ drupalInfo.settings.system.site.name }}</span></li>
 			<li class="list-group-item"> <a href="/admin/appearance" alt="Edit" title="Edit"><span class="fa fa-edit fa-fw"></span></a> Site Theme: <span class="badge badge-active">{{ drupalInfo.settings.theme.default }}</span></li>
 			<li class="list-group-item"> <a href="/admin/modules/install" alt="Install new module" title="Install new module"><span class="fa fa-plus fa-fw"></span></a> <a href="/admin/modules" alt="Browse installed modules" title="Browse installed modules">Enabled Modules</a>: <span class="badge badge-active">{{ drupalInfo.enabledModulesCount }}</span></li>
-			<li class="list-group-item"> <a href="/drupalstat/toggle-maintenance-mode" class="use-ajax"><span id="toggleMaintenanceMode" title="Toggle maintenance mode"><span id="maintenanceModeIcon" class="fa {{ maintIcon }} fa-fw"></span></span></a>&nbsp; Maintenance Mode: <span id="maintenanceModeBadge" class="badge badge-active">{{ drupalInfo.maintenance_mode }}</span></li>
+
+			{%if drupalInfo.maintenance_mode == 'On' %}
+				{% set maintenanceModeClass = 'badge-green' %}
+			{% else %}
+				{% set maintenanceModeClass = 'badge-default' %}
+			{% endif %}
+
+			<li class="list-group-item"> <a href="/admin/people/create"><span class="fa fa-plus fa-fw"></span></a> Total # Users: <span class="badge badge-active">{{ drupalInfo.userCount }}</span></li>
+			<li class="list-group-item"> <a href="/drupalstat/toggle-maintenance-mode" class="use-ajax"><span id="toggleMaintenanceMode" title="Toggle maintenance mode"><span id="maintenanceModeIcon" class="fa {{ maintIcon }} fa-fw"></span></span></a>&nbsp; Maintenance Mode: <span id="maintenanceModeBadge" class="badge {{ maintenanceModeClass }}">{{ drupalInfo.maintenance_mode }}</span></li>
+
 			<li class="list-group-divider"></li>
+
+			{%if drupalInfo.numVisitorsOnline %}
+				{% set visitorClass = 'badge-active' %}
+			{% else %}
+				{% set visitorClass = 'badge-default' %}
+			{% endif %}
+
 			<li class="list-group-item"> <a href="/admin/people/create"><span class="fa fa-plus fa-fw"></span></a> Total # Users: <span class="badge badge-active">{{ drupalInfo.userCount }}</span></li>
 			<li class="list-group-item"> <span class="fa fa-users fa-fw"></span> Users Online Now: <span class="badge badge-active">{{ drupalInfo.numAuthUsersOnline }}</span></li>
-			<li class="list-group-item"> <span class="fa fa-users fa-fw"></span> Visitors Online Now: <span class="badge badge-active">{{ drupalInfo.numVisitorsOnline }}</span></li>
+			<li class="list-group-item"> <span class="fa fa-users fa-fw"></span> Visitors Online Now: <span class="badge {{ visitorClass }}">{{ drupalInfo.numVisitorsOnline }}</span></li>
+
 			<li class="list-group-divider"></li>
+
 			<li class="list-group-item"> <a href="/cron/{{ drupalInfo.cron.cron_key }}" alt="Run cron now" title="Run cron now"><span class="fa fa-clock-o fa-fw"></span></a> Cron Last Run: <span class="badge badge-active">{{ drupalInfo.cron.cron_last }}</span></li>
 			<li class="list-group-item"> <a href="{{ drupalInfo.updateCheckURL }}"><span class="fa fa-gears fa-fw"></span></a> Last Checked for Updates: <span class="badge badge-active">{{ drupalInfo.update_last_check }}</span></li>
 
 			<li class="list-group-item"> <a href="/drupalstat/rebuild-drupal-cache" class="use-ajax" alt="Clear/rebuild cache now" title="Clear/rebuild cache now"><span class="fa fa-hdd-o fa-fw"></span></a> Drupal Cache Last Cleared: <span id="last_cache_rebuild" class="badge badge-active">{{ drupalInfo.timestamp_cache_last_rebuild }}</span></li>
-			<li class="list-group-item"> <span class="fa fa-hdd-o fa-fw">&nbsp;</span> Install Size: <span class="badge badge-active">{{ drupalInfo.installSize }}</span></li>
+			<li class="list-group-item"> <span class="fa fa-hdd-o fa-fw"></span> Install Size: <span class="badge badge-active">{{ drupalInfo.installSize }}</span></li>
 			<li class="list-group-item"> <a href="/drupalstat/cleanup-old-files" class="use-ajax" alt="Remove old aggregated css/js files now" title="Remove old aggregated css/js files now"><span class="fa fa-trash fa-fw"></span></a> Old Aggregated File Storage: <span id="old-files-storage-size" class="badge badge-active">{{ drupalInfo.oldFilesStorageSize }}</span></li>
 		</ul>
 	</div>
@@ -59,7 +85,26 @@
 				<li class="list-group-item">Mailchimp not installed, or no lists created yet!</li>
 			{% endif %}
 			{% for listId, list in drupalInfo.mailchimp %}
-				<li class="list-group-item"> {{ list.name }} <span title="Number of subscribers" class="badge badge-active">{{ list.stats.member_count }} Subs</span> <span title="Average click through rate (CTR)" class="badge badge-clickrate">{{ list.stats.click_rate }}</span> <span title="Average open rate" class="badge badge-openrate">{{ list.stats.open_rate }}</span></li>
+
+				{% if list.stats.member_count %}
+					{% set memberCountClass = 'badge-active' %}
+				{% else %}
+					{% set memberCountClass = 'badge-default' %}
+				{% endif %}
+
+				{% if list.stats.click_rate %}
+					{% set ctrClass = 'badge-clickrate' %}
+				{% else %}
+					{% set ctrClass = 'badge-default' %}
+				{% endif %}
+
+				{% if list.stats.open_rate %}
+					{% set openRateClass = 'badge-openrate' %}
+				{% else %}
+					{% set openRateClass = 'badge-default' %}
+				{% endif %}
+
+				<li class="list-group-item"> {{ list.name }} <span title="Number of subscribers" class="badge {{ memberCountClass }}">{{ list.stats.member_count }} Subs</span> <span title="Average click through rate (CTR)" class="badge {{ ctrClass }}">{{ list.stats.click_rate }}</span> <span title="Average open rate" class="badge {{ openRateClass }}">{{ list.stats.open_rate }}</span></li>
 			{% endfor %}
 		</ul>
 
