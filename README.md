@@ -8,6 +8,7 @@ DrupalStat features include:
 * Breakdown of published nodes by type, with shortcuts to create new nodes, or browse nodes by type
 * Quickly see how many modules you have installed and a shortcut to install new ones
 * Quickly see how many authenticated users and visitors are currently online
+* Ability to purge sessions
 * Quickly see today's top site searches
 * See when cron last ran and a shortcut to manually run it
 * See when the updates checker last ran, and a shortcut to manually check for updates
