@@ -72,7 +72,7 @@
 			<li class="list-group-item"> <a href="/cron/{{ drupalInfo.cron.cron_key }}" alt="Run cron now" title="Run cron now"><span class="fa fa-clock-o fa-fw"></span></a> Cron Last Run: <span class="badge badge-active">{{ drupalInfo.cron.cron_last }}</span></li>
 			<li class="list-group-item"> <a href="{{ drupalInfo.updateCheckURL }}"><span class="fa fa-gears fa-fw"></span></a> Last Checked for Updates: <span class="badge badge-active">{{ drupalInfo.update_last_check }}</span></li>
 
-			<li class="list-group-item"> <a href="/drupalstat/rebuild-drupal-cache" class="use-ajax" alt="Clear/rebuild cache now" title="Clear/rebuild cache now"><span class="fa fa-hdd-o fa-fw"></span></a> Drupal Cache Last Cleared: <span id="last_cache_rebuild" class="badge badge-active">{{ drupalInfo.timestamp_cache_last_rebuild }}</span></li>
+			<li class="list-group-item"> <a href="/drupalstat/rebuild-drupal-cache" class="use-ajax" alt="Clear/rebuild cache now" title="Clear/rebuild cache now"><span class="fa fa-refresh fa-fw"></span></a> Drupal Cache Last Refreshed: <span id="last_cache_rebuild" class="badge badge-active">{{ drupalInfo.timestamp_cache_last_rebuild }}</span></li>
 			<li class="list-group-item"> <span class="fa fa-hdd-o fa-fw"></span> Install Size: <span class="badge badge-active">{{ drupalInfo.installSize }}</span></li>
 			<li class="list-group-item"> <a href="/drupalstat/cleanup-old-files" class="use-ajax" alt="Remove old aggregated css/js files now" title="Remove old aggregated css/js files now"><span class="fa fa-trash fa-fw"></span></a> Old Aggregated File Storage: <span id="old-files-storage-size" class="badge badge-active">{{ drupalInfo.oldFilesStorageSize }}</span></li>
 		</ul>
