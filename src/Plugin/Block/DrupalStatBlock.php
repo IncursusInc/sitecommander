@@ -161,9 +161,18 @@ class DrupalStatBlock extends BlockBase {
 		$query = $this->connection->select('sessions','s');
 		$query->addExpression('COUNT( uid )');
 		$query->condition('timestamp', strtotime('15 minutes ago'), '>');
+		$query->condition('uid', 0, '>');
 
 		$drupalInfo['numAuthUsersOnline'] = $query->execute()->fetchField();
 
+		// Get # of visitors (uid==0) online right now (requires a module that provides anonymous visitors with a session, otherwise, 0)
+		$query = $this->connection->select('sessions','s');
+		$query->addExpression('COUNT( uid )');
+		$query->condition('timestamp', strtotime('15 minutes ago'), '>');
+		$query->condition('uid', 0, '=');
+
+		$drupalInfo['numVisitorsOnline'] = $query->execute()->fetchField();
+	
 		// If MailChimp is installed, get all MailChimp lists and total # of subscribers for each
 		if (\Drupal::moduleHandler()->moduleExists('mailchimp'))
 		{
