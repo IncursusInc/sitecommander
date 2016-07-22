@@ -29,13 +29,13 @@ class DrupalStatUtils {
     if($seconds < 60)
       $time = $secs." seconds ago";
     else if($seconds < 60*60 )
-      $time = $mins." min ago";
+      $time = $mins." min(s) ago";
     else if($seconds < 24*60*60)
-      $time = $hours." hours ago";
+      $time = $hours." hour(s) ago";
     else if($seconds < 24*60*60)
-      $time = $day." day ago";
+      $time = $day." day(s) ago";
     else
-      $time = $months." month ago";
+      $time = $months." month(s) ago";
 
     return $time;
   }
