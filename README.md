@@ -16,7 +16,7 @@ DrupalStat features include:
 * Integration with the MailChimp module to see some high level statistics about your lists, subscribers, open rates, and click through rates.
 * More to come!
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/drupalstat-screenshot.png?itok=uI38msGu "DrupalStat Screenshot")
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/drupalstat-screenshot.png?itok=uI38msGu&z "DrupalStat Screenshot")
 
 # Notes
 
