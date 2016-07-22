@@ -8,6 +8,7 @@ DrupalStat features include:
 * Breakdown of published nodes by type, with shortcuts to create new nodes, or browse nodes by type
 * Quickly see how many modules you have installed and a shortcut to install new ones
 * Quickly see how many authenticated users are currently online
+* Quickly see today's top site searches
 * See when cron last ran and a shortcut to manually run it
 * See when the updates checker last ran, and a shortcut to manually check for updates
 * Shortcut to clear/rebuild the Drupal cache
@@ -15,7 +16,7 @@ DrupalStat features include:
 * Integration with the MailChimp module to see some high level statistics about your lists, subscribers, open rates, and click through rates.
 * More to come!
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/drupalstat-screenshot_0.png?itok=1qkfmall "DrupalStat Screenshot")
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/drupalstat-screenshot_1.png?itok=mgAkM9we "DrupalStat Screenshot")
 
 # Notes
 
