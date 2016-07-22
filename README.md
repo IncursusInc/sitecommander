@@ -1,6 +1,8 @@
 # drupalstat
 DrupalStat is an interactive dashboard module to manage and monitor your Drupal 8 sites.
 
+NOTE: We have applied to have the project be promoted from a sandbox project to a full project on Drupal.org. Stay tuned!
+
 DrupalStat features include:
 
 * CPU load average gauges, so you can monitor your server's workload
