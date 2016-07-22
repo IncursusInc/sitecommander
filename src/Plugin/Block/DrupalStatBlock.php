@@ -116,11 +116,15 @@ class DrupalStatBlock extends BlockBase {
 		}
 
 		// Get CPU load average
+		// TODO - divide by # of cores (on *nix systems)
 		if(preg_match('/.*nux.*/', php_uname()))
 		{
+			// Get # of CPU cores
+			$numCPUs = DrupalStatUtils::getNumCPUs();
+
 			ob_start();
 			$tmp = preg_split('/\s+/', system('cat /proc/loadavg'));
-			$drupalInfo['loadAverage'] = array($tmp[0], $tmp[1], $tmp[2]);
+			$drupalInfo['loadAverage'] = array($tmp[0]/$numCPUs, $tmp[1]/$numCPUs, $tmp[2]/$numCPUs);
 			ob_end_clean();
 		}
 		else
@@ -172,7 +176,13 @@ class DrupalStatBlock extends BlockBase {
 		$query->condition('uid', 0, '=');
 
 		$drupalInfo['numVisitorsOnline'] = $query->execute()->fetchField();
-	
+
+		// Get total # of session entries in the database
+		$query = $this->connection->select('sessions','s');
+		$query->addExpression('COUNT( uid )');
+
+		$drupalInfo['numSessionEntries'] = $query->execute()->fetchField();
+
 		// If MailChimp is installed, get all MailChimp lists and total # of subscribers for each
 		if (\Drupal::moduleHandler()->moduleExists('mailchimp'))
 		{

@@ -28,6 +28,11 @@
 			$('#last_cache_rebuild').html(response.responseData.last_cache_rebuild);
 		}
 
+		if(response.responseData.drupalStatCommand == 'purgeSessions')
+		{
+			$('#num-session-entries').html(response.responseData.newNumSessionEntries);
+		}
+
 	}
 	
 

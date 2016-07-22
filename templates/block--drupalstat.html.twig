@@ -16,7 +16,6 @@
 				<span class="list-group-item">
 					<a class="pull-left" alt="Add New" title="Add New" href="/node/add/{{ nodeType.type }}"><span class="fa fa-plus"></span></a>&nbsp;
 					<a href="/admin/content?status=1&type={{ nodeType.type }}&title=&langcode=All" class="" alt="View all" title="View all">
-
 						
 						{% if nodeType.type_count %}
 							{% set nodeCountClass = 'badge-active' %}
@@ -66,6 +65,7 @@
 			<li class="list-group-item"> <a href="/admin/people/create"><span class="fa fa-plus fa-fw"></span></a> Total # Users: <span class="badge badge-active">{{ drupalInfo.userCount }}</span></li>
 			<li class="list-group-item"> <span class="fa fa-users fa-fw"></span> Users Online Now: <span class="badge badge-active">{{ drupalInfo.numAuthUsersOnline }}</span></li>
 			<li class="list-group-item"> <span class="fa fa-users fa-fw"></span> Visitors Online Now: <span class="badge {{ visitorClass }}">{{ drupalInfo.numVisitorsOnline }}</span></li>
+			<li class="list-group-item"> <a href="/drupalstat/purge-sessions" class="use-ajax" alt="Purge sessions now (except this one!)" title="Purge sessions now (except this one!)"><span class="fa fa-trash fa-fw"></span></a> Number of Session Entries: <span id="num-session-entries" class="badge badge-active">{{ drupalInfo.numSessionEntries }}</span></li>
 
 			<li class="list-group-divider"></li>
 

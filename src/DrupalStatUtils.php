@@ -40,5 +40,52 @@ class DrupalStatUtils {
     return $time;
   }
 
+	/**
+   * Returns the number of available CPU cores
+   * 
+   *  Should work for Linux, Windows, Mac & BSD
+   * 
+   * @return integer 
+   */
+	public static function getNumCPUs()
+	{
+		$numCpus = 1;
+
+		// *NIX systems, especially Linux
+		if(file_exists('/proc/cpuinfo'))
+		{
+			$cpuinfo = file_get_contents('/proc/cpuinfo');
+			preg_match_all('/^processor/m', $cpuinfo, $matches);
+			$numCpus = count($matches[0]);
+		}
+		else if(strtoupper(substr(PHP_OS, 0, 3)) == 'WIN')
+		{
+			// Windows systems
+			$process = @popen('wmic cpu get NumberOfCores', 'rb');
+			if (false !== $process)
+			{
+				fgets($process);
+				$numCpus = intval(fgets($process));
+				pclose($process);
+			}
+		}
+		else
+		{
+			// *NIX fallback (won't always work, depending on version of kernel and sysctl!
+			$process = @popen('sysctl -a', 'rb');
+			if (false !== $process)
+			{
+				$output = stream_get_contents($process);
+				preg_match('/hw.ncpu: (\d+)/', $output, $matches);
+				if ($matches)
+				{
+					$numCpus = intval($matches[1][0]);
+				}
+				pclose($process);
+			}
+		}
+  
+		return $numCpus;
+	}
 }
 ?>

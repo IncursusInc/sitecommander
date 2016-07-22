@@ -9,10 +9,18 @@ namespace Drupal\drupalstat\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Database\Connection;
 use Drupal\drupalstat\Ajax\ReadMessageCommand;
 use Drupal\drupalstat\DrupalStatUtils;
 
 class DrupalStatController extends ControllerBase {
+
+	protected $connection;
+
+	public function __construct() {
+		$this->connection = \Drupal::database();
+	}
+
 
 	// AJAX Callback to toggle maintenance mode
   //public function toggleMaintenanceMode() {
@@ -66,7 +74,6 @@ class DrupalStatController extends ControllerBase {
 
   public function cleanupOldFiles() {
 		
-		// TODO
 		// Find all old CSS/JS files and remove them
 		$publicPath = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
 
@@ -102,6 +109,37 @@ class DrupalStatController extends ControllerBase {
 		$responseData->drupalStatCommand = 'cleanupOldFiles';
 		$responseData->oldFilesStorageSize = $oldFilesStorageSize;
 		$responseData->last_cache_rebuild = DrupalStatUtils::elapsedTime(\Drupal::state()->get('drupalstat.timestamp_cache_last_rebuild'));
+    $response->addCommand( new ReadMessageCommand($responseData));
+
+		// Return ajax response.
+		return $response;
+	}
+
+	// Purge all session entries (except for the current one)
+
+  public function purgeSessions() {
+		
+		// Remove all session entries from the session table except for the one for the current user!
+		$currentUser = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+		$currentUserUID = $currentUser->get('uid')->value;
+
+		$query = \Drupal::database()->delete('sessions');
+		$query->condition('uid', $currentUserUID, '!=');
+		$query->execute();
+
+		// Fetch the new count of session entries (should be 1 unless they are logged in from multiple places with the same account)
+		$query = $this->connection->select('sessions','s');
+		$query->addExpression('COUNT( uid )');
+
+		$newNumSessionEntries = $query->execute()->fetchField();
+
+    // Create AJAX Response object.
+    $response = new AjaxResponse();
+
+    // Call the DrupalStatAjaxCommand javascript function.
+		$responseData->command = 'readMessage';
+		$responseData->drupalStatCommand = 'purgeSessions';
+		$responseData->newNumSessionEntries = $newNumSessionEntries;
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.
