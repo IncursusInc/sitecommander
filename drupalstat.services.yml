@@ -1,0 +1,4 @@
+services:
+  drupalstat.drupalstat_block:
+    class: Drupal\drupalstat\Plugin\Block\DrupalStatBlock
+    arguments: ['@database', '@module_handler', '@entity.query', '@file_system', '@config.factory', '@state']

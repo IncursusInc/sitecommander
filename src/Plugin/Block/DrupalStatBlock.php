@@ -3,13 +3,21 @@
 namespace Drupal\drupalstat\Plugin\Block;
 
 use Drupal\Component\Utility\Unicode;
-use Drupal\Component\Utility\Xss;
 use Drupal\Core\Url;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Extension\ModuleHandler;
-use Drupal\drupalstat\DrupalStatUtils;
+use Drupal\Core\File\FileSystem;
+use Drupal\Core\State\StateInterface;
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
+use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Entity\Query\QueryFactory;
+use Drupal\Core\Entity\Query\QueryAggregateInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Session\AccountInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\drupalstat\DrupalStatUtils;
 
 /**
  * Provides a DrupalStat Block
@@ -19,49 +27,55 @@ use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
  *   admin_label = @Translation("DrupalStat Block"),
  * )
  */
-class DrupalStatBlock extends BlockBase {
+class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * {@inheritdoc}
    */
 
+  /**
+   * @var \Drupal\Core\Database\Connection
+   */
+
 	protected $connection;
+	protected $moduleHandler;
+	protected $entityQuery;
+	protected $fileSystem;
+	protected $configFactory;
+	protected $state;
 
-	public function __construct() {
-		$this->connection = \Drupal::database();
+	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state ) {
+		$this->connection = $connection;
+		$this->moduleHandler = $moduleHandler;
+		$this->entityQuery = $entityQuery;
+		$this->fileSystem = $fileSystem;
+		$this->configFactory = $configFactory;
+		$this->state = $state;
 	}
 
-	public function formatMessage($row) {
-		// Check for required properties.
-		if (isset($row->message) && isset($row->variables)) {
-
-			// Messages without variables or user specified text.
-			if ($row->variables === 'N;') {
-				$message = Xss::filterAdmin($row->message);
-			}
-
-			// Message to translate with injected variables.
-			else {
-				$message = $this->t(Xss::filterAdmin($row->message), unserialize($row->variables));
-			}
-		}
-		else {
-			$message = FALSE;
-		}
-	
-		return $message;
-	}
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $container->get('database'),
+      $container->get('module_handler'),
+      $container->get('entity.query'),
+      $container->get('file_system'),
+      $container->get('config.factory'),
+      $container->get('state')
+    );
+  }
 
   public function build() {
 
 		// TODO - split this shit up into subfunctions
-
 		$drupalInfo = array();
 
 		// Get breakdown of published nodes by content type
 		$drupalInfo['nodeTypeNames'] = node_type_get_names();
 
-		$query = \Drupal::entityQueryAggregate('node')
+		$query = $this->entityQuery->getAggregate('node')
 											->condition('type', array_keys($drupalInfo['nodeTypeNames']), 'IN')
 											->condition('status', 1)
 											->groupBy('type')
@@ -84,7 +98,7 @@ class DrupalStatBlock extends BlockBase {
 		$drupalInfo['publishedNodeCounts'] = $result;
 		
 		// Get # of users
-		$drupalInfo['userCount'] = \Drupal::entityQuery('user')->count()->execute();
+		$drupalInfo['userCount'] = $this->entityQuery->get('user')->count()->execute();
 
 		// Get size of install (storage footprint) - currently only works under Linux!
 		if(preg_match('/.*nux.*/', php_uname()))
@@ -102,7 +116,7 @@ class DrupalStatBlock extends BlockBase {
 		// Get size of temporary file storage
 		if(preg_match('/.*nux.*/', php_uname()))
 		{
-			$publicPath = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+			$publicPath = $this->fileSystem->realpath(file_default_scheme() . "://");
 
 			ob_start();
 			$tmp = preg_split('/\s+/', system('du -shc ' . $publicPath . '/css ' . $publicPath . '/js '));
@@ -133,29 +147,29 @@ class DrupalStatBlock extends BlockBase {
 		}
 
 		// Get number of enabled modules
-		$drupalInfo['enabledModulesCount'] = count(\Drupal::moduleHandler()->getModuleList());
+		$drupalInfo['enabledModulesCount'] = count($this->moduleHandler->getModuleList());
 
 		// Drupal settings
 		$drupalInfo['settings'] = array();
-		$drupalInfo['settings']['system']['site'] = \Drupal::config('system.site')->get();
-		$drupalInfo['settings']['theme'] = \Drupal::config('system.theme')->get();
+		$drupalInfo['settings']['system']['site'] = $this->configFactory->get('system.site')->get();
+		$drupalInfo['settings']['theme'] = $this->configFactory->get('system.theme')->get();
 
 		// Cron info
-		$drupalInfo['cron']['cron_key'] = \Drupal::state()->get('system.cron_key');
-		$drupalInfo['cron']['cron_last'] = DrupalStatUtils::elapsedTime(\Drupal::state()->get('system.cron_last'));
+		$drupalInfo['cron']['cron_key'] = $this->state->get('system.cron_key');
+		$drupalInfo['cron']['cron_last'] = DrupalStatUtils::elapsedTime($this->state->get('system.cron_last'));
 
 		// Last time Drupal/Modules were checked for updates
-		$drupalInfo['update_last_check'] = DrupalStatUtils::elapsedTime(\Drupal::state()->get('update.last_check'));
+		$drupalInfo['update_last_check'] = DrupalStatUtils::elapsedTime($this->state->get('update.last_check'));
 		// The line below will send the admin user back to the status page, which may not be desirable
 		//$destination = \Drupal::destination('/admin/reports/updates')->getAsArray();
 		$destination = array('destination' => '/admin/reports/updates');
     $drupalInfo['updateCheckURL'] = \Drupal::url('update.manual_status', [], ['query' => $destination]);
 
 		// Maintenance mode status
-		$drupalInfo['maintenance_mode'] = \Drupal::state()->get('system.maintenance_mode') ? 'On' : 'Off';
+		$drupalInfo['maintenance_mode'] = $this->state->get('system.maintenance_mode') ? 'On' : 'Off';
 
 		// Get timestamp of last cache rebuild
-		$timestamp = \Drupal::state()->get('drupalstat.timestamp_cache_last_rebuild');
+		$timestamp = $this->state->get('drupalstat.timestamp_cache_last_rebuild');
 		if(!$timestamp)
 			 $drupalInfo['timestamp_cache_last_rebuild'] = 'Unknown';
 		else
@@ -184,20 +198,13 @@ class DrupalStatBlock extends BlockBase {
 		$drupalInfo['numSessionEntries'] = $query->execute()->fetchField();
 
 		// If MailChimp is installed, get all MailChimp lists and total # of subscribers for each
-		if (\Drupal::moduleHandler()->moduleExists('mailchimp'))
+		if ($this->moduleHandler->moduleExists('mailchimp'))
 		{
-			$mcConfig = \Drupal::config('mailchimp.settings')->get();
-			$mcApiKey = $mcConfig['api_key'];
-			$mcClassName = $mcConfig['api_classname'];
-
 			$mcLists = mailchimp_get_lists();
-
-			//echo '<pre>'; print_r($mcLists); exit;
 			$drupalInfo['mailchimp'] = $mcLists;
 		}
 
 		// Get top 15 search phrases done today
-
 		$header = array(
 			array('data' => $this->t('Count'), 'field' => 'count', 'sort' => 'desc'),
 			array('data' => $this->t('Message'), 'field' => 'message'),
@@ -228,8 +235,6 @@ class DrupalStatBlock extends BlockBase {
 			$drupalInfo['topSearches'][] = array('searchPhrase' => $unSerializedData['%keys'], 'count' => $dblog->count);
 		}
 
-		// TODO: Get some PHP config info?
-
     return array(
 			'#theme' => 'drupalstat',
 			'#attached' => array(
@@ -243,4 +248,3 @@ class DrupalStatBlock extends BlockBase {
     );
   }
 }
-?>
