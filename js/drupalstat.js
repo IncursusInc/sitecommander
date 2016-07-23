@@ -1,12 +1,12 @@
 jQuery(document).ready(function($){
 
-	var g1, g2, g3;
+	var dsg1, dsg2, dsg3;
 
 	var timer = setInterval( function() {
 
 		$('#drupalstat-loading-message-container').fadeOut("medium", function() {
 
-			g1 = new JustGage({
+			dsg1 = new JustGage({
 				id: "loadAverage1",
 				value: drupalSettings.loadAverage[0] * 100,
 				min: 0,
@@ -15,7 +15,7 @@ jQuery(document).ready(function($){
 				label: 'Percentage',
 			});
 	
-			g2 = new JustGage({
+			dsg2 = new JustGage({
 				id: "loadAverage2",
 				value: drupalSettings.loadAverage[1] * 100,
 				min: 0,
@@ -24,7 +24,7 @@ jQuery(document).ready(function($){
 				label: "Percentage",
 			});
 	
-			g3 = new JustGage({
+			dsg3 = new JustGage({
 				id: "loadAverage3",
 				value: drupalSettings.loadAverage[2] * 100,
 				min: 0,
@@ -41,9 +41,9 @@ jQuery(document).ready(function($){
 	setInterval(function() {
 		$.get('drupalstat/update-gauges', function (response) { 
 			console.log(response);
-			g1.refresh(response[0].responseData.loadAverage[0] * 100);
-			g2.refresh(response[0].responseData.loadAverage[1] * 100);
-			g3.refresh(response[0].responseData.loadAverage[2] * 100);
+			dsg1.refresh(response[0].responseData.loadAverage[0] * 100);
+			dsg2.refresh(response[0].responseData.loadAverage[1] * 100);
+			dsg3.refresh(response[0].responseData.loadAverage[2] * 100);
 		});
 	}, 10000);
 
