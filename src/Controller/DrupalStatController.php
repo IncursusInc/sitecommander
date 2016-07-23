@@ -61,6 +61,7 @@ class DrupalStatController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the DrupalStatAjaxCommand javascript function.
+		$responsData = new StdClass;
 		$responseData->command = 'readMessage';
 		$responseData->drupalStatCommand = 'toggleMaintenanceMode';
 		$responseData->mode = $mode;
