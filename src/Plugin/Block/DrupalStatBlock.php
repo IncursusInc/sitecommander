@@ -103,7 +103,9 @@ class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterfa
 		$drupalInfo['publishedNodeCounts'] = $result;
 		
 		// Get # of users
-		$drupalInfo['userCount'] = $this->entityQuery->get('user')->count()->execute();
+		$drupalInfo['userCount'] = $this->entityQuery->get('user')
+																->condition('uid', 0, '!=')
+																->count()->execute();
 
 		// Get size of install (storage footprint) - currently only works under Linux!
 		if(preg_match('/.*nux.*/', php_uname()))

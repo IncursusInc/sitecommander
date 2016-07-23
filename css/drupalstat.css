@@ -94,3 +94,11 @@
 	margin-top: -4px;
 	color: white;
 }
+
+.drupalstat-icon-action {
+	color: LimeGreen !important;
+}
+
+.drupalstat-icon-noaction {
+	color: #bbb !important;
+}
