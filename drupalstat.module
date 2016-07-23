@@ -32,4 +32,5 @@ function drupalstat_theme($existing, $type, $theme, $path) {
 function drupalstat_rebuild() {
 	// Store the current timestamp in a state variable
 	\Drupal::state()->set('drupalstat.timestamp_cache_last_rebuild', time());
+	\Drupal::state()->set('drupalstat.timestamp_cssjs_last_rebuild', time());
 }

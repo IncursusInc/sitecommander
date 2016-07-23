@@ -111,8 +111,8 @@ class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterfa
 		if(preg_match('/.*nux.*/', php_uname()))
 		{
 			ob_start();
-			$tmp = preg_split('/\s+/', system('du -sh'));
-			$drupalInfo['installSize'] = $tmp[0];
+			$tmp = preg_split('/\s+/', system('du -sb'));
+			$drupalInfo['installSize'] = format_size($tmp[0]);
 			ob_end_clean();
 		}
 		else
@@ -126,10 +126,10 @@ class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterfa
 			$publicPath = $this->fileSystem->realpath(file_default_scheme() . "://");
 
 			ob_start();
-			$tmp = preg_split('/\s+/', system('du -shc ' . $publicPath . '/css ' . $publicPath . '/js '));
+			$tmp = preg_split('/\s+/', system('du -sbc ' . $publicPath . '/css ' . $publicPath . '/js '));
 			ob_end_clean();
 
-			$drupalInfo['oldFilesStorageSize'] = $tmp[ 0 ];
+			$drupalInfo['oldFilesStorageSize'] = format_size($tmp[ 0 ]);
 		}
 		else
 		{
