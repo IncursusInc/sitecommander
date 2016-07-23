@@ -45,6 +45,6 @@ jQuery(document).ready(function($){
 			dsg2.refresh(response[0].responseData.loadAverage[1] * 100);
 			dsg3.refresh(response[0].responseData.loadAverage[2] * 100);
 		});
-	}, 10000);
+	}, drupalSettings.settings.admin.refreshRateLoadAverage * 1000);
 
 });

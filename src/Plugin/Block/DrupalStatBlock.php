@@ -241,6 +241,9 @@ class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterfa
 			$drupalInfo['topSearches'][] = array('searchPhrase' => $unSerializedData['%keys'], 'count' => $dblog->count);
 		}
 
+		// Load up DrupalStat config settings so we can pass them to the .js
+		$drupalInfo['settings']['admin'] = $this->configFactory->get('drupalstat.settings')->get();
+
     return array(
 			'#theme' => 'drupalstat',
 			'#attached' => array(

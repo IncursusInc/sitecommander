@@ -1,3 +1,11 @@
+drupalstat_configure:
+  path: 'admin/config/drupalstat'
+  defaults:
+    _form: '\Drupal\drupalstat\Form\ConfigureForm'
+    _title: 'DrupalStat Configuration Page'
+  requirements:
+    _permission: 'administer site configuration'
+
 drupalstat.ajaxToggleMaintenanceMode:
     path: '/drupalstat/toggle-maintenance-mode'
     defaults:
