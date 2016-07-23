@@ -163,4 +163,34 @@ class DrupalStatController extends ControllerBase {
 		return $response;
 	}
 
+	public function updateGauges()
+	{
+		// Get CPU load average
+		if(preg_match('/.*nux.*/', php_uname()))
+		{
+			// Get # of CPU cores
+			$numCPUs = DrupalStatUtils::getNumCPUs();
+
+			ob_start();
+			$tmp = preg_split('/\s+/', system('cat /proc/loadavg'));
+			$drupalInfo['loadAverage'] = array($tmp[0]/$numCPUs, $tmp[1]/$numCPUs, $tmp[2]/$numCPUs);
+			ob_end_clean();
+		}
+		else
+		{
+			$drupalInfo['loadAverage'] = array(0, 0, 0);
+		}
+
+    // Create AJAX Response object.
+    $response = new AjaxResponse();
+
+    // Call the DrupalStatAjaxCommand javascript function.
+		$responseData->command = 'readMessage';
+		$responseData->drupalStatCommand = 'updateGauges';
+		$responseData->loadAverage = $drupalInfo['loadAverage'];
+    $response->addCommand( new ReadMessageCommand($responseData));
+
+		// Return ajax response.
+		return $response;
+	}
 }

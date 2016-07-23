@@ -137,7 +137,6 @@ class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterfa
 		}
 
 		// Get CPU load average
-		// TODO - divide by # of cores (on *nix systems)
 		if(preg_match('/.*nux.*/', php_uname()))
 		{
 			// Get # of CPU cores
