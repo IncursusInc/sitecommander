@@ -88,4 +88,3 @@ class DrupalStatUtils {
 		return $numCpus;
 	}
 }
-?>

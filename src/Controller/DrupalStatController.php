@@ -8,34 +8,54 @@
 namespace Drupal\drupalstat\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\File\FileSystem;
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\State\StateInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\drupalstat\Ajax\ReadMessageCommand;
 use Drupal\drupalstat\DrupalStatUtils;
 
 class DrupalStatController extends ControllerBase {
 
 	protected $connection;
+	protected $state;
+	protected $fileSystem;
+	protected $currentUser;
 
-	public function __construct() {
-		$this->connection = \Drupal::database();
+	public function __construct( Connection $connection, StateInterface $state, FileSystem $fileSystem, AccountInterface $account ) {
+		$this->connection = $connection;
+		$this->state = $state;
+		$this->fileSystem = $fileSystem;
+		$this->currentUser = $account;
 	}
 
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('database'),
+      $container->get('state'),
+      $container->get('file_system'),
+      $container->get('current_user')
+    );
+  }
 
 	// AJAX Callback to toggle maintenance mode
   //public function toggleMaintenanceMode() {
   public function toggleMaintenanceMode() {
 
 		// Toggle maintenance mode via Drupal CLI
-		
 		// First, figure out if we are already in maintenance mode
-		$currStatus = \Drupal::state()->get('system.maintenance_mode');
+		$currStatus = $this->state->get('system.maintenance_mode');
 		if($currStatus)
 			$mode = 0;
 		else
 			$mode = 1;
 
-		\Drupal::state()->set('system.maintenance_mode', $mode);
+		$this->state->set('system.maintenance_mode', $mode);
 
     // Create AJAX Response object.
     $response = new AjaxResponse();
@@ -51,7 +71,6 @@ class DrupalStatController extends ControllerBase {
 	}
 
 	// Flush/rebuild Drupal cache from within DrupalStat
-
   public function rebuildDrupalCache() {
 		
 		// Flush caches
@@ -63,7 +82,7 @@ class DrupalStatController extends ControllerBase {
     // Call the DrupalStatAjaxCommand javascript function.
 		$responseData->command = 'readMessage';
 		$responseData->drupalStatCommand = 'rebuildDrupalCache';
-		$responseData->last_cache_rebuild = DrupalStatUtils::elapsedTime(\Drupal::state()->get('drupalstat.timestamp_cache_last_rebuild'));
+		$responseData->last_cache_rebuild = DrupalStatUtils::elapsedTime($this->state->get('drupalstat.timestamp_cache_last_rebuild'));
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.
@@ -71,11 +90,10 @@ class DrupalStatController extends ControllerBase {
 	}
 
 	// Remove old aggregated css/js files
-
   public function cleanupOldFiles() {
 		
 		// Find all old CSS/JS files and remove them
-		$publicPath = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+		$publicPath = $this->fileSystem->realpath(file_default_scheme() . "://");
 
 		$dirs = array(
 			$publicPath.'/css', 
@@ -108,7 +126,7 @@ class DrupalStatController extends ControllerBase {
 		$responseData->command = 'readMessage';
 		$responseData->drupalStatCommand = 'cleanupOldFiles';
 		$responseData->oldFilesStorageSize = $oldFilesStorageSize;
-		$responseData->last_cache_rebuild = DrupalStatUtils::elapsedTime(\Drupal::state()->get('drupalstat.timestamp_cache_last_rebuild'));
+		$responseData->last_cache_rebuild = DrupalStatUtils::elapsedTime($this->state->get('drupalstat.timestamp_cache_last_rebuild'));
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.
@@ -116,14 +134,12 @@ class DrupalStatController extends ControllerBase {
 	}
 
 	// Purge all session entries (except for the current one)
-
   public function purgeSessions() {
 		
 		// Remove all session entries from the session table except for the one for the current user!
-		$currentUser = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
-		$currentUserUID = $currentUser->get('uid')->value;
+		$currentUserUID = $this->currentUser->id();
 
-		$query = \Drupal::database()->delete('sessions');
+		$query = $this->connection->delete('sessions');
 		$query->condition('uid', $currentUserUID, '!=');
 		$query->execute();
 
@@ -147,4 +163,3 @@ class DrupalStatController extends ControllerBase {
 	}
 
 }
-?>

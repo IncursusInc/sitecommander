@@ -16,6 +16,8 @@ use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Entity\Query\QueryAggregateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\StringTranslation\TranslationManager;
+use Drupal\Core\StringTranslation\TranslationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\drupalstat\DrupalStatUtils;
 
@@ -43,8 +45,11 @@ class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterfa
 	protected $fileSystem;
 	protected $configFactory;
 	protected $state;
+	protected $translation;
 
-	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state ) {
+	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state
+														 ) 
+	{
 		$this->connection = $connection;
 		$this->moduleHandler = $moduleHandler;
 		$this->entityQuery = $entityQuery;
