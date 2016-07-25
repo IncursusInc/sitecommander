@@ -1,13 +1,5 @@
 <h2>Drupal Status</h2>
 
-<div class="gauges-container">
-	<div id="drupalstat-loading-message-container"><h2>Gathering statistics ...</h2></div>
-	<div id="loadAverage1" class="gauge 200x160px"></div>
-	<div id="loadAverage2" class="gauge 200x160px"></div>
-	<div id="loadAverage3" class="gauge 200x160px"></div>
-	<div style="clear:both"></div>
-</div>
-
 <div class="drupalstat-text-stats">
 	<div class="drupalstat-text-stats-column">
 		<div class="list-group">
@@ -35,8 +27,10 @@
 		<ul class="list-group">
 
 			<li class="list-group-item active"><span class="fa fa-drupal"></span>&nbsp; <strong>Site Data/Tasks</strong></li>
+<!--
 			<li class="list-group-item"> <a href="/admin/config/system/site-information" alt="Edit" title="Edit" class="drupalstat-icon-action"><span class="fa fa-edit fa-fw"></span></a> Site Name: <span class="badge badge-active">{{ drupalInfo.settings.system.site.name }}</span></li>
 			<li class="list-group-item"> <a href="/admin/appearance" alt="Edit" title="Edit" class="drupalstat-icon-action"><span class="fa fa-edit fa-fw"></span></a> Site Theme: <span class="badge badge-active">{{ drupalInfo.settings.theme.default }}</span></li>
+-->
 			<li class="list-group-item"> <a href="/admin/modules/install" alt="Install new module" title="Install new module" class="drupalstat-icon-action"><span class="fa fa-plus fa-fw"></span></a> <a href="/admin/modules" alt="Browse installed modules" title="Browse installed modules">Enabled Modules</a>: <span class="badge badge-active">{{ drupalInfo.enabledModulesCount }}</span></li>
 
 			<li class="list-group-divider"></li>
@@ -69,6 +63,14 @@
 			<li class="list-group-item"> <a href="/drupalstat/rebuild-drupal-cache" class="use-ajax drupalstat-icon-action" alt="Clear/rebuild cache now" title="Clear/rebuild cache now"><span class="fa fa-refresh fa-fw"></span></a> Drupal Cache Last Refreshed: <span id="last_cache_rebuild" class="badge badge-active">{{ drupalInfo.timestamp_cache_last_rebuild }}</span></li>
 			<li class="list-group-item"> <span class="fa fa-hdd-o fa-fw drupalstat-icon-noaction"></span> Install Size: <span class="badge badge-active">{{ drupalInfo.installSize }}</span></li>
 			<li class="list-group-item"> <a href="/drupalstat/cleanup-old-files" class="use-ajax drupalstat-icon-action" alt="Remove old aggregated css/js files now" title="Remove old aggregated css/js files now"><span class="fa fa-trash fa-fw"></span></a> Old Aggregated File Storage: <span id="old-files-storage-size" class="badge badge-active">{{ drupalInfo.oldFilesStorageSize }}</span></li>
+
+			{% if drupalInfo.apcStats %}
+			<li class="list-group-item"> <a href="/drupalstat/clear-apc-opcache" class="use-ajax drupalstat-icon-action" alt="Clear APC Op Cache Now" title="Clear APC Op Cache Now"><span class="fa fa-trash fa-fw"></span></a> APC Op Cache # Entries: <span id="num-apc-opcache-entries" class="badge badge-active">{{ drupalInfo.apcStats.numEntries }}</span></li>
+			{% endif %}
+
+			{% if drupalInfo.opCacheStats %}
+			<li class="list-group-item"> <a href="/drupalstat/clear-php-opcache" class="use-ajax drupalstat-icon-action" alt="Clear PHP OpCache Now" title="Clear PHP OpCache Now"><span class="fa fa-trash fa-fw"></span></a> PHP OpCache # Entries: <span title="# cached scripts" id="num-php-opcache-scripts" class="badge badge-active">{{ drupalInfo.opCacheStats.opcache_statistics.num_cached_scripts }}</span> <span title="# cached keys" id="num-php-opcache-keys" class="badge badge-active">{{ drupalInfo.opCacheStats.opcache_statistics.num_cached_keys }}</span></li>
+			{% endif %}
 		</ul>
 	</div>
 
@@ -115,6 +117,72 @@
 	</div>
 
 </div>
+
+<div id="drupalstat-loading-message-container"><h2>Gathering statistics ...</h2></div>
+<h2>CPU Load Average</h2>
+<div class="gauges-container">
+	<div id="loadAverage1" class="gauge 200x160px"></div>
+	<div id="loadAverage2" class="gauge 200x160px"></div>
+	<div id="loadAverage3" class="gauge 200x160px"></div>
+</div>
+
+{% if drupalInfo.apcStats %}
+
+<h2>APC Opcode Cache Status</h2>
+<div class="gauges-container">
+	<div id="apcOpcacheStatus" class="gauge 200x160px"></div>
+	<div id="apcMemoryUsage" class="gauge 200x160px"></div>
+	<div style="clear:both"></div>
+</div>
+
+{% endif %}
+
+{% if drupalInfo.redisStats %}
+<h2>PHP OpCache Status</h2>
+
+<div class="gauges-container">
+	<div id="opCacheHits" class="gauge 200x160px"></div>
+	<div id="opCacheMemoryUsage" class="gauge 200x160px"></div>
+	<div style="clear:both"></div>
+</div>
+
+{% endif %}
+
+{% if drupalInfo.redisStats %}
+<h2>Redis Caching Status</h2>
+
+<div class="gauges-container">
+	<div id="redisKeyspaceHits" class="gauge 200x160px"></div>
+	<div id="redisMemoryUsage" class="gauge 200x160px"></div>
+	<div id="redisPeakMemoryUsage" class="gauge 200x160px"></div>
+	<div style="clear:both"></div>
+</div>
+
+<div class="redis-text-stats">
+	<div class="redis-text-stats-column">
+		<h3><label>Redis Version:</label> <span>v{{ drupalInfo.redisStats.redis_version }}</span></h3>
+		<h3><label>Uptime:</label> <span>{{ drupalInfo.redisStats.uptime_in_days }} day(s)</span></h3>
+		<h3><label>Connected Clients:</label> <span>{{ drupalInfo.redisStats.connected_clients }}</span></h3>
+		<h3><label>Connected Slaves:</label> <span>{{ drupalInfo.redisStats.connected_slaves }}</span></h3>
+	</div>
+
+	<div class="redis-text-stats-column">
+		<h3><label>Total Connections Received:</label> <span>{{ drupalInfo.redisStats.total_connections_received }}</span></h3>
+		<h3><label>Total Commands Processed:</label> <span>{{ drupalInfo.redisStats.total_commands_processed }}</span></h3>
+		<h3><label>Total Net Input (Bytes):</label> <span>{{ drupalInfo.redisStats.total_net_input_bytes }}</span></h3>
+		<h3><label>Total Net Output (Bytes):</label> <span>{{ drupalInfo.redisStats.total_net_output_bytes }}</span></h3>
+	</div>
+
+	<div class="redis-text-stats-column">
+		<h3><label>Cached Objects:</label> <span>{{ drupalInfo.redisStats.numObjectsCached }}</span></h3>
+		<h3><label>Expired Keys:</label> <span>{{ drupalInfo.redisStats.expired_keys }}</span></h3>
+		<h3><label>Evicted Keys:</label> <span>{{ drupalInfo.redisStats.evicted_keys }}</span></h3>
+		<h3><label>Mem Fragmentation Ratio:</label> <span>{{ drupalInfo.redisStats.mem_fragmentation_ratio }}</span></h3>
+	</div>
+
+</div>
+
+{% endif %}
 
 <div class="drupalstat-footer">
 	<hr class="drupalstat-hr" />

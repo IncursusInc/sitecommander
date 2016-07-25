@@ -1,3 +1,11 @@
+drupalstat_configure:
+  path: 'admin/config/drupalstat'
+  defaults:
+    _form: '\Drupal\drupalstat\Form\ConfigureForm'
+    _title: 'DrupalStat Configuration Page'
+  requirements:
+    _permission: 'administer site configuration'
+
 drupalstat.ajaxToggleMaintenanceMode:
     path: '/drupalstat/toggle-maintenance-mode'
     defaults:
@@ -37,3 +45,20 @@ drupalstat.ajaxUpdateGauges:
         _title: 'Update Gauges'
     requirements:
         _permission: 'access administration pages'
+
+drupalstat.clearApcOpCache:
+    path: '/drupalstat/clear-apc-opcache'
+    defaults:
+        _controller: '\Drupal\drupalstat\Controller\DrupalStatController::clearApcOpCache'
+        _title: 'Clear APC Op Cache'
+    requirements:
+        _permission: 'access administration pages'
+
+drupalstat.clearPhpOpCache:
+    path: '/drupalstat/clear-php-opcache'
+    defaults:
+        _controller: '\Drupal\drupalstat\Controller\DrupalStatController::clearPhpOpCache'
+        _title: 'Clear PHP OpCache'
+    requirements:
+        _permission: 'access administration pages'
+

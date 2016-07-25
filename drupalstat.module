@@ -5,6 +5,8 @@
  * Contains drupalstat.module
  */
 
+use Drupal\Core\Routing\RouteMatchInterface;
+
 /**
  * Theme hook
  */
@@ -34,3 +36,45 @@ function drupalstat_rebuild() {
 	\Drupal::state()->set('drupalstat.timestamp_cache_last_rebuild', time());
 	\Drupal::state()->set('drupalstat.timestamp_cssjs_last_rebuild', time());
 }
+
+/**
+ * Implements hook_install().
+ */
+function drupalstat_install() {
+  $t = get_t();
+  drupal_set_message($t("Congrats! DrupalStat settings are available under !link", 
+    array( '!link' => l(t('admin/config/drupalstat'),  'admin/config/drupalstat'))
+  ));
+}
+
+/**
+ * Implements hook_menu().
+ */
+function drupalstat_menu() 
+{
+  $items['admin/config/system/drupalstat'] = array(
+    'title' => 'DrupalStat Configuration',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drupalstat_form'),
+    'access arguments' => array('administer users'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+ 
+  return $items;
+}
+
+/**
+ * Admin form to configure
+ */
+function drupalstat_form($form, &$form_state) 
+{
+  $form['drupalstat_configuration'] = array(
+    '#type' => 'text',
+    '#title' => t('CPU Load Average AJAX Refresh Rate (in seconds)'),
+    '#required' => TRUE,
+  	'#default_value' => variable_get('drupalstat_configuration', '60'),
+  );
+ 
+  return system_settings_form($form);
+}
+

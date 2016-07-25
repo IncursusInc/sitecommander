@@ -102,3 +102,24 @@
 .drupalstat-icon-noaction {
 	color: #bbb !important;
 }
+
+.redis-text-stats {
+	padding: 10px;
+}
+
+.redis-text-stats-column {
+	display: inline-block;
+	width: 33%;
+}
+
+.redis-text-stats-column h3 {
+	text-align: right;
+}
+
+.redis-text-stats label {
+	font-weight: bold;
+	text-align: right;
+}
+.redis-text-stats span {
+	color: ForestGreen;
+}
