@@ -138,6 +138,38 @@ class DrupalStatController extends ControllerBase {
 		return $response;
 	}
 
+	// Clear Redis cache
+	public function clearRedisCache()
+	{
+		$redisHostName = \Drupal::config('drupalstat.settings')->get('redisHostName');
+		$redisPort = \Drupal::config('drupalstat.settings')->get('redisPort');
+
+		if (class_exists('Redis') && $redisHostName && $redisPort) {
+
+			$redis = new \Redis();
+
+			$redis->connect($redisHostName, $redisPort);
+
+			// Do not allow PhpRedis serialize itself data, we are going to do it
+			// ourself. This will ensure less memory footprint on Redis size when
+			// we will attempt to store small values.
+			$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
+
+			$redis->flushDb();
+		}
+
+    // Create AJAX Response object.
+    $response = new AjaxResponse();
+
+    // Call the DrupalStatAjaxCommand javascript function.
+		$responseData->command = 'readMessage';
+		$responseData->drupalStatCommand = 'clearRedisCache';
+    $response->addCommand( new ReadMessageCommand($responseData));
+
+		// Return ajax response.
+		return $response;
+	}
+
 	// Clear PHP OpCache
 	public function clearPhpOpCache()
 	{
@@ -269,7 +301,7 @@ class DrupalStatController extends ControllerBase {
 			$redisInfo['total_net_input_bytes'] = format_size($redisInfo['total_net_input_bytes']);
 			$redisInfo['total_net_output_bytes'] = format_size($redisInfo['total_net_output_bytes']);
 
-			$redisStats['numObjectsCached'] = $numObjects;
+			$redisStats['numObjectsCached'] = $numObjects ? $numObjects : 0;
 
 			$redisInfo = array_merge($redisStats, $redisInfo);
 
@@ -280,7 +312,8 @@ class DrupalStatController extends ControllerBase {
 	// Get APC stats if they are using it
 	public static function getApcStats()
 	{
-		if (function_exists('apc_cache_info')) {
+		if(extension_loaded('apc') && ini_get('apc.enabled')) 
+		{
 			$apcOpCacheInfo = apc_cache_info('', true);
 			$apcSmaInfo = apc_sma_info(true);
 			$apcStats = array(

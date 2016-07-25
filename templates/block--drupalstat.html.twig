@@ -64,6 +64,10 @@
 			<li class="list-group-item"> <span class="fa fa-hdd-o fa-fw drupalstat-icon-noaction"></span> Install Size: <span class="badge badge-active">{{ drupalInfo.installSize }}</span></li>
 			<li class="list-group-item"> <a href="/drupalstat/cleanup-old-files" class="use-ajax drupalstat-icon-action" alt="Remove old aggregated css/js files now" title="Remove old aggregated css/js files now"><span class="fa fa-trash fa-fw"></span></a> Old Aggregated File Storage: <span id="old-files-storage-size" class="badge badge-active">{{ drupalInfo.oldFilesStorageSize }}</span></li>
 
+			{% if drupalInfo.redisStats %}
+			<li class="list-group-item"> <a href="/drupalstat/clear-redis-cache" class="use-ajax drupalstat-icon-action" alt="Clear Redis Cache Now" title="Clear Redis Cache Now"><span class="fa fa-trash fa-fw"></span></a> Redis Cache # Entries: <span id="num-redis-entries" class="badge badge-active">{{ drupalInfo.redisStats.numObjectsCached }}</span></li>
+			{% endif %}
+
 			{% if drupalInfo.apcStats %}
 			<li class="list-group-item"> <a href="/drupalstat/clear-apc-opcache" class="use-ajax drupalstat-icon-action" alt="Clear APC Op Cache Now" title="Clear APC Op Cache Now"><span class="fa fa-trash fa-fw"></span></a> APC Op Cache # Entries: <span id="num-apc-opcache-entries" class="badge badge-active">{{ drupalInfo.apcStats.numEntries }}</span></li>
 			{% endif %}

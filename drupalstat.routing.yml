@@ -62,3 +62,11 @@ drupalstat.clearPhpOpCache:
     requirements:
         _permission: 'access administration pages'
 
+drupalstat.clearRedisCache:
+    path: '/drupalstat/clear-redis-cache'
+    defaults:
+        _controller: '\Drupal\drupalstat\Controller\DrupalStatController::clearRedisCache'
+        _title: 'Clear Redis Cache'
+    requirements:
+        _permission: 'access administration pages'
+

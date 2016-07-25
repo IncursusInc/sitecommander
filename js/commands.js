@@ -44,6 +44,11 @@
 			$('#num-php-opcache-keys').html('0');
 		}
 
+		if(response.responseData.drupalStatCommand == 'clearRedisCache')
+		{
+			$('#num-redis-entries').html('0');
+		}
+
 	}
 	
 
