@@ -33,6 +33,17 @@
 			$('#num-session-entries').html(response.responseData.newNumSessionEntries);
 		}
 
+		if(response.responseData.drupalStatCommand == 'clearApcOpCache')
+		{
+			$('#num-apc-opcache-entries').html(response.responseData.newNumApcOpCacheEntries);
+		}
+
+		if(response.responseData.drupalStatCommand == 'clearPhpOpCache')
+		{
+			$('#num-php-opcache-scripts').html('0');
+			$('#num-php-opcache-keys').html('0');
+		}
+
 	}
 	
 

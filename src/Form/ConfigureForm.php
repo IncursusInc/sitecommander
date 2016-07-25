@@ -43,6 +43,20 @@ class ConfigureForm extends ConfigFormBase {
 			'#default_value' => $config->get('refreshRateLoadAverage') ? $config->get('refreshRateLoadAverage') : 60
 		);
 
+		$form['redisHostName'] = array(
+    	'#type' => 'textfield',
+    	'#title' => t('Redis Hostname'),
+    	'#required' => FALSE,
+			'#default_value' => $config->get('redisHostName') ? $config->get('redisHostName') : ''
+		);
+
+		$form['redisPort'] = array(
+    	'#type' => 'number',
+    	'#title' => t('Redis Port'),
+    	'#required' => FALSE,
+			'#default_value' => $config->get('redisPort') ? $config->get('redisPort') : 6379
+		);
+
 		return parent::buildForm($form, $form_state);
   }
 
@@ -58,6 +72,8 @@ class ConfigureForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
 		$config = \Drupal::service('config.factory')->getEditable('drupalstat.settings');
 		$config->set('refreshRateLoadAverage', $form_state->getValue('refreshRateLoadAverage'))->save();
+		$config->set('redisHostName', $form_state->getValue('redisHostName'))->save();
+		$config->set('redisPort', $form_state->getValue('redisPort'))->save();
 
 		parent::submitForm($form, $form_state);
   }

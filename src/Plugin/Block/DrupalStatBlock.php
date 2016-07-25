@@ -136,20 +136,29 @@ class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterfa
 			$drupalInfo['oldFilesStorageSize'] = 'Unknown';
 		}
 
-		// Get CPU load average
+		// Get Memory Usage
 		if(preg_match('/.*nux.*/', php_uname()))
 		{
-			// Get # of CPU cores
-			$numCPUs = DrupalStatUtils::getNumCPUs();
+			$drupalInfo['memoryUsage']['totalMemory'] = 0;
+			$drupalInfo['memoryUsage']['usedMemory'] = 0;
 
-			ob_start();
-			$tmp = preg_split('/\s+/', system('cat /proc/loadavg'));
-			$drupalInfo['loadAverage'] = array($tmp[0]/$numCPUs, $tmp[1]/$numCPUs, $tmp[2]/$numCPUs);
-			ob_end_clean();
+			$tmp = file('/proc/meminfo', FILE_IGNORE_NEW_LINES);
+			foreach($tmp as $line)
+			{
+				if(preg_match('/^MemTotal:/', $line)) {
+					list($label, $drupalInfo['memoryUsage']['totalMemory'], $sizeLabel) = preg_split('/\s+/', $line);
+				}
+
+				if (preg_match('/^MemFree:\s+(\d+)\skB$/', $line, $matches)) {
+					$availableMemory = $matches[1];
+					$drupalInfo['memoryUsage']['usedMemory'] = $drupalInfo['memoryUsage']['totalMemory'] - $availableMemory;
+				}
+			}
 		}
 		else
 		{
-			$drupalInfo['loadAverage'] = array(0, 0, 0);
+			$drupalInfo['memoryUsage']['totalMemory'] = 0;
+			$drupalInfo['memoryUsage']['usedMemory'] = 0;
 		}
 
 		// Get number of enabled modules
@@ -240,6 +249,11 @@ class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterfa
 			$unSerializedData = unserialize($dblog->variables);	
 			$drupalInfo['topSearches'][] = array('searchPhrase' => $unSerializedData['%keys'], 'count' => $dblog->count);
 		}
+
+		$drupalInfo['loadAverage'] = \Drupal\drupalstat\Controller\DrupalStatController::getCpuLoadAverage();
+		$drupalInfo['redisStats'] = \Drupal\drupalstat\Controller\DrupalStatController::getRedisStats();
+		$drupalInfo['opCacheStats'] = \Drupal\drupalstat\Controller\DrupalStatController::getOpCacheStats();
+		$drupalInfo['apcStats'] = \Drupal\drupalstat\Controller\DrupalStatController::getApcStats();
 
 		// Load up DrupalStat config settings so we can pass them to the .js
 		$drupalInfo['settings']['admin'] = $this->configFactory->get('drupalstat.settings')->get();
