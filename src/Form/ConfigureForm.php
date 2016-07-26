@@ -79,7 +79,7 @@ class ConfigureForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 		$config = \Drupal::service('config.factory')->getEditable('sitecommander.settings');
-		$config->set('refreshRateLoadAverage', $form_state->getValue('refreshRateLoadAverage'))->save();
+		$config->set('refreshRate', $form_state->getValue('refreshRate'))->save();
 		$config->set('redisHostName', $form_state->getValue('redisHostName'))->save();
 		$config->set('redisPort', $form_state->getValue('redisPort'))->save();
 

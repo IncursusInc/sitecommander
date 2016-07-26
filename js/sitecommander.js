@@ -4,7 +4,7 @@ jQuery(document).ready(function($){
 
 	var timer = setInterval( function() {
 
-		$('#drupalstat-loading-message-container').fadeOut("medium", function() {
+		$('#site-commander-loading-message-container').fadeOut("medium", function() {
 
 			dsg1 = new JustGage({
 				id: "loadAverage1",
@@ -120,7 +120,12 @@ jQuery(document).ready(function($){
 
 	// Update gauges via Ajax periodically
 	setInterval(function() {
-		$.get('drupalstat/update-gauges', function (response) { 
+
+		// Sanity check, so we don't end up spamming AJAX calls if the refreshRate gets clobbered somehow
+		if(!drupalSettings.settings.admin.refreshRate)
+			drupalSettings.settings.admin.refreshRate = 60;
+
+		$.get('sitecommander/update-gauges', function (response) { 
 			console.log(response);
 			dsg1.refresh(response[0].responseData.payload.loadAverage[0] * 100);
 			dsg2.refresh(response[0].responseData.payload.loadAverage[1] * 100);
