@@ -36,11 +36,11 @@ class ConfigureForm extends ConfigFormBase {
 
 		$config = $this->config('drupalstat.settings');
 
-		$form['refreshRateLoadAverage'] = array(
+		$form['refreshRate'] = array(
     	'#type' => 'number',
-    	'#title' => t('CPU Load Average AJAX Refresh Rate (in seconds)'),
+    	'#title' => t('AJAX Refresh Rate (in seconds)'),
     	'#required' => TRUE,
-			'#default_value' => $config->get('refreshRateLoadAverage') ? $config->get('refreshRateLoadAverage') : 60
+			'#default_value' => $config->get('refreshRate') ? $config->get('refreshRate') : 60
 		);
 
 		$form['redisHostName'] = array(
@@ -55,6 +55,14 @@ class ConfigureForm extends ConfigFormBase {
     	'#title' => t('Redis Port'),
     	'#required' => FALSE,
 			'#default_value' => $config->get('redisPort') ? $config->get('redisPort') : 6379
+		);
+
+		$form['visitorIpAddressTTL'] = array(
+    	'#type' => 'number',
+    	'#title' => t('Timeframe for tracking visitors'),
+    	'#required' => FALSE,
+			'#default_value' => $config->get('visitorIpAddressTTL') ? $config->get('visitorIpAddressTTL') : 15,
+			'#description' => 'How many minutes should DrupalStat look backwards to track non-authenticated user IP addresses? Enter a number, in minutes. Must use Redis as a caching backend for this to work!'
 		);
 
 		return parent::buildForm($form, $form_state);
