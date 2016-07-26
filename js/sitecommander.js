@@ -11,10 +11,12 @@ jQuery(document).ready(function($){
 
 		$('#site-commander-loading-message-container').fadeOut("medium", function() {
 
+			$('[data-feature="tooltip"]').tooltip();
+
 			$('#reloadLink').click(function (e) {
 				e.preventDefault()
 				location.reload(true);
-			})
+			});
 
 			dsg1 = new JustGage({
 				id: "loadAverage1",

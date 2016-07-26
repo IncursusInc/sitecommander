@@ -1,5 +1,4 @@
 <div class="text-center site-commander-logo-container">
-	<a target="_blank" href="http://incurs.us"><span class="pull-right btn btn-default site-commander-incursus-button"></span></a>
 	<div class="clearfix"></div>
 </div>
 
@@ -7,34 +6,46 @@
 <div class="container">
 	<div class="row">
 
-		<ul class="navigation" id="site-commander-tabs">
+		<ul class="navigation rounded-container" id="site-commander-tabs">
 
 			<li class="active">
-				<a data-toggle="tab" href="#site-actions" title="Site Actions">
+				<a data-toggle="tab" href="#site-actions" data-feature="tooltip" data-placement="top" title="Site Actions">
 					<span class="fa fa-home"></span>
 				</a>
 			</li>
 
 			<li class="">
-				<a href="#server-performance" data-toggle="tab" title="Server Performance">
+				<a href="#server-performance" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Server Performance">
 					<i class="fa fa-server"></i>
 				</a>
 			</li>
 
 			<li class="">
-				<a href="#caching-performance" data-toggle="tab" title="Caching Performance">
+				<a href="#caching-performance" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Caching Performance">
 					<i class="fa fa-database"></i>
 				</a>
 			</li>
 
 			<li class="">
-				<a href="#" title="Reload" id="reloadLink">
+				<a href="#" title="Reload" id="reloadLink" data-feature="tooltip" data-placement="top" >
 					<i class="fa fa-refresh"></i>
 				</a>
 			</li>
 
-			<li class="">
-				<a href="/admin/config/sitecommander" target="_blank" title="Configuration">
+			<li class="pull-right">
+				<a href="http://incurs.us" target="_blank" title="Incurs.us" data-feature="tooltip" data-placement="top" >
+					<i class="fa fa-external-link-square"></i>
+				</a>
+			</li>
+
+			<li class="pull-right">
+				<a href="https://github.com/IncursusInc/sitecommander/issues" target="_blank" title="Support via GitHub" data-feature="tooltip" data-placement="top" >
+					<i class="fa fa-github-alt"></i>
+				</a>
+			</li>
+
+			<li class="pull-right">
+				<a href="/admin/config/sitecommander" target="_blank" title="Configure SiteCommander" data-feature="tooltip" data-placement="top" >
 					<i class="fa fa-gears"></i>
 				</a>
 			</li>
@@ -60,5 +71,5 @@
 
 <div class="site-commander-footer">
 	<hr class="site-commander-hr" />
-	<p>Powered by SiteCommander, {{ sitecommanderVersion }}, &copy; Copyright 2016, <a href="http://incurs.us">Incursus, Inc.</a></p>
+	<p>Powered by SiteCommander, &copy; Copyright 2016, <a href="http://incurs.us">Incursus, Inc.</a></p>
 </div>

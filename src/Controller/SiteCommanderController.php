@@ -143,12 +143,14 @@ class SiteCommanderController extends ControllerBase {
 	{
 		$redisHostName = \Drupal::config('sitecommander.settings')->get('redisHostName');
 		$redisPort = \Drupal::config('sitecommander.settings')->get('redisPort');
+		$redisDatabaseIndex = \Drupal::config('sitecommander.settings')->get('redisDatabaseIndex');
 
 		if (class_exists('Redis') && $redisHostName && $redisPort) {
 
 			$redis = new \Redis();
 
 			$redis->connect($redisHostName, $redisPort);
+			$redis->select($redisDatabaseIndex);
 
 			// Do not allow PhpRedis serialize itself data, we are going to do it
 			// ourself. This will ensure less memory footprint on Redis size when
@@ -262,12 +264,14 @@ class SiteCommanderController extends ControllerBase {
 	{
 		$redisHostName = \Drupal::config('sitecommander.settings')->get('redisHostName');
 		$redisPort = \Drupal::config('sitecommander.settings')->get('redisPort');
+		$redisDatabaseIndex = \Drupal::config('sitecommander.settings')->get('redisDatabaseIndex');
 
 		if (class_exists('Redis') && $redisHostName && $redisPort) {
 
 			$redis = new \Redis();
 
 			$redis->connect($redisHostName, $redisPort);
+			$redis->select($redisDatabaseIndex);
 
 			// Do not allow PhpRedis serialize itself data, we are going to do it
 			// ourself. This will ensure less memory footprint on Redis size when
@@ -294,7 +298,7 @@ class SiteCommanderController extends ControllerBase {
 			$redisStats['peakMemoryUsedByRedis'] = round($redisInfo['used_memory_peak'] / pow(1024, 2), 4);
 
 			// Number of cached objects
-			list($keys, $rest) = preg_split('/,/', $redisInfo['db0']);
+			list($keys, $rest) = preg_split('/,/', $redisInfo['db' . $redisDatabaseIndex]);
 			list($keys, $numObjects) = preg_split('/=/', $keys);
 
 			// Format I/O stats
@@ -369,12 +373,14 @@ class SiteCommanderController extends ControllerBase {
 	{
 		$redisHostName = \Drupal::config('sitecommander.settings')->get('redisHostName');
 		$redisPort = \Drupal::config('sitecommander.settings')->get('redisPort');
+		$redisDatabaseIndex = \Drupal::config('sitecommander.settings')->get('redisDatabaseIndex');
 
 		if (class_exists('Redis') && $redisHostName && $redisPort) {
 
 			$redis = new \Redis();
 
 			$redis->connect($redisHostName, $redisPort);
+			$redis->select($redisDatabaseIndex);
 
 			// Do not allow PhpRedis serialize itself data, we are going to do it
 			// ourself. This will ensure less memory footprint on Redis size when

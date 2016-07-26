@@ -3,6 +3,11 @@
 	height: 50px;
 }
 
+.rounded-container {
+	border-radius: 6px;
+	overflow: hidden;
+}
+
 .gauges-container {
 	background-color: #f5f5f5;
 	border-radius: 10px;
@@ -132,7 +137,7 @@
 }
 
 .site-commander-incursus-button {
-	margin: 10px 25px 0px 0px;
+	margin: 10px;
 	background-image: url('../images/incursus-button-background.png') !important;
 	background-position: -1px 2px !important;
 	height: 32px;
@@ -143,16 +148,10 @@
 	background-position: -2px 1px !important;
 }
 
-
-
-
-
-
-
-
 .navigation {float: left; width: 1140px; margin: 5px 0px; padding: 0; list-style: none; background-color: #efefef;}
 .navigation li {float: left; margin: 0; padding: 0;}
 .navigation li a {padding: 20px 30px; float: left;}
+.navigation li a:hover { background-color:#ccc; color: white}
 .navigation li.active a {background: #428BCA; color: #fff;}
 .tab-content > div {float: left; width: 100%;}
 .tab-content h4 {width: 100%; margin: 10px 0; color: #333;}
