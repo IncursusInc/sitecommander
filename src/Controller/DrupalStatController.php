@@ -283,7 +283,7 @@ class DrupalStatController extends ControllerBase {
 			$redisStats['keyspaceMisses'] = $redisInfo['keyspace_misses'];
 			$redisStats['keyspaceTotal'] = $redisInfo['keyspace_hits'] + $redisInfo['keyspace_misses'];
 			$redisStats['keyspaceMissPct'] = round( $redisInfo['keyspace_misses'] / $redisStats['keyspaceTotal'], 2) * 100 . '%';
-			$redisStats['keyspaceHitPct'] = round( $redisInfo['keyspace_hits'] / $redisStats['keyspaceTotal'], 2) * 100 . '%';
+			$redisStats['keyspaceHitPct'] = round( $redisInfo['keyspace_hits'] / $redisStats['keyspaceTotal'], 2) * 100;
 
 			// Memory Usage Gauge
 			$redisStats['memoryAllocatedByRedis'] = round($redisConfig['maxmemory'] / pow(1024, 2), 4);
@@ -338,6 +338,7 @@ class DrupalStatController extends ControllerBase {
 
 			$stats['memory_usage']['usedMemory'] = round($stats['memory_usage']['used_memory'] / pow(1024, 2), 4);
 			$stats['memory_usage']['freeMemory'] = round($stats['memory_usage']['free_memory'] / pow(1024, 2), 4);
+			$stats['memory_usage']['allocatedMemory'] = round($stats['memory_usage']['usedMemory'] + $stats['memory_usage']['freeMemory'], 0);
 
 			return $stats;
 		}
