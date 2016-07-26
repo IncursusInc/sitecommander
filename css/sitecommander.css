@@ -133,8 +133,15 @@
 
 .site-commander-incursus-button {
 	margin: 10px 25px 0px 0px;
+	background-image: url('../images/incursus-button-background.png') !important;
+	background-position: -1px 2px !important;
+	height: 32px;
+	width: 40px;
 }
 
+.site-commander-incursus-button:hover {
+	background-position: -2px 1px !important;
+}
 
 
 
