@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains drupalstat.module
+ * Contains sitecommander.module
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -11,15 +11,15 @@ use Drupal\Core\Routing\RouteMatchInterface;
  * Theme hook
  */
 
-function drupalstat_theme($existing, $type, $theme, $path) {
+function sitecommander_theme($existing, $type, $theme, $path) {
 
 	$variables = array(
-		'drupalstat' => array(
+		'sitecommander' => array(
 			'variables' => array(
 				'drupalInfo' => null
 			),
-			'title' => 'Drupal Status',
-			'template' => 'block--drupalstat',
+			'title' => 'SiteCommander',
+			'template' => 'block--sitecommander',
 		),
 	);
 
@@ -28,34 +28,24 @@ function drupalstat_theme($existing, $type, $theme, $path) {
 }
 
 /**
- * Called after cache has been cleared so we can store the timestamp for reporting purposes in DrupalStat
+ * Called after cache has been cleared so we can store the timestamp for reporting purposes in SiteCommander
  */
 
-function drupalstat_rebuild() {
+function sitecommander_rebuild() {
 	// Store the current timestamp in a state variable
-	\Drupal::state()->set('drupalstat.timestamp_cache_last_rebuild', time());
-	\Drupal::state()->set('drupalstat.timestamp_cssjs_last_rebuild', time());
-}
-
-/**
- * Implements hook_install().
- */
-function drupalstat_install() {
-  $t = get_t();
-  drupal_set_message($t("Congrats! DrupalStat settings are available under !link", 
-    array( '!link' => l(t('admin/config/drupalstat'),  'admin/config/drupalstat'))
-  ));
+	\Drupal::state()->set('sitecommander.timestamp_cache_last_rebuild', time());
+	\Drupal::state()->set('sitecommander.timestamp_cssjs_last_rebuild', time());
 }
 
 /**
  * Implements hook_menu().
  */
-function drupalstat_menu() 
+function sitecommander_menu() 
 {
-  $items['admin/config/system/drupalstat'] = array(
-    'title' => 'DrupalStat Configuration',
+  $items['admin/config/system/sitecommander'] = array(
+    'title' => 'SiteCommander Configuration',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('drupalstat_form'),
+    'page arguments' => array('sitecommander_form'),
     'access arguments' => array('administer users'),
     'type' => MENU_NORMAL_ITEM,
   );
@@ -66,15 +56,18 @@ function drupalstat_menu()
 /**
  * Admin form to configure
  */
-function drupalstat_form($form, &$form_state) 
+/*
+function sitecommander_form($form, &$form_state) 
 {
-  $form['drupalstat_configuration'] = array(
+  $form['sitecommander_configuration'] = array(
     '#type' => 'text',
     '#title' => t('CPU Load Average AJAX Refresh Rate (in seconds)'),
     '#required' => TRUE,
-  	'#default_value' => variable_get('drupalstat_configuration', '60'),
+  	'#default_value' => variable_get('sitecommander_configuration', '60'),
   );
  
   return system_settings_form($form);
+
 }
+*/
 
