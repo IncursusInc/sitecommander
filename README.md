@@ -9,7 +9,8 @@ DrupalStat features include:
 * Implemented as a Drupal block, so you can put it on the same page as our Redistat block module, or other blocks to make your own dashboard
 * Breakdown of published nodes by type, with shortcuts to create new nodes, or browse nodes by type
 * Quickly see how many modules you have installed and a shortcut to install new ones
-* Quickly see how many authenticated users and visitors are currently online
+* Quickly see how many authenticated users are currently online
+* Quickly see how many visitors (non authenticated) are currently online (if using Redis as a caching backend)
 * Ability to purge sessions
 * Quickly see today's top site searches
 * See when cron last ran and a shortcut to manually run it
