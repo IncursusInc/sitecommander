@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\drupalstat\Ajax;
+namespace Drupal\sitecommander\Ajax;
 
 use Drupal\Core\Ajax\CommandInterface;
 
@@ -8,7 +8,7 @@ class ReadMessageCommand implements CommandInterface {
 
   protected $responseData;
 
-  // Constructs a DrupalStatAjaxCommand object.
+  // Constructs a SiteCommanderAjaxCommand object.
   public function __construct($responseData) {
     $this->responseData = $responseData;
   }

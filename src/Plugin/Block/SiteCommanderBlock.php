@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\drupalstat\Plugin\Block;
+namespace Drupal\sitecommander\Plugin\Block;
 
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Url;
@@ -19,17 +19,17 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\drupalstat\DrupalStatUtils;
+use Drupal\sitecommander\SiteCommanderUtils;
 
 /**
- * Provides a DrupalStat Block
+ * Provides a SiteCommander Block
  *
  * @Block(
- *   id = "drupalstat_block",
- *   admin_label = @Translation("DrupalStat Block"),
+ *   id = "sitecommander_block",
+ *   admin_label = @Translation("SiteCommander Block"),
  * )
  */
-class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterface {
+class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * {@inheritdoc}
@@ -171,10 +171,10 @@ class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterfa
 
 		// Cron info
 		$drupalInfo['cron']['cron_key'] = $this->state->get('system.cron_key');
-		$drupalInfo['cron']['cron_last'] = DrupalStatUtils::elapsedTime($this->state->get('system.cron_last'));
+		$drupalInfo['cron']['cron_last'] = SiteCommanderUtils::elapsedTime($this->state->get('system.cron_last'));
 
 		// Last time Drupal/Modules were checked for updates
-		$drupalInfo['update_last_check'] = DrupalStatUtils::elapsedTime($this->state->get('update.last_check'));
+		$drupalInfo['update_last_check'] = SiteCommanderUtils::elapsedTime($this->state->get('update.last_check'));
 		// The line below will send the admin user back to the status page, which may not be desirable
 		//$destination = \Drupal::destination('/admin/reports/updates')->getAsArray();
 		$destination = array('destination' => '/admin/reports/updates');
@@ -184,11 +184,11 @@ class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterfa
 		$drupalInfo['maintenance_mode'] = $this->state->get('system.maintenance_mode') ? 'On' : 'Off';
 
 		// Get timestamp of last cache rebuild
-		$timestamp = $this->state->get('drupalstat.timestamp_cache_last_rebuild');
+		$timestamp = $this->state->get('sitecommander.timestamp_cache_last_rebuild');
 		if(!$timestamp)
 			 $drupalInfo['timestamp_cache_last_rebuild'] = 'Unknown';
 		else
-			 $drupalInfo['timestamp_cache_last_rebuild'] = DrupalStatUtils::elapsedTime($timestamp);
+			 $drupalInfo['timestamp_cache_last_rebuild'] = SiteCommanderUtils::elapsedTime($timestamp);
 
 		// Get # of authenticated users online right now (we look at the number of sessions that were last updated within the past 15 minutes)
 		$query = $this->connection->select('sessions','s');
@@ -199,12 +199,13 @@ class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterfa
 		$drupalInfo['numAuthUsersOnline'] = $query->execute()->fetchField();
 
 		// Get # of visitors (uid==0) online right now (requires a module that provides anonymous visitors with a session, otherwise, 0)
-		$query = $this->connection->select('sessions','s');
-		$query->addExpression('COUNT( uid )');
-		$query->condition('timestamp', strtotime('15 minutes ago'), '>');
-		$query->condition('uid', 0, '=');
+		//$query = $this->connection->select('sessions','s');
+		//$query->addExpression('COUNT( uid )');
+		//$query->condition('timestamp', strtotime('15 minutes ago'), '>');
+		//$query->condition('uid', 0, '=');
+		//$drupalInfo['numVisitorsOnline'] = $query->execute()->fetchField();
 
-		$drupalInfo['numVisitorsOnline'] = $query->execute()->fetchField();
+		$drupalInfo['numVisitorsOnline'] = \Drupal\sitecommander\Controller\SiteCommanderController::getAnonymousUsers();
 
 		// Get total # of session entries in the database
 		$query = $this->connection->select('sessions','s');
@@ -250,19 +251,19 @@ class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterfa
 			$drupalInfo['topSearches'][] = array('searchPhrase' => $unSerializedData['%keys'], 'count' => $dblog->count);
 		}
 
-		$drupalInfo['loadAverage'] = \Drupal\drupalstat\Controller\DrupalStatController::getCpuLoadAverage();
-		$drupalInfo['redisStats'] = \Drupal\drupalstat\Controller\DrupalStatController::getRedisStats();
-		$drupalInfo['opCacheStats'] = \Drupal\drupalstat\Controller\DrupalStatController::getOpCacheStats();
-		$drupalInfo['apcStats'] = \Drupal\drupalstat\Controller\DrupalStatController::getApcStats();
+		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage();
+		$drupalInfo['redisStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getRedisStats();
+		$drupalInfo['opCacheStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getOpCacheStats();
+		$drupalInfo['apcStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getApcStats();
 
-		// Load up DrupalStat config settings so we can pass them to the .js
-		$drupalInfo['settings']['admin'] = $this->configFactory->get('drupalstat.settings')->get();
+		// Load up SiteCommander config settings so we can pass them to the .js
+		$drupalInfo['settings']['admin'] = $this->configFactory->get('sitecommander.settings')->get();
 
     return array(
-			'#theme' => 'drupalstat',
+			'#theme' => 'sitecommander',
 			'#attached' => array(
 				'library' =>  array(
-					'drupalstat/drupalstat'
+					'sitecommander/sitecommander'
 				),
 				'drupalSettings' => $drupalInfo
 			),

@@ -1,0 +1,72 @@
+sitecommander_configure:
+  path: 'admin/config/sitecommander'
+  defaults:
+    _form: '\Drupal\sitecommander\Form\ConfigureForm'
+    _title: 'SiteCommander Configuration Page'
+  requirements:
+    _permission: 'administer site configuration'
+
+sitecommander.ajaxToggleMaintenanceMode:
+    path: '/sitecommander/toggle-maintenance-mode'
+    defaults:
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::toggleMaintenanceMode'
+        _title: 'Toggle Maintenance Mode'
+    requirements:
+        _permission: 'access administration pages'
+
+sitecommander.ajaxRebuildCache:
+    path: '/sitecommander/rebuild-drupal-cache'
+    defaults:
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::rebuildDrupalCache'
+        _title: 'Rebuild Drupal Cache'
+    requirements:
+        _permission: 'access administration pages'
+
+sitecommander.ajaxCleanupOldFiles:
+    path: '/sitecommander/cleanup-old-files'
+    defaults:
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::cleanupOldFiles'
+        _title: 'Cleanup Old Files'
+    requirements:
+        _permission: 'access administration pages'
+
+sitecommander.purgeSessions:
+    path: '/sitecommander/purge-sessions'
+    defaults:
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::purgeSessions'
+        _title: 'Purge Sessions'
+    requirements:
+        _permission: 'access administration pages'
+
+sitecommander.ajaxUpdateGauges:
+    path: '/sitecommander/update-gauges'
+    defaults:
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::updateGauges'
+        _title: 'Update Gauges'
+    requirements:
+        _permission: 'access administration pages'
+
+sitecommander.clearApcOpCache:
+    path: '/sitecommander/clear-apc-opcache'
+    defaults:
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::clearApcOpCache'
+        _title: 'Clear APC Op Cache'
+    requirements:
+        _permission: 'access administration pages'
+
+sitecommander.clearPhpOpCache:
+    path: '/sitecommander/clear-php-opcache'
+    defaults:
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::clearPhpOpCache'
+        _title: 'Clear PHP OpCache'
+    requirements:
+        _permission: 'access administration pages'
+
+sitecommander.clearRedisCache:
+    path: '/sitecommander/clear-redis-cache'
+    defaults:
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::clearRedisCache'
+        _title: 'Clear Redis Cache'
+    requirements:
+        _permission: 'access administration pages'
+

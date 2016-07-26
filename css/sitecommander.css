@@ -123,3 +123,7 @@
 .redis-text-stats span {
 	color: ForestGreen;
 }
+
+.drupalstat-config-button {
+	margin-right: 25px;
+}

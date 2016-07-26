@@ -50,8 +50,8 @@ jQuery(document).ready(function($){
 					value: drupalSettings.apcStats.used,
 					min: 0,
 					max: drupalSettings.apcStats.totalMem,
-					title: "APC Memory Usage",
-					label: "Memory in MB",
+					title: "APC Memory Usage (MB)",
+					label: "Cache Size >>",
 				});
 			}
 
@@ -59,12 +59,12 @@ jQuery(document).ready(function($){
 			{
 				dsg6 = new JustGage({
 					id: "redisKeyspaceHits",
-					value: drupalSettings.redisStats.keyspaceHits,
+					value: drupalSettings.redisStats.keyspaceHitPct,
 					min: 0,
-					max: drupalSettings.redisStats.keyspaceTotal,
+					max: 100,
 					title: "Keyspace Hits",
 					levelColors: ["#ff0000", "#f9c802", "#a9d70b"],
-					label: drupalSettings.redisStats.keyspaceHitPct
+					label: 'Percentage'
 				});
 	
 				dsg7 = new JustGage({
@@ -107,9 +107,9 @@ jQuery(document).ready(function($){
 					id: "opCacheMemoryUsage",
 					value: drupalSettings.opCacheStats.memory_usage.usedMemory,
 					min: 0,
-					max: drupalSettings.opCacheStats.memory_usage.usedMemory + drupalSettings.opCacheStats.memory_usage.freeMemory,
-					title: "Memory Usage",
-					label: 'MBs'
+					max: drupalSettings.opCacheStats.memory_usage.allocatedMemory,
+					title: "Memory Usage (MB)",
+					label: 'Cache Size >>'
 				});
 	
 			}
@@ -132,7 +132,8 @@ jQuery(document).ready(function($){
 			}
 			if(response[0].responseData.payload.redisStats)
 			{
-				dsg6.refresh(response[0].responseData.payload.redisStats.keyspaceHits, response[0].responseData.payload.redisStats.keyspaceTotal);
+				//dsg6.refresh(response[0].responseData.payload.redisStats.keyspaceHits, response[0].responseData.payload.redisStats.keyspaceTotal);
+				dsg6.refresh(response[0].responseData.payload.redisStats.keyspaceHitPct);
 				dsg7.refresh(response[0].responseData.payload.redisStats.memoryUsedByRedis, response[0].responseData.payload.redisStats.memoryAllocatedByRedis);
 				dsg8.refresh(response[0].responseData.payload.redisStats.peakMemoryUsedByRedis, response[0].responseData.payload.redisStats.memoryAllocatedByRedis);
 			}
@@ -142,6 +143,6 @@ jQuery(document).ready(function($){
 				dsg10.refresh(response[0].responseData.payload.opCacheStats.memory_usage.usedMemory);
 			}
 		});
-	}, drupalSettings.settings.admin.refreshRateLoadAverage * 1000);
+	}, drupalSettings.settings.admin.refreshRate * 1000);
 
 });

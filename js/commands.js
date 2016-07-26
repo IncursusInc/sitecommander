@@ -6,7 +6,7 @@
 
 	Drupal.AjaxCommands.prototype.readMessage = function(ajax, response, status){
 
-		if(response.responseData.drupalStatCommand == 'toggleMaintenanceMode')
+		if(response.responseData.siteCommanderCommand == 'toggleMaintenanceMode')
 		{
 			$('#maintenanceModeIcon').toggleClass('fa-toggle-on fa-toggle-off');
 			$('#maintenanceModeBadge').toggleClass('badge-active badge-green');
@@ -17,31 +17,36 @@
 				$('#maintenanceModeBadge').html('Off');
 		}
 
-		if(response.responseData.drupalStatCommand == 'rebuildDrupalCache')
+		if(response.responseData.siteCommanderCommand == 'rebuildDrupalCache')
 		{
 			$('#last_cache_rebuild').html(response.responseData.last_cache_rebuild);
 		}
 
-		if(response.responseData.drupalStatCommand == 'cleanupOldFiles')
+		if(response.responseData.siteCommanderCommand == 'cleanupOldFiles')
 		{
 			$('#old-files-storage-size').html(response.responseData.oldFilesStorageSize);
 			$('#last_cache_rebuild').html(response.responseData.last_cache_rebuild);
 		}
 
-		if(response.responseData.drupalStatCommand == 'purgeSessions')
+		if(response.responseData.siteCommanderCommand == 'purgeSessions')
 		{
 			$('#num-session-entries').html(response.responseData.newNumSessionEntries);
 		}
 
-		if(response.responseData.drupalStatCommand == 'clearApcOpCache')
+		if(response.responseData.siteCommanderCommand == 'clearApcOpCache')
 		{
 			$('#num-apc-opcache-entries').html(response.responseData.newNumApcOpCacheEntries);
 		}
 
-		if(response.responseData.drupalStatCommand == 'clearPhpOpCache')
+		if(response.responseData.siteCommanderCommand == 'clearPhpOpCache')
 		{
 			$('#num-php-opcache-scripts').html('0');
 			$('#num-php-opcache-keys').html('0');
+		}
+
+		if(response.responseData.siteCommanderCommand == 'clearRedisCache')
+		{
+			$('#num-redis-entries').html('0');
 		}
 
 	}

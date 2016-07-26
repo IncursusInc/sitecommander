@@ -1,0 +1,4 @@
+name: SiteCommander
+type: module
+description: Interactive dashboard for managing your Drupal site.
+core: 8.x

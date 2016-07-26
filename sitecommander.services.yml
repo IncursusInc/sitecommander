@@ -1,0 +1,13 @@
+services:
+  sitecommander.sitecommander_block:
+    class: Drupal\sitecommander\Plugin\Block\SiteCommanderBlock
+    arguments: ['@database', '@module_handler', '@entity.query', '@file_system', '@config.factory', '@state']
+  sitecommander.sitecommander_controller:
+    class: Drupal\sitecommander\Controller\SiteCommanderController
+    arguments: ['@database', '@state', '@file_system' ]
+
+  sitecommander.listener:
+    class: Drupal\sitecommander\SiteCommanderListener
+    arguments: []
+    tags:
+        - { name: event_subscriber }
