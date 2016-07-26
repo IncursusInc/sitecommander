@@ -13,6 +13,8 @@
 .gauge {
 	display: inline-block;
 	margin: 10px;
+	height: 200px;
+	width: 200px;
 }
 
 .site-commander-text-stats {
@@ -129,6 +131,21 @@
 	color: ForestGreen;
 }
 
-.site-commander-config-button {
+.site-commander-incursus-button {
 	margin: 10px 25px 0px 0px;
 }
+
+
+
+
+
+
+
+
+
+.navigation {float: left; width: 1140px; margin: 5px 0px; padding: 0; list-style: none; background-color: #efefef;}
+.navigation li {float: left; margin: 0; padding: 0;}
+.navigation li a {padding: 20px 30px; float: left;}
+.navigation li.active a {background: #428BCA; color: #fff;}
+.tab-content > div {float: left; width: 100%;}
+.tab-content h4 {width: 100%; margin: 10px 0; color: #333;}

@@ -1,0 +1,58 @@
+{% if drupalInfo.apcStats %}
+
+<h2>APC Opcode Cache Status</h2>
+<div class="gauges-container">
+	<div id="apcOpcacheStatus" class="gauge 200x160px"></div>
+	<div id="apcMemoryUsage" class="gauge 200x160px"></div>
+	<div style="clear:both"></div>
+</div>
+
+{% endif %}
+
+{% if drupalInfo.redisStats %}
+<h2>PHP OpCache Status</h2>
+
+<div class="gauges-container">
+	<div id="opCacheHits" class="gauge 200x160px"></div>
+	<div id="opCacheMemoryUsage" class="gauge 200x160px"></div>
+	<div style="clear:both"></div>
+</div>
+
+{% endif %}
+
+{% if drupalInfo.redisStats %}
+<h2>Redis Caching Status</h2>
+
+<div class="gauges-container">
+	<div id="redisKeyspaceHits" class="gauge 200x160px"></div>
+	<div id="redisMemoryUsage" class="gauge 200x160px"></div>
+	<div id="redisPeakMemoryUsage" class="gauge 200x160px"></div>
+	<div style="clear:both"></div>
+</div>
+
+<div class="redis-text-stats">
+	<div class="redis-text-stats-column">
+		<h3><label>Redis Version:</label> <span>v{{ drupalInfo.redisStats.redis_version }}</span></h3>
+		<h3><label>Uptime:</label> <span>{{ drupalInfo.redisStats.uptime_in_days }} day(s)</span></h3>
+		<h3><label>Connected Clients:</label> <span>{{ drupalInfo.redisStats.connected_clients }}</span></h3>
+		<h3><label>Connected Slaves:</label> <span>{{ drupalInfo.redisStats.connected_slaves }}</span></h3>
+	</div>
+
+	<div class="redis-text-stats-column">
+		<h3><label>Total Connections Received:</label> <span>{{ drupalInfo.redisStats.total_connections_received }}</span></h3>
+		<h3><label>Total Commands Processed:</label> <span>{{ drupalInfo.redisStats.total_commands_processed }}</span></h3>
+		<h3><label>Total Net Input (Bytes):</label> <span>{{ drupalInfo.redisStats.total_net_input_bytes }}</span></h3>
+		<h3><label>Total Net Output (Bytes):</label> <span>{{ drupalInfo.redisStats.total_net_output_bytes }}</span></h3>
+	</div>
+
+	<div class="redis-text-stats-column">
+		<h3><label>Cached Objects:</label> <span>{{ drupalInfo.redisStats.numObjectsCached }}</span></h3>
+		<h3><label>Expired Keys:</label> <span>{{ drupalInfo.redisStats.expired_keys }}</span></h3>
+		<h3><label>Evicted Keys:</label> <span>{{ drupalInfo.redisStats.evicted_keys }}</span></h3>
+		<h3><label>Mem Fragmentation Ratio:</label> <span>{{ drupalInfo.redisStats.mem_fragmentation_ratio }}</span></h3>
+	</div>
+
+</div>
+
+{% endif %}
+

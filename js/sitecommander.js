@@ -1,10 +1,20 @@
 jQuery(document).ready(function($){
 
+	$('#site-commander-tabs a').click(function (e) {
+		e.preventDefault()
+		$(this).tab('show')
+	})
+
 	var dsg1, dsg2, dsg3, dsg4, dsg5, dsg6, dsg7, dsg8, dsg9, dsg10;
 
 	var timer = setInterval( function() {
 
 		$('#site-commander-loading-message-container').fadeOut("medium", function() {
+
+			$('#reloadLink').click(function (e) {
+				e.preventDefault()
+				location.reload(true);
+			})
 
 			dsg1 = new JustGage({
 				id: "loadAverage1",
