@@ -1,4 +1,4 @@
-name: DrupalStat
+name: SiteCommander
 type: module
-description: Provides a visual overview of your Drupal install
+description: Interactive dashboard for managing your Drupal site.
 core: 8.x

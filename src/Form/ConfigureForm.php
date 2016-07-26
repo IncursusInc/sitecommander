@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\drupalstat\Form\ConfigureForm.
+ * Contains \Drupal\sitecommander\Form\ConfigureForm.
  */
 
-namespace Drupal\drupalstat\Form;
+namespace Drupal\sitecommander\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -17,7 +17,7 @@ class ConfigureForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-		return 'drupalstat_configure_form';
+		return 'sitecommander_configure_form';
   }
 
 /** 
@@ -25,7 +25,7 @@ class ConfigureForm extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'drupalstat.settings',
+      'sitecommander.settings',
     ];
   }
 
@@ -34,7 +34,7 @@ class ConfigureForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-		$config = $this->config('drupalstat.settings');
+		$config = $this->config('sitecommander.settings');
 
 		$form['refreshRate'] = array(
     	'#type' => 'number',
@@ -62,7 +62,7 @@ class ConfigureForm extends ConfigFormBase {
     	'#title' => t('Timeframe for tracking visitors'),
     	'#required' => FALSE,
 			'#default_value' => $config->get('visitorIpAddressTTL') ? $config->get('visitorIpAddressTTL') : 15,
-			'#description' => 'How many minutes should DrupalStat look backwards to track non-authenticated user IP addresses? Enter a number, in minutes. Must use Redis as a caching backend for this to work!'
+			'#description' => 'How many minutes should SiteCommander look backwards to track non-authenticated user IP addresses? Enter a number, in minutes. Must use Redis as a caching backend for this to work!'
 		);
 
 		return parent::buildForm($form, $form_state);
@@ -78,7 +78,7 @@ class ConfigureForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-		$config = \Drupal::service('config.factory')->getEditable('drupalstat.settings');
+		$config = \Drupal::service('config.factory')->getEditable('sitecommander.settings');
 		$config->set('refreshRateLoadAverage', $form_state->getValue('refreshRateLoadAverage'))->save();
 		$config->set('redisHostName', $form_state->getValue('redisHostName'))->save();
 		$config->set('redisPort', $form_state->getValue('redisPort'))->save();

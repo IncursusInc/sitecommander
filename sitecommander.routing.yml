@@ -1,71 +1,71 @@
-drupalstat_configure:
-  path: 'admin/config/drupalstat'
+sitecommander_configure:
+  path: 'admin/config/sitecommander'
   defaults:
-    _form: '\Drupal\drupalstat\Form\ConfigureForm'
-    _title: 'DrupalStat Configuration Page'
+    _form: '\Drupal\sitecommander\Form\ConfigureForm'
+    _title: 'SiteCommander Configuration Page'
   requirements:
     _permission: 'administer site configuration'
 
-drupalstat.ajaxToggleMaintenanceMode:
-    path: '/drupalstat/toggle-maintenance-mode'
+sitecommander.ajaxToggleMaintenanceMode:
+    path: '/sitecommander/toggle-maintenance-mode'
     defaults:
-        _controller: '\Drupal\drupalstat\Controller\DrupalStatController::toggleMaintenanceMode'
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::toggleMaintenanceMode'
         _title: 'Toggle Maintenance Mode'
     requirements:
         _permission: 'access administration pages'
 
-drupalstat.ajaxRebuildCache:
-    path: '/drupalstat/rebuild-drupal-cache'
+sitecommander.ajaxRebuildCache:
+    path: '/sitecommander/rebuild-drupal-cache'
     defaults:
-        _controller: '\Drupal\drupalstat\Controller\DrupalStatController::rebuildDrupalCache'
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::rebuildDrupalCache'
         _title: 'Rebuild Drupal Cache'
     requirements:
         _permission: 'access administration pages'
 
-drupalstat.ajaxCleanupOldFiles:
-    path: '/drupalstat/cleanup-old-files'
+sitecommander.ajaxCleanupOldFiles:
+    path: '/sitecommander/cleanup-old-files'
     defaults:
-        _controller: '\Drupal\drupalstat\Controller\DrupalStatController::cleanupOldFiles'
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::cleanupOldFiles'
         _title: 'Cleanup Old Files'
     requirements:
         _permission: 'access administration pages'
 
-drupalstat.purgeSessions:
-    path: '/drupalstat/purge-sessions'
+sitecommander.purgeSessions:
+    path: '/sitecommander/purge-sessions'
     defaults:
-        _controller: '\Drupal\drupalstat\Controller\DrupalStatController::purgeSessions'
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::purgeSessions'
         _title: 'Purge Sessions'
     requirements:
         _permission: 'access administration pages'
 
-drupalstat.ajaxUpdateGauges:
-    path: '/drupalstat/update-gauges'
+sitecommander.ajaxUpdateGauges:
+    path: '/sitecommander/update-gauges'
     defaults:
-        _controller: '\Drupal\drupalstat\Controller\DrupalStatController::updateGauges'
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::updateGauges'
         _title: 'Update Gauges'
     requirements:
         _permission: 'access administration pages'
 
-drupalstat.clearApcOpCache:
-    path: '/drupalstat/clear-apc-opcache'
+sitecommander.clearApcOpCache:
+    path: '/sitecommander/clear-apc-opcache'
     defaults:
-        _controller: '\Drupal\drupalstat\Controller\DrupalStatController::clearApcOpCache'
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::clearApcOpCache'
         _title: 'Clear APC Op Cache'
     requirements:
         _permission: 'access administration pages'
 
-drupalstat.clearPhpOpCache:
-    path: '/drupalstat/clear-php-opcache'
+sitecommander.clearPhpOpCache:
+    path: '/sitecommander/clear-php-opcache'
     defaults:
-        _controller: '\Drupal\drupalstat\Controller\DrupalStatController::clearPhpOpCache'
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::clearPhpOpCache'
         _title: 'Clear PHP OpCache'
     requirements:
         _permission: 'access administration pages'
 
-drupalstat.clearRedisCache:
-    path: '/drupalstat/clear-redis-cache'
+sitecommander.clearRedisCache:
+    path: '/sitecommander/clear-redis-cache'
     defaults:
-        _controller: '\Drupal\drupalstat\Controller\DrupalStatController::clearRedisCache'
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::clearRedisCache'
         _title: 'Clear Redis Cache'
     requirements:
         _permission: 'access administration pages'

@@ -1,13 +1,13 @@
 services:
-  drupalstat.drupalstat_block:
-    class: Drupal\drupalstat\Plugin\Block\DrupalStatBlock
+  sitecommander.sitecommander_block:
+    class: Drupal\sitecommander\Plugin\Block\SiteCommanderBlock
     arguments: ['@database', '@module_handler', '@entity.query', '@file_system', '@config.factory', '@state']
-  drupalstat.drupalstat_controller:
-    class: Drupal\drupalstat\Controller\DrupalStatController
+  sitecommander.sitecommander_controller:
+    class: Drupal\sitecommander\Controller\SiteCommanderController
     arguments: ['@database', '@state', '@file_system' ]
 
-  dino_roar.dino_listener:
-    class: Drupal\drupalstat\DrupalStatListener
+  sitecommander.listener:
+    class: Drupal\sitecommander\SiteCommanderListener
     arguments: []
     tags:
         - { name: event_subscriber }

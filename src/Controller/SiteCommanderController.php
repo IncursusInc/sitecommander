@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\drupalstat\Controller\DrupalStatController.
+ * Contains \Drupal\sitecommander\Controller\SiteCommanderController.
  */
 
-namespace Drupal\drupalstat\Controller;
+namespace Drupal\sitecommander\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,10 +15,10 @@ use Drupal\Core\State\StateInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\drupalstat\Ajax\ReadMessageCommand;
-use Drupal\drupalstat\DrupalStatUtils;
+use Drupal\sitecommander\Ajax\ReadMessageCommand;
+use Drupal\sitecommander\SiteCommanderUtils;
 
-class DrupalStatController extends ControllerBase {
+class SiteCommanderController extends ControllerBase {
 
 	protected $connection;
 	protected $state;
@@ -64,10 +64,10 @@ class DrupalStatController extends ControllerBase {
     // Create AJAX Response object.
     $response = new AjaxResponse();
 
-    // Call the DrupalStatAjaxCommand javascript function.
+    // Call the SiteCommanderAjaxCommand javascript function.
 		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
-		$responseData->drupalStatCommand = 'toggleMaintenanceMode';
+		$responseData->siteCommanderCommand = 'toggleMaintenanceMode';
 		$responseData->mode = $mode;
     $response->addCommand( new ReadMessageCommand($responseData));
 
@@ -75,7 +75,7 @@ class DrupalStatController extends ControllerBase {
 		return $response;
 	}
 
-	// Flush/rebuild Drupal cache from within DrupalStat
+	// Flush/rebuild Drupal cache from within SiteCommander
   public function rebuildDrupalCache() {
 		
 		// Flush caches
@@ -84,10 +84,10 @@ class DrupalStatController extends ControllerBase {
     // Create AJAX Response object.
     $response = new AjaxResponse();
 
-    // Call the DrupalStatAjaxCommand javascript function.
+    // Call the SiteCommanderAjaxCommand javascript function.
 		$responseData->command = 'readMessage';
-		$responseData->drupalStatCommand = 'rebuildDrupalCache';
-		$responseData->last_cache_rebuild = DrupalStatUtils::elapsedTime($this->state->get('drupalstat.timestamp_cache_last_rebuild'));
+		$responseData->siteCommanderCommand = 'rebuildDrupalCache';
+		$responseData->last_cache_rebuild = SiteCommanderUtils::elapsedTime($this->state->get('sitecommander.timestamp_cache_last_rebuild'));
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.
@@ -127,11 +127,11 @@ class DrupalStatController extends ControllerBase {
     // Create AJAX Response object.
     $response = new AjaxResponse();
 
-    // Call the DrupalStatAjaxCommand javascript function.
+    // Call the SiteCommanderAjaxCommand javascript function.
 		$responseData->command = 'readMessage';
-		$responseData->drupalStatCommand = 'cleanupOldFiles';
+		$responseData->siteCommanderCommand = 'cleanupOldFiles';
 		$responseData->oldFilesStorageSize = $oldFilesStorageSize;
-		$responseData->last_cache_rebuild = DrupalStatUtils::elapsedTime($this->state->get('drupalstat.timestamp_cache_last_rebuild'));
+		$responseData->last_cache_rebuild = SiteCommanderUtils::elapsedTime($this->state->get('sitecommander.timestamp_cache_last_rebuild'));
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.
@@ -141,8 +141,8 @@ class DrupalStatController extends ControllerBase {
 	// Clear Redis cache
 	public function clearRedisCache()
 	{
-		$redisHostName = \Drupal::config('drupalstat.settings')->get('redisHostName');
-		$redisPort = \Drupal::config('drupalstat.settings')->get('redisPort');
+		$redisHostName = \Drupal::config('sitecommander.settings')->get('redisHostName');
+		$redisPort = \Drupal::config('sitecommander.settings')->get('redisPort');
 
 		if (class_exists('Redis') && $redisHostName && $redisPort) {
 
@@ -161,9 +161,9 @@ class DrupalStatController extends ControllerBase {
     // Create AJAX Response object.
     $response = new AjaxResponse();
 
-    // Call the DrupalStatAjaxCommand javascript function.
+    // Call the SiteCommanderAjaxCommand javascript function.
 		$responseData->command = 'readMessage';
-		$responseData->drupalStatCommand = 'clearRedisCache';
+		$responseData->siteCommanderCommand = 'clearRedisCache';
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.
@@ -178,9 +178,9 @@ class DrupalStatController extends ControllerBase {
     // Create AJAX Response object.
     $response = new AjaxResponse();
 
-    // Call the DrupalStatAjaxCommand javascript function.
+    // Call the SiteCommanderAjaxCommand javascript function.
 		$responseData->command = 'readMessage';
-		$responseData->drupalStatCommand = 'clearPhpOpCache';
+		$responseData->siteCommanderCommand = 'clearPhpOpCache';
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.
@@ -198,9 +198,9 @@ class DrupalStatController extends ControllerBase {
     // Create AJAX Response object.
     $response = new AjaxResponse();
 
-    // Call the DrupalStatAjaxCommand javascript function.
+    // Call the SiteCommanderAjaxCommand javascript function.
 		$responseData->command = 'readMessage';
-		$responseData->drupalStatCommand = 'clearApcOpCache';
+		$responseData->siteCommanderCommand = 'clearApcOpCache';
 		$responseData->newNumApcOpCacheEntries = $numEntries;
     $response->addCommand( new ReadMessageCommand($responseData));
 
@@ -227,9 +227,9 @@ class DrupalStatController extends ControllerBase {
     // Create AJAX Response object.
     $response = new AjaxResponse();
 
-    // Call the DrupalStatAjaxCommand javascript function.
+    // Call the SiteCommanderAjaxCommand javascript function.
 		$responseData->command = 'readMessage';
-		$responseData->drupalStatCommand = 'purgeSessions';
+		$responseData->siteCommanderCommand = 'purgeSessions';
 		$responseData->newNumSessionEntries = $newNumSessionEntries;
     $response->addCommand( new ReadMessageCommand($responseData));
 
@@ -239,17 +239,17 @@ class DrupalStatController extends ControllerBase {
 
 	public function updateGauges()
 	{
-		$drupalInfo['loadAverage'] = \Drupal\drupalstat\Controller\DrupalStatController::getCpuLoadAverage();
-		$drupalInfo['redisStats'] = \Drupal\drupalstat\Controller\DrupalStatController::getRedisStats();
-		$drupalInfo['opCacheStats'] = \Drupal\drupalstat\Controller\DrupalStatController::getOpCacheStats();
-		$drupalInfo['apcStats'] = \Drupal\drupalstat\Controller\DrupalStatController::getApcStats();
+		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage();
+		$drupalInfo['redisStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getRedisStats();
+		$drupalInfo['opCacheStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getOpCacheStats();
+		$drupalInfo['apcStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getApcStats();
 
     // Create AJAX Response object.
     $response = new AjaxResponse();
 
-    // Call the DrupalStatAjaxCommand javascript function.
+    // Call the SiteCommanderAjaxCommand javascript function.
 		$responseData->command = 'readMessage';
-		$responseData->drupalStatCommand = 'updateGauges';
+		$responseData->siteCommanderCommand = 'updateGauges';
 		$responseData->payload = $drupalInfo;
     $response->addCommand( new ReadMessageCommand($responseData));
 
@@ -260,8 +260,8 @@ class DrupalStatController extends ControllerBase {
 	// Get Redis stats if they are using it as a caching backend
 	public static function getRedisStats()
 	{
-		$redisHostName = \Drupal::config('drupalstat.settings')->get('redisHostName');
-		$redisPort = \Drupal::config('drupalstat.settings')->get('redisPort');
+		$redisHostName = \Drupal::config('sitecommander.settings')->get('redisHostName');
+		$redisPort = \Drupal::config('sitecommander.settings')->get('redisPort');
 
 		if (class_exists('Redis') && $redisHostName && $redisPort) {
 
@@ -350,7 +350,7 @@ class DrupalStatController extends ControllerBase {
 		if(preg_match('/.*nux.*/', php_uname()))
 		{
 			// Get # of CPU cores
-			$numCPUs = DrupalStatUtils::getNumCPUs();
+			$numCPUs = SiteCommanderUtils::getNumCPUs();
 
 			ob_start();
 			$tmp = preg_split('/\s+/', system('cat /proc/loadavg'));
@@ -367,8 +367,8 @@ class DrupalStatController extends ControllerBase {
 
 	public static function getAnonymousUsers()
 	{
-		$redisHostName = \Drupal::config('drupalstat.settings')->get('redisHostName');
-		$redisPort = \Drupal::config('drupalstat.settings')->get('redisPort');
+		$redisHostName = \Drupal::config('sitecommander.settings')->get('redisHostName');
+		$redisPort = \Drupal::config('sitecommander.settings')->get('redisPort');
 
 		if (class_exists('Redis') && $redisHostName && $redisPort) {
 
@@ -381,7 +381,7 @@ class DrupalStatController extends ControllerBase {
 			// we will attempt to store small values.
 			$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
 
-			$anonUserKeys = $redis->keys('drupalStat_anon_user_*');
+			$anonUserKeys = $redis->keys('siteCommander_anon_user_*');
 			return count($anonUserKeys);
 		}
 	}

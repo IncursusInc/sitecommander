@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\drupalstat;
+namespace Drupal\sitecommander;
 
-class DrupalStatUtils {
+class SiteCommanderUtils {
 
   /**
    * {@inheritdoc}
