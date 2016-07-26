@@ -199,12 +199,13 @@ class DrupalStatBlock extends BlockBase implements ContainerFactoryPluginInterfa
 		$drupalInfo['numAuthUsersOnline'] = $query->execute()->fetchField();
 
 		// Get # of visitors (uid==0) online right now (requires a module that provides anonymous visitors with a session, otherwise, 0)
-		$query = $this->connection->select('sessions','s');
-		$query->addExpression('COUNT( uid )');
-		$query->condition('timestamp', strtotime('15 minutes ago'), '>');
-		$query->condition('uid', 0, '=');
+		//$query = $this->connection->select('sessions','s');
+		//$query->addExpression('COUNT( uid )');
+		//$query->condition('timestamp', strtotime('15 minutes ago'), '>');
+		//$query->condition('uid', 0, '=');
+		//$drupalInfo['numVisitorsOnline'] = $query->execute()->fetchField();
 
-		$drupalInfo['numVisitorsOnline'] = $query->execute()->fetchField();
+		$drupalInfo['numVisitorsOnline'] = \Drupal\drupalstat\Controller\DrupalStatController::getAnonymousUsers();
 
 		// Get total # of session entries in the database
 		$query = $this->connection->select('sessions','s');

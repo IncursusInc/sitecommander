@@ -364,4 +364,25 @@ class DrupalStatController extends ControllerBase {
 
 		return $loadAverage;
 	}
+
+	public static function getAnonymousUsers()
+	{
+		$redisHostName = \Drupal::config('drupalstat.settings')->get('redisHostName');
+		$redisPort = \Drupal::config('drupalstat.settings')->get('redisPort');
+
+		if (class_exists('Redis') && $redisHostName && $redisPort) {
+
+			$redis = new \Redis();
+
+			$redis->connect($redisHostName, $redisPort);
+
+			// Do not allow PhpRedis serialize itself data, we are going to do it
+			// ourself. This will ensure less memory footprint on Redis size when
+			// we will attempt to store small values.
+			$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
+
+			$anonUserKeys = $redis->keys('drupalStat_anon_user_*');
+			return count($anonUserKeys);
+		}
+	}
 }

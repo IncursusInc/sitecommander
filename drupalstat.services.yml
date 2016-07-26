@@ -5,3 +5,9 @@ services:
   drupalstat.drupalstat_controller:
     class: Drupal\drupalstat\Controller\DrupalStatController
     arguments: ['@database', '@state', '@file_system' ]
+
+  dino_roar.dino_listener:
+    class: Drupal\drupalstat\DrupalStatListener
+    arguments: []
+    tags:
+        - { name: event_subscriber }
