@@ -143,6 +143,6 @@ jQuery(document).ready(function($){
 				dsg10.refresh(response[0].responseData.payload.opCacheStats.memory_usage.usedMemory);
 			}
 		});
-	}, drupalSettings.settings.admin.refreshRateLoadAverage * 1000);
+	}, drupalSettings.settings.admin.refreshRate * 1000);
 
 });

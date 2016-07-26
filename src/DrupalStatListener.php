@@ -21,6 +21,7 @@ class DrupalStatListener implements EventSubscriberInterface
 		{
 			$redisHostName = \Drupal::config('drupalstat.settings')->get('redisHostName');
 			$redisPort = \Drupal::config('drupalstat.settings')->get('redisPort');
+			$visitorIpAddressTTL = \Drupal::config('drupalstat.settings')->get('visitorIpAddressTTL');
 
 			if (class_exists('Redis') && $redisHostName && $redisPort) {
 
@@ -37,7 +38,7 @@ class DrupalStatListener implements EventSubscriberInterface
 
 				// Sets key & value, with 15 minute TTL
 				// TODO - make the 15 minute interval configurable
-				$redis->setEx('drupalStat_anon_user_' . $ipAddress, 900, '1'); 
+				$redis->setEx('drupalStat_anon_user_' . $ipAddress, $visitorIpAddressTTL * 60, '1'); 
 			}
 		}
 	}
