@@ -21,9 +21,14 @@ SiteCommander features include:
 * Shortcut to clear out old aggregated CSS/JS files that just take up space
 * See how much disk space your full Drupal install is taking up
 * Integration with the MailChimp module to see some high level statistics about your lists, subscribers, open rates, and click through rates.
+* Tabbed interface for ease of navigation
 * More to come!
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot.png?itok=SO9ofbdx "SiteCommander Screenshot")
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot1.png?itok=KnZedmz8 "SiteCommander Screenshot")
+
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot2.png?itok=KnZedmz8 "SiteCommander Screenshot")
+
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot3.png?itok=DRqQjk2N "SiteCommander Screenshot")
 
 # Installation Instructions
 
