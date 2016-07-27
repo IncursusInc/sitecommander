@@ -311,11 +311,12 @@ class SiteCommanderController extends ControllerBase {
 			list($keys, $numObjects) = preg_split('/=/', $keys);
 
 			// Format I/O stats
+			$redisInfo['totalNetInputBytesFormatted'] = format_size( $redisInfo['total_net_input_bytes'] );
+			$redisInfo['totalNetOutputBytesFormatted'] = format_size( $redisInfo['total_net_output_bytes'] );
 
 			$redisStats['numObjectsCached'] = $numObjects ? $numObjects : 0;
 
 			$redisInfo = array_merge($redisStats, $redisInfo);
-
 			return $redisInfo;
 		}
 	}
