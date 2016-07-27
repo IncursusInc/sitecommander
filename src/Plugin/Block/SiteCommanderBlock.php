@@ -196,15 +196,7 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$query->condition('timestamp', strtotime('15 minutes ago'), '>');
 		$query->condition('uid', 0, '>');
 
-		$drupalInfo['numAuthUsersOnline'] = $query->execute()->fetchField();
-
-		// Get # of visitors (uid==0) online right now (requires a module that provides anonymous visitors with a session, otherwise, 0)
-		//$query = $this->connection->select('sessions','s');
-		//$query->addExpression('COUNT( uid )');
-		//$query->condition('timestamp', strtotime('15 minutes ago'), '>');
-		//$query->condition('uid', 0, '=');
-		//$drupalInfo['numVisitorsOnline'] = $query->execute()->fetchField();
-
+		$drupalInfo['numAuthUsersOnline'] =  $query->execute()->fetchField();
 		$drupalInfo['numVisitorsOnline'] = \Drupal\sitecommander\Controller\SiteCommanderController::getAnonymousUsers();
 
 		// Get total # of session entries in the database
@@ -251,7 +243,8 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 			$drupalInfo['topSearches'][] = array('searchPhrase' => $unSerializedData['%keys'], 'count' => $dblog->count);
 		}
 
-		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage();
+		$drupalInfo['numCores'] = SiteCommanderUtils::getNumCores();
+		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage( $drupalInfo['numCores']);
 		$drupalInfo['redisStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getRedisStats();
 		$drupalInfo['opCacheStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getOpCacheStats();
 		$drupalInfo['apcStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getApcStats();

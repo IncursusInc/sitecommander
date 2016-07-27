@@ -47,16 +47,16 @@ class SiteCommanderUtils {
    * 
    * @return integer 
    */
-	public static function getNumCPUs()
+	public static function getNumCores()
 	{
-		$numCpus = 1;
+		$numCores = 1;
 
 		// *NIX systems, especially Linux
 		if(file_exists('/proc/cpuinfo'))
 		{
 			$cpuinfo = file_get_contents('/proc/cpuinfo');
 			preg_match_all('/^processor/m', $cpuinfo, $matches);
-			$numCpus = count($matches[0]);
+			$numCores = count($matches[0]);
 		}
 		else if(strtoupper(substr(PHP_OS, 0, 3)) == 'WIN')
 		{
@@ -65,7 +65,7 @@ class SiteCommanderUtils {
 			if (false !== $process)
 			{
 				fgets($process);
-				$numCpus = intval(fgets($process));
+				$numCores = intval(fgets($process));
 				pclose($process);
 			}
 		}
@@ -79,12 +79,12 @@ class SiteCommanderUtils {
 				preg_match('/hw.ncpu: (\d+)/', $output, $matches);
 				if ($matches)
 				{
-					$numCpus = intval($matches[1][0]);
+					$numCores = intval($matches[1][0]);
 				}
 				pclose($process);
 			}
 		}
   
-		return $numCpus;
+		return $numCores;
 	}
 }

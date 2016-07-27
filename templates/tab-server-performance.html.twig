@@ -1,9 +1,18 @@
 
 <div id="site-commander-loading-message-container"><h2>Gathering statistics ...</h2></div>
-<h2>CPU Load Average</h2>
+<h2>CPU Load Averages: <span class="label label-info">{{ drupalInfo.numCores }}</span> CPU Cores (Reported by OS)</h2>
+
+<h3 class="text-center">Raw CPU Load Averages</h3>
 <div class="gauges-container">
-	<div id="loadAverage1" class="gauge 200x160px"></div>
-	<div id="loadAverage2" class="gauge 200x160px"></div>
-	<div id="loadAverage3" class="gauge 200x160px"></div>
+	<div id="loadAverageRaw1" class="gauge 200x160px"></div>
+	<div id="loadAverageRaw2" class="gauge 200x160px"></div>
+	<div id="loadAverageRaw3" class="gauge 200x160px"></div>
+</div>
+
+<h3 class="text-center">Core Count Adjusted CPU Load Averages</h3>
+<div class="gauges-container">
+	<div id="loadAverageAdj1" class="gauge 200x160px"></div>
+	<div id="loadAverageAdj2" class="gauge 200x160px"></div>
+	<div id="loadAverageAdj3" class="gauge 200x160px"></div>
 </div>
 

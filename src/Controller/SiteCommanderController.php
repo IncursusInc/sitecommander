@@ -85,6 +85,7 @@ class SiteCommanderController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'rebuildDrupalCache';
 		$responseData->last_cache_rebuild = SiteCommanderUtils::elapsedTime($this->state->get('sitecommander.timestamp_cache_last_rebuild'));
@@ -128,6 +129,7 @@ class SiteCommanderController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'cleanupOldFiles';
 		$responseData->oldFilesStorageSize = $oldFilesStorageSize;
@@ -164,6 +166,7 @@ class SiteCommanderController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'clearRedisCache';
     $response->addCommand( new ReadMessageCommand($responseData));
@@ -181,6 +184,7 @@ class SiteCommanderController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'clearPhpOpCache';
     $response->addCommand( new ReadMessageCommand($responseData));
@@ -201,6 +205,7 @@ class SiteCommanderController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'clearApcOpCache';
 		$responseData->newNumApcOpCacheEntries = $numEntries;
@@ -230,6 +235,7 @@ class SiteCommanderController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'purgeSessions';
 		$responseData->newNumSessionEntries = $newNumSessionEntries;
@@ -239,9 +245,10 @@ class SiteCommanderController extends ControllerBase {
 		return $response;
 	}
 
-	public function updateGauges()
+	public function updatePoll()
 	{
-		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage();
+		$drupalInfo['numCores'] = SiteCommanderUtils::getNumCores();
+		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage( $drupalInfo['numCores']);
 		$drupalInfo['redisStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getRedisStats();
 		$drupalInfo['opCacheStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getOpCacheStats();
 		$drupalInfo['apcStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getApcStats();
@@ -250,8 +257,9 @@ class SiteCommanderController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
-		$responseData->siteCommanderCommand = 'updateGauges';
+		$responseData->siteCommanderCommand = 'updatePoll';
 		$responseData->payload = $drupalInfo;
     $response->addCommand( new ReadMessageCommand($responseData));
 
@@ -302,8 +310,6 @@ class SiteCommanderController extends ControllerBase {
 			list($keys, $numObjects) = preg_split('/=/', $keys);
 
 			// Format I/O stats
-			$redisInfo['total_net_input_bytes'] = format_size($redisInfo['total_net_input_bytes']);
-			$redisInfo['total_net_output_bytes'] = format_size($redisInfo['total_net_output_bytes']);
 
 			$redisStats['numObjectsCached'] = $numObjects ? $numObjects : 0;
 
@@ -348,22 +354,19 @@ class SiteCommanderController extends ControllerBase {
 		}
 	}
 
-	public static function getCpuLoadAverage()
+	public static function getCpuLoadAverage( $numCores = 1 )
 	{
 		// Get CPU load average
 		if(preg_match('/.*nux.*/', php_uname()))
 		{
-			// Get # of CPU cores
-			$numCPUs = SiteCommanderUtils::getNumCPUs();
-
 			ob_start();
 			$tmp = preg_split('/\s+/', system('cat /proc/loadavg'));
-			$loadAverage = array($tmp[0]/$numCPUs, $tmp[1]/$numCPUs, $tmp[2]/$numCPUs);
+			$loadAverage = array($tmp[0], $tmp[1], $tmp[2], $tmp[0]/$numCores, $tmp[1]/$numCores, $tmp[2]/$numCores);
 			ob_end_clean();
 		}
 		else
 		{
-			$loadAverage = array(0, 0, 0);
+			$loadAverage = array(0, 0, 0, 0, 0, 0);
 		}
 
 		return $loadAverage;
