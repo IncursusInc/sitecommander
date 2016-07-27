@@ -146,6 +146,7 @@ class SiteCommanderController extends ControllerBase {
 		$redisHostName = \Drupal::config('sitecommander.settings')->get('redisHostName');
 		$redisPort = \Drupal::config('sitecommander.settings')->get('redisPort');
 		$redisDatabaseIndex = \Drupal::config('sitecommander.settings')->get('redisDatabaseIndex');
+echo $redisDatabaseIndex;
 
 		if (class_exists('Redis') && $redisHostName && $redisPort) {
 

@@ -37,3 +37,4 @@ function sitecommander_rebuild() {
 	\Drupal::state()->set('sitecommander.timestamp_cssjs_last_rebuild', time());
 }
 
+
