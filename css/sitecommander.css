@@ -1,6 +1,22 @@
 .site-commander-logo-container {
-	background-image: url('../images/site-commander-logo.png');
+	/*background-image: url('../images/site-commander-logo.png');
 	height: 50px;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	*/
+	background-color: lightslategray;
+	padding: 8px;
+	border-radius: 6px;
+}
+
+.site-commander-logo-text {
+	margin: 0px !important;
+	color: lightcyan;
+}
+
+.gold {
+	color: gold !important;
 }
 
 .rounded-container {
@@ -148,7 +164,7 @@
 	background-position: -2px 1px !important;
 }
 
-.navigation {float: left; width: 1140px; margin: 5px 0px; padding: 0; list-style: none; background-color: #efefef;}
+.navigation {text-align:center; width: 100%; margin: 5px 0px; padding: 0; list-style: none; background-color: #efefef;}
 .navigation li {float: left; margin: 0; padding: 0;}
 .navigation li a {padding: 20px 30px; float: left;}
 .navigation li a:hover { background-color:#ccc; color: white}

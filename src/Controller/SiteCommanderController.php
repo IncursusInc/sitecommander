@@ -252,6 +252,7 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['redisStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getRedisStats();
 		$drupalInfo['opCacheStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getOpCacheStats();
 		$drupalInfo['apcStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getApcStats();
+		$drupalInfo['storageHealth'] = \Drupal\sitecommander\Controller\SiteCommanderController::getStorageHealth();
 
     // Create AJAX Response object.
     $response = new AjaxResponse();
@@ -393,5 +394,45 @@ class SiteCommanderController extends ControllerBase {
 			$anonUserKeys = $redis->keys('siteCommander_anon_user_*');
 			return count($anonUserKeys);
 		}
+	}
+
+	// Determine health of attached storage devices
+	public static function getStorageHealth()
+	{
+		// Linux
+		if(preg_match('/.*nux.*/', php_uname()))
+		{
+			ob_start();
+			system('df');
+
+			$lines = preg_split('/\n/', ob_get_contents());
+			ob_end_clean();
+
+			$storageHealth = array();
+			foreach($lines as $line)
+			{
+				$flds = preg_split('/\s+/', $line);
+				if(count($flds) == 6)
+				{
+					$storageHealth[ $flds[0] ] = array(
+						'totalSizeHumanReadable' => format_size(1024 * $flds[1]),
+						'totalBlocks' => $flds[1],
+						'usedBlocks' => $flds[2],
+						'availableBlocks' => $flds[3],
+						'usePct' => $flds[4],
+						'mountPoint' => $flds[5]
+					);
+				}
+			}
+
+			// Eat the header row, /dev, etc
+			unset($storageHealth['Filesystem']);
+			unset($storageHealth['devtmpfs']);
+		}
+		else
+		{
+		}
+
+		return $storageHealth;
 	}
 }

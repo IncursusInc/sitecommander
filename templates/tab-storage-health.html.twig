@@ -1,0 +1,41 @@
+<h2>Storage Health</h2>
+
+<div class="gauges-container">
+
+	<div class="row">
+		<div class="col-md-3 text-right"><strong>Filesystem</strong></div>
+		<div class="col-md-1"><strong>Size</strong></div>
+		<div class="col-md-5"><strong>Utilization</strong></div>
+		<div class="col-md-3 text-left"><strong>Mount Point</strong></div>
+	</div>
+
+	{% for label, fs in drupalInfo.storageHealth %}
+
+		{% set barClass = 'progress-bar-success' %}
+
+		{% if fs.usePct >= 80 %}
+			{% set barClass = 'progress-bar-danger' %}
+		{% elseif fs.usePct >= 70 %}
+			{% set barClass = 'progress-bar-warning' %}
+		{% endif %}
+
+		<div class="row">
+	
+			<div class="col-md-3 text-right">{{ label }}</div>
+			<div class="col-md-1 text-right">{{ fs.totalSizeHumanReadable }}</div>
+			<div class="col-md-5">
+				<div class="progress">
+					<div class="progress-bar {{ barClass }} progress-bar-striped" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{ fs.usePct }}">
+						<span class="sr-only">{{ fs.usePct }}% Utilized</span>
+						{{ fs.usePct }}
+					</div>
+				</div>
+	
+			</div>
+			<div class="col-md-3 text-left">{{ fs.mountPoint }}</div>
+	
+		</div><!--row -->
+	{% endfor %}
+
+</div>
+
