@@ -32,6 +32,12 @@
 			</li>
 
 			<li class="">
+				<a href="#users-online" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Users Online Now">
+					<i class="fa fa-users"></i>
+				</a>
+			</li>
+
+			<li class="">
 				<a href="#" title="Reload" id="reloadLink" data-feature="tooltip" data-placement="top" >
 					<i class="fa fa-repeat"></i>
 				</a>
@@ -73,6 +79,9 @@
 			</div>
 			<div role="tabpanel" class="tab-pane" id="caching-performance">
 				{% include '@sitecommander/tab-caching-performance.html.twig' %}
+			</div>
+			<div role="tabpanel" class="tab-pane" id="users-online">
+				{% include '@sitecommander/tab-users-online.html.twig' %}
 			</div>
 		</div>
 	</div> <!-- row -->

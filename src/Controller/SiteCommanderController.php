@@ -12,6 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\State\StateInterface;
+use Drupal\Core\Database\Database;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Session\AccountInterface;
@@ -254,6 +255,7 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['opCacheStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getOpCacheStats();
 		$drupalInfo['apcStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getApcStats();
 		$drupalInfo['storageHealth'] = \Drupal\sitecommander\Controller\SiteCommanderController::getStorageHealth();
+		$drupalInfo['usersOnline'] = \Drupal\sitecommander\Controller\SiteCommanderController::getUsersOnline();
 
     // Create AJAX Response object.
     $response = new AjaxResponse();
@@ -486,5 +488,38 @@ class SiteCommanderController extends ControllerBase {
 		}
 
 		return $memInfo;
+	}
+
+	public static function getUsersOnline()
+	{
+		$usersOnline = array();
+
+		// Count users active within the defined period.
+		$interval = time() - 900;
+
+		$connection = \Drupal::database();
+
+		$query = \Drupal::entityQuery('user');
+		$query->condition('access', strtotime('15 minutes ago'), '>=');
+		$uids = $query->execute();
+		$users = entity_load_multiple('user', $uids);
+		return $users;
+
+
+
+
+		$query = $connection->select('users_field_data','u');
+		$query->leftJoin('user__field_first_name', 'ufn', 'u.uid = ufn.entity_id');
+		$query->leftJoin('user__field_last_name', 'uln', 'u.uid = uln.entity_id');
+		$query->fields('u', array('uid', 'name', 'mail'));
+		$query->fields('ufn', array('field_first_name_value'));
+		$query->fields('uln', array('field_last_name_value'));
+		$query->condition('access', strtotime('15 minutes ago'), '>=');
+
+		$data = $query->execute();
+		$results = $data->fetchAll(\PDO::FETCH_OBJ);
+
+		return $results;
+
 	}
 }

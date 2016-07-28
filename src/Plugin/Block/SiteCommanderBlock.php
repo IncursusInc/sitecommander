@@ -225,6 +225,7 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$drupalInfo['opCacheStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getOpCacheStats();
 		$drupalInfo['apcStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getApcStats();
 		$drupalInfo['storageHealth'] = \Drupal\sitecommander\Controller\SiteCommanderController::getStorageHealth();
+		$drupalInfo['usersOnline'] = \Drupal\sitecommander\Controller\SiteCommanderController::getUsersOnline();
 
 		// Load up SiteCommander config settings so we can pass them to the .js
 		$drupalInfo['settings']['admin'] = $this->configFactory->get('sitecommander.settings')->get();
