@@ -46,9 +46,9 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 	protected $configFactory;
 	protected $state;
 	protected $translation;
+	protected $currentUser;
 
-	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state
-														 ) 
+	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state, AccountInterface $account ) 
 	{
 		$this->connection = $connection;
 		$this->moduleHandler = $moduleHandler;
@@ -56,6 +56,7 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$this->fileSystem = $fileSystem;
 		$this->configFactory = $configFactory;
 		$this->state = $state;
+		$this->currentUser = $currentUser;
 	}
 
   /**
@@ -68,76 +69,33 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
       $container->get('entity.query'),
       $container->get('file_system'),
       $container->get('config.factory'),
-      $container->get('state')
+      $container->get('state'),
+      $container->get('current_user')
     );
   }
 
   public function build() {
 
-		// TODO - split this shit up into subfunctions
-		$drupalInfo = array();
+		$sc = new \Drupal\sitecommander\Controller\SiteCommanderController($this->connection, $this->moduleHandler, $this->entityQuery, $this->fileSystem, $this->configFactory, $this->state, $this->currentUser );
 
-		// Get breakdown of published nodes by content type
-		$drupalInfo['nodeTypeNames'] = node_type_get_names();
-
-		$query = $this->entityQuery->getAggregate('node')
-											->condition('type', array_keys($drupalInfo['nodeTypeNames']), 'IN')
-											->condition('status', 1)
-											->groupBy('type')
-											->aggregate('type', 'COUNT')
-											->sortAggregate('type', 'COUNT', 'DESC');
-
-		$tmpResult = $query->execute();
-
-		// Put the results in a format that is easier for us to work with, using the node type machine name as the index in the array
-		$result = array();
-		foreach($tmpResult as $val)
-			$result[ $val['type'] ] = $val;
-
-		// Add back in the ones that don't have any nodes yet, as the query won't pick those up
-		foreach($drupalInfo['nodeTypeNames'] as $machineName => $nodeTypeName)
-		{
-			if(!array_key_exists($machineName, $result))
-				$result[] = array('type' => $machineName, 'type_count' => '0');
-		}
-		$drupalInfo['publishedNodeCounts'] = $result;
-		
-		// Get # of users
-		$drupalInfo['userCount'] = $this->entityQuery->get('user')
-																->condition('uid', 0, '!=')
-																->count()->execute();
-
-		// Get size of install (storage footprint) - currently only works under Linux!
-		if(preg_match('/.*nux.*/', php_uname()))
-		{
-			ob_start();
-			$tmp = preg_split('/\s+/', system('du -sb'));
-			$drupalInfo['installSize'] = format_size($tmp[0]);
-			ob_end_clean();
-		}
-		else
-		{
-			$drupalInfo['installSize'] = 'Unknown';
-		}
-
-		// Get size of temporary file storage
-		if(preg_match('/.*nux.*/', php_uname()))
-		{
-			$publicPath = $this->fileSystem->realpath(file_default_scheme() . "://");
-
-			ob_start();
-			$tmp = preg_split('/\s+/', system('du -sbc ' . $publicPath . '/css ' . $publicPath . '/js '));
-			ob_end_clean();
-
-			$drupalInfo['oldFilesStorageSize'] = format_size($tmp[ 0 ]);
-		}
-		else
-		{
-			$drupalInfo['oldFilesStorageSize'] = 'Unknown';
-		}
-
-		// Get number of enabled modules
-		$drupalInfo['enabledModulesCount'] = count($this->moduleHandler->getModuleList());
+		list($drupalInfo['nodeTypeNames'], $drupalInfo['publishedNodeCounts']) = $sc->getPublishedNodeCounts();
+		$drupalInfo['userCount'] = $sc->getUserCount();
+		$drupalInfo['installSize'] = $sc->getInstallSize();
+		$drupalInfo['oldFilesStorageSize'] = $sc->getOldFilesStorageSize();
+		$drupalInfo['enabledModulesCount'] = $sc->getEnabledModulesCount();
+		$drupalInfo['numAuthUsersOnline'] =  $sc->getNumAuthUsersOnline();
+		$drupalInfo['numSessionEntries'] = $sc->getNumSessionEntries();
+		$drupalInfo['mailchimp'] = $sc->getMailChimpInfo();
+		$drupalInfo['topSearches'] = $sc->getTodaysTopSearches();
+		$drupalInfo['numVisitorsOnline'] = $sc->getAnonymousUsers();
+		$drupalInfo['numCores'] = SiteCommanderUtils::getNumCores();
+		$drupalInfo['loadAverage'] = $sc->getCpuLoadAverage( $drupalInfo['numCores']);
+		$drupalInfo['memInfo'] = $sc->getMemoryInfo();
+		$drupalInfo['redisStats'] = $sc->getRedisStats();
+		$drupalInfo['opCacheStats'] = $sc->getOpCacheStats();
+		$drupalInfo['apcStats'] = $sc->getApcStats();
+		$drupalInfo['storageHealth'] = $sc->getStorageHealth();
+		$drupalInfo['usersOnline'] = $sc->getUsersOnline();
 
 		// Drupal settings
 		$drupalInfo['settings'] = array();
@@ -164,68 +122,6 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 			 $drupalInfo['timestamp_cache_last_rebuild'] = 'Unknown';
 		else
 			 $drupalInfo['timestamp_cache_last_rebuild'] = SiteCommanderUtils::elapsedTime($timestamp);
-
-		// Get # of authenticated users online right now (we look at the number of sessions that were last updated within the past 15 minutes)
-		$query = $this->connection->select('sessions','s');
-		$query->addExpression('COUNT( uid )');
-		$query->condition('timestamp', strtotime('15 minutes ago'), '>');
-		$query->condition('uid', 0, '>');
-
-		$drupalInfo['numAuthUsersOnline'] =  $query->execute()->fetchField();
-		$drupalInfo['numVisitorsOnline'] = \Drupal\sitecommander\Controller\SiteCommanderController::getAnonymousUsers();
-
-		// Get total # of session entries in the database
-		$query = $this->connection->select('sessions','s');
-		$query->addExpression('COUNT( uid )');
-
-		$drupalInfo['numSessionEntries'] = $query->execute()->fetchField();
-
-		// If MailChimp is installed, get all MailChimp lists and total # of subscribers for each
-		if ($this->moduleHandler->moduleExists('mailchimp'))
-		{
-			$mcLists = mailchimp_get_lists();
-			$drupalInfo['mailchimp'] = $mcLists;
-		}
-
-		// Get top 15 search phrases done today
-		$header = array(
-			array('data' => $this->t('Count'), 'field' => 'count', 'sort' => 'desc'),
-			array('data' => $this->t('Message'), 'field' => 'message'),
-		);
-
-		$count_query = $this->connection->select('watchdog');
-		$count_query->addExpression('COUNT(DISTINCT(message))');
-		$count_query->condition('type', 'search');
-
-		$query = $this->connection->select('watchdog', 'w')
-					->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
-					->extend('\Drupal\Core\Database\Query\TableSortExtender');
-		$query->addExpression('COUNT(wid)', 'count');
-		$query = $query
-					->fields('w', array('message', 'variables'))
-					->condition('timestamp', strtotime('today'), '>=')
-					->condition('w.type', 'search')
-					->groupBy('message')
-					->groupBy('variables')
-					->limit(15)
-					->orderByHeader($header);
-		$query->setCountQuery($count_query);
-		$result = $query->execute();
-
-		$drupalInfo['topSearches'] = array();
-		foreach ($result as $dblog) {
-			$unSerializedData = unserialize($dblog->variables);	
-			$drupalInfo['topSearches'][] = array('searchPhrase' => $unSerializedData['%keys'], 'count' => $dblog->count);
-		}
-
-		$drupalInfo['numCores'] = SiteCommanderUtils::getNumCores();
-		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage( $drupalInfo['numCores']);
-		$drupalInfo['memInfo'] = \Drupal\sitecommander\Controller\SiteCommanderController::getMemoryInfo();
-		$drupalInfo['redisStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getRedisStats();
-		$drupalInfo['opCacheStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getOpCacheStats();
-		$drupalInfo['apcStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getApcStats();
-		$drupalInfo['storageHealth'] = \Drupal\sitecommander\Controller\SiteCommanderController::getStorageHealth();
-		$drupalInfo['usersOnline'] = \Drupal\sitecommander\Controller\SiteCommanderController::getUsersOnline();
 
 		// Load up SiteCommander config settings so we can pass them to the .js
 		$drupalInfo['settings']['admin'] = $this->configFactory->get('sitecommander.settings')->get();

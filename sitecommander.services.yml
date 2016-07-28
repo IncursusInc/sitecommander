@@ -1,11 +1,11 @@
 services:
   sitecommander.sitecommander_block:
     class: Drupal\sitecommander\Plugin\Block\SiteCommanderBlock
-    arguments: ['@database', '@module_handler', '@entity.query', '@file_system', '@config.factory', '@state']
+    arguments: ['@database', '@module_handler', '@entity.query', '@file_system', '@config.factory', '@state', '@current_user']
 
   sitecommander.sitecommander_controller:
     class: Drupal\sitecommander\Controller\SiteCommanderController
-    arguments: ['@database', '@state', '@file_system' ]
+    arguments: ['@database', '@module_handler', '@entity.query', '@file_system', '@config.factory', '@state', '@current_user']
 
   sitecommander.listener:
     class: 'Drupal\sitecommander\EventSubscriber\SiteCommanderListener'
