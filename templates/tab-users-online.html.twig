@@ -1,0 +1,24 @@
+<h2>Authenticated Users Online Now ({{ drupalInfo.usersOnline|length }})</h2>
+
+<div class="row">
+	<div class="col-md-12">
+		<table class="table table-striped" id="table-users-online">
+		<tr>
+			<th>Username</th>
+			<th>Name</th>
+			<th>Email Address</th>
+			<th>Role(s)</th>
+		</tr>
+		<tbody>
+		{% for u in drupalInfo.usersOnline %}
+			<tr>
+				<td><img class="users-online-avatar img-rounded" src="{{ file_url(u.user_picture.entity.uri.value) }}"></td>
+				<td>{{ u.name.value }}</td>
+				<td>{{ u.field_first_name.value }} {{ u.field_last_name.value }}</td>
+				<td>{{ u.mail.value }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+		</table>
+	</div>
+</div>

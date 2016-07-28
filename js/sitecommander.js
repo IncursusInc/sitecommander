@@ -1,37 +1,82 @@
 jQuery(document).ready(function($){
 
-	var dsg1, dsg2, dsg3, dsg4, dsg5, dsg6, dsg7, dsg8, dsg9, dsg10;
+	$('#site-commander-tabs a').click(function (e) {
+		e.preventDefault()
+		$(this).tab('show')
+	})
+
+	var dsg1, dsg2, dsg3, dsg4, dsg5, dsg6, dsg7, dsg8, dsg9, dsg10, dsg11, dsg12, dsg13;
 
 	var timer = setInterval( function() {
 
 		$('#site-commander-loading-message-container').fadeOut("medium", function() {
 
+			$('[data-feature="tooltip"]').tooltip();
+
+			$('#switch-users-online').click(function(e) {
+				e.preventDefault();
+				$('#site-commander-tabs a[href="#users-online"]').tab('show')
+			});
+
+			$('#reloadLink').click(function (e) {
+				e.preventDefault()
+				location.reload(true);
+			});
+
 			dsg1 = new JustGage({
-				id: "loadAverage1",
+				id: "loadAverageRaw1",
 				value: drupalSettings.loadAverage[0] * 100,
 				min: 0,
 				max: 100,
-				title: "CPU Load Avg (1 min)",
+				title: "Raw Load Avg (1 min)",
 				label: 'Percentage',
 			});
 	
 			dsg2 = new JustGage({
-				id: "loadAverage2",
+				id: "loadAverageRaw2",
 				value: drupalSettings.loadAverage[1] * 100,
 				min: 0,
 				max: 100,
-				title: "CPU Load Avg (5 min)",
+				title: "Raw Load Avg (5 min)",
 				label: "Percentage",
 			});
 	
 			dsg3 = new JustGage({
-				id: "loadAverage3",
+				id: "loadAverageRaw3",
 				value: drupalSettings.loadAverage[2] * 100,
 				min: 0,
 				max: 100,
-				title: "CPU Load Avg (15 min)",
+				title: "Raw Load Avg (15 min)",
 				label: "Percentage",
 			});
+
+			dsg11 = new JustGage({
+				id: "loadAverageAdj1",
+				value: drupalSettings.loadAverage[3] * 100,
+				min: 0,
+				max: 100,
+				title: "Adj Load Avg (1 min)",
+				label: 'Percentage',
+			});
+	
+			dsg12 = new JustGage({
+				id: "loadAverageAdj2",
+				value: drupalSettings.loadAverage[4] * 100,
+				min: 0,
+				max: 100,
+				title: "Adj Load Avg (5 min)",
+				label: "Percentage",
+			});
+	
+			dsg13 = new JustGage({
+				id: "loadAverageAdj3",
+				value: drupalSettings.loadAverage[5] * 100,
+				min: 0,
+				max: 100,
+				title: "Adj Load Avg (15 min)",
+				label: "Percentage",
+			});
+
 
 			if(drupalSettings.apcStats)
 			{
@@ -125,11 +170,14 @@ jQuery(document).ready(function($){
 		if(!drupalSettings.settings.admin.refreshRate)
 			drupalSettings.settings.admin.refreshRate = 60;
 
-		$.get('sitecommander/update-gauges', function (response) { 
-			console.log(response);
+		$.get('sitecommander/update-poll', function (response) { 
 			dsg1.refresh(response[0].responseData.payload.loadAverage[0] * 100);
 			dsg2.refresh(response[0].responseData.payload.loadAverage[1] * 100);
 			dsg3.refresh(response[0].responseData.payload.loadAverage[2] * 100);
+			dsg11.refresh(response[0].responseData.payload.loadAverage[3] * 100);
+			dsg12.refresh(response[0].responseData.payload.loadAverage[4] * 100);
+			dsg13.refresh(response[0].responseData.payload.loadAverage[5] * 100);
+
 			if(response[0].responseData.payload.apcStats)
 			{
 				dsg4.refresh(response[0].responseData.payload.apcStats.hits, response[0].responseData.payload.apcStats.hits + response[0].responseData.payload.apcStats.misses);

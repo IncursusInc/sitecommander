@@ -1,0 +1,64 @@
+<div id="site-commander-loading-message-container"><h2>Gathering statistics ...</h2></div>
+<h2>Server Performance/Health</h2>
+
+<h3 class="text-center">Raw CPU Load Averages</h3>
+<div class="gauges-container">
+	<div id="loadAverageRaw1" class="gauge 200x160px"></div>
+	<div id="loadAverageRaw2" class="gauge 200x160px"></div>
+	<div id="loadAverageRaw3" class="gauge 200x160px"></div>
+</div>
+
+<h3 class="text-center">Core Count Adjusted CPU Load Averages  <span class="label label-info">{{ drupalInfo.numCores }}</span> CPU Cores (Reported by OS)</h3>
+<div class="gauges-container">
+	<div id="loadAverageAdj1" class="gauge 200x160px"></div>
+	<div id="loadAverageAdj2" class="gauge 200x160px"></div>
+	<div id="loadAverageAdj3" class="gauge 200x160px"></div>
+</div>
+
+{% if drupalInfo.memInfo %}
+<h3 class="text-center">Memory Information</h3>
+
+	<div class="row">
+
+		<div class="col-md-4">
+			<div class="panel panel-{{ drupalInfo.memInfo.MemTotal.warningIndicator }}">
+				<div class="panel-heading">
+					<h3 class="panel-title text-center">Total Memory</h3>
+				</div>
+				<div class="panel-body">
+					<h1 class="text-center">{{ drupalInfo.memInfo.MemTotal.valueHuman }}</h1>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-4">
+			<div class="panel panel-{{ drupalInfo.memInfo.MemAvailable.warningIndicator }}">
+				<div class="panel-heading">
+					<h3 class="panel-title text-center">Available Memory</h3>
+				</div>
+				<div class="panel-body">
+					<h1 class="text-center">{{ drupalInfo.memInfo.MemAvailable.valueHuman }}</h1>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-4">
+			<div class="panel panel-{{ drupalInfo.memInfo.SwapFree.warningIndicator }}">
+				<div class="panel-heading">
+					<h3 class="panel-title text-center">Swap Free</h3>
+				</div>
+				<div class="panel-body">
+					<h1 class="text-center">{{ drupalInfo.memInfo.SwapFree.valueHuman }}</h1>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="card-container">
+		{% for label, entry in drupalInfo.memInfo %}
+			<div class="card">{{ label }}<br /><span class="badge badge-{{ entry.warningIndicator }}">{{ entry.valueHuman }}</span></div>
+		{% endfor %}
+	</div>
+
+{% endif %}

@@ -1,197 +1,94 @@
-<div class="text-center site-commander-logo-container">
-	<a href="/admin/config/sitecommander"><span class="pull-right btn btn-default site-commander-config-button fa fa-gear"></span></a>
-	<div class="clearfix"></div>
-</div>
+<div class="container">
+	<div class="row">
 
-<div class="site-commander-text-stats">
-	<div class="site-commander-text-stats-column">
-		<div class="list-group">
-			<a href="#" class="list-group-item active"><span class="fa fa-drupal"></span> &nbsp;<strong>Published Nodes By Type</strong></a>
-			{% for nodeType in drupalInfo.publishedNodeCounts %}
-				<span class="list-group-item">
-					<a class="pull-left site-commander-icon-action" alt="Add New" title="Add New" href="/node/add/{{ nodeType.type }}"><span class="fa fa-plus"></span></a>&nbsp;
-					<a href="/admin/content?status=1&type={{ nodeType.type }}&title=&langcode=All" class="" alt="View all" title="View all">
-						
-						{% if nodeType.type_count %}
-							{% set nodeCountClass = 'badge-active' %}
-						{% else %}
-							{% set nodeCountClass = 'badge-default' %}
-						{% endif %}
-
-						<span class="badge {{ nodeCountClass }} pull-right">{{ nodeType.type_count }}</span>
-						{{ drupalInfo.nodeTypeNames[ nodeType.type ] }}
-					</a>
-				</span>
-			{% endfor %}
+		<div class="site-commander-logo-container">
+			<h2 class="text-center site-commander-logo-text"><span class="fa fa-star gold"></span> SiteCommander <span class="fa fa-star gold"></span></h2>
 		</div>
-	</div>
 
-	<div class="site-commander-text-stats-column">
-		<ul class="list-group">
+		<ul class="navigation rounded-container" id="site-commander-tabs">
 
-			<li class="list-group-item active"><span class="fa fa-drupal"></span>&nbsp; <strong>Site Data/Tasks</strong></li>
-<!--
-			<li class="list-group-item"> <a href="/admin/config/system/site-information" alt="Edit" title="Edit" class="site-commander-icon-action"><span class="fa fa-edit fa-fw"></span></a> Site Name: <span class="badge badge-active">{{ drupalInfo.settings.system.site.name }}</span></li>
-			<li class="list-group-item"> <a href="/admin/appearance" alt="Edit" title="Edit" class="site-commander-icon-action"><span class="fa fa-edit fa-fw"></span></a> Site Theme: <span class="badge badge-active">{{ drupalInfo.settings.theme.default }}</span></li>
--->
-			<li class="list-group-item"> <a href="/admin/modules/install" alt="Install new module" title="Install new module" class="site-commander-icon-action"><span class="fa fa-plus fa-fw"></span></a> <a href="/admin/modules" alt="Browse installed modules" title="Browse installed modules">Enabled Modules</a>: <span class="badge badge-active">{{ drupalInfo.enabledModulesCount }}</span></li>
+			<li class="active">
+				<a data-toggle="tab" href="#site-actions" data-feature="tooltip" data-placement="top" title="Site Actions">
+					<span class="fa fa-home"></span>
+				</a>
+			</li>
 
-			<li class="list-group-divider"></li>
+			<li class="">
+				<a href="#server-performance" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Server Performance">
+					<i class="fa fa-server"></i>
+				</a>
+			</li>
 
-			{%if drupalInfo.numVisitorsOnline %}
-				{% set visitorClass = 'badge-active' %}
-			{% else %}
-				{% set visitorClass = 'badge-default' %}
-			{% endif %}
+			<li class="">
+				<a href="#caching-performance" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Caching Performance">
+					<i class="fa fa-database"></i>
+				</a>
+			</li>
 
-			<li class="list-group-item"> <a href="/admin/people/create" class="site-commander-icon-action"><span class="fa fa-plus fa-fw"></span></a> Total # Users: <span class="badge badge-active">{{ drupalInfo.userCount }}</span></li>
-			<li class="list-group-item"> <span class="fa fa-users fa-fw site-commander-icon-noaction"></span> Users Online Now: <span class="badge badge-active">{{ drupalInfo.numAuthUsersOnline }}</span></li>
-			<li class="list-group-item"> <span class="fa fa-users fa-fw site-commander-icon-noaction"></span> Visitors Online Now: <span class="badge {{ visitorClass }}">{{ drupalInfo.numVisitorsOnline }}</span></li>
-			<li class="list-group-item"> <a href="/site-commander/purge-sessions" class="use-ajax site-commander-icon-action" alt="Purge sessions now (except this one!)" title="Purge sessions now (except this one!)"><span class="fa fa-trash fa-fw"></span></a> Number of Session Entries: <span id="num-session-entries" class="badge badge-active">{{ drupalInfo.numSessionEntries }}</span></li>
+			<li class="">
+				<a href="#storage-health" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Storage Health">
+					<i class="fa fa-hdd-o"></i>
+				</a>
+			</li>
 
-			<li class="list-group-divider"></li>
+			<li class="">
+				<a href="#users-online" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Users Online Now">
+					<i class="fa fa-users"></i>
+				</a>
+			</li>
 
-			{%if drupalInfo.maintenance_mode == 'On' %}
-				{% set maintenanceModeClass = 'badge-green' %}
-				{% set maintIcon = 'fa-toggle-on' %}
-			{% else %}
-				{% set maintenanceModeClass = 'badge-default' %}
-				{% set maintIcon = 'fa-toggle-off' %}
-			{% endif %}
+			<li class="">
+				<a href="#" title="Reload" id="reloadLink" data-feature="tooltip" data-placement="top" >
+					<i class="fa fa-repeat"></i>
+				</a>
+			</li>
 
-			<li class="list-group-item"> <a href="/site-commander/toggle-maintenance-mode" class="use-ajax site-commander-icon-action"><span id="toggleMaintenanceMode" title="Toggle maintenance mode"><span id="maintenanceModeIcon" class="fa {{ maintIcon }} fa-fw"></span></span></a>&nbsp; Maintenance Mode: <span id="maintenanceModeBadge" class="badge {{ maintenanceModeClass }}">{{ drupalInfo.maintenance_mode }}</span></li>
-			<li class="list-group-item"> <a href="/cron/{{ drupalInfo.cron.cron_key }}" alt="Run cron now" title="Run cron now" class="site-commander-icon-action"><span class="fa fa-clock-o fa-fw"></span></a> Cron Last Run: <span class="badge badge-active">{{ drupalInfo.cron.cron_last }}</span></li>
-			<li class="list-group-item"> <a href="{{ drupalInfo.updateCheckURL }}" class="site-commander-icon-action"><span class="fa fa-clock-o fa-fw"></span></a> Last Checked for Updates: <span class="badge badge-active">{{ drupalInfo.update_last_check }}</span></li>
+			<li class="pull-right">
+				<a href="http://incurs.us" target="_blank" title="Incurs.us" data-feature="tooltip" data-placement="top" >
+					<i class="fa fa-external-link-square"></i>
+				</a>
+			</li>
 
-			<li class="list-group-item"> <a href="/site-commander/rebuild-drupal-cache" class="use-ajax site-commander-icon-action" alt="Clear/rebuild cache now" title="Clear/rebuild cache now"><span class="fa fa-refresh fa-fw"></span></a> Drupal Cache Last Refreshed: <span id="last_cache_rebuild" class="badge badge-active">{{ drupalInfo.timestamp_cache_last_rebuild }}</span></li>
-			<li class="list-group-item"> <span class="fa fa-hdd-o fa-fw site-commander-icon-noaction"></span> Install Size: <span class="badge badge-active">{{ drupalInfo.installSize }}</span></li>
-			<li class="list-group-item"> <a href="/site-commander/cleanup-old-files" class="use-ajax site-commander-icon-action" alt="Remove old aggregated css/js files now" title="Remove old aggregated css/js files now"><span class="fa fa-trash fa-fw"></span></a> Old Aggregated File Storage: <span id="old-files-storage-size" class="badge badge-active">{{ drupalInfo.oldFilesStorageSize }}</span></li>
+			<li class="pull-right">
+				<a href="https://github.com/IncursusInc/sitecommander/issues" target="_blank" title="Support via GitHub" data-feature="tooltip" data-placement="top" >
+					<i class="fa fa-github-alt"></i>
+				</a>
+			</li>
 
-			{% if drupalInfo.redisStats %}
-			<li class="list-group-item"> <a href="/site-commander/clear-redis-cache" class="use-ajax site-commander-icon-action" alt="Clear Redis Cache Now" title="Clear Redis Cache Now"><span class="fa fa-trash fa-fw"></span></a> Redis Cache # Entries: <span id="num-redis-entries" class="badge badge-active">{{ drupalInfo.redisStats.numObjectsCached }}</span></li>
-			{% endif %}
+			<li class="pull-right">
+				<a href="/admin/config/sitecommander" target="_blank" title="Configure SiteCommander" data-feature="tooltip" data-placement="top" >
+					<i class="fa fa-gears"></i>
+				</a>
+			</li>
 
-			{% if drupalInfo.apcStats %}
-			<li class="list-group-item"> <a href="/site-commander/clear-apc-opcache" class="use-ajax site-commander-icon-action" alt="Clear APC Op Cache Now" title="Clear APC Op Cache Now"><span class="fa fa-trash fa-fw"></span></a> APC Op Cache # Entries: <span id="num-apc-opcache-entries" class="badge badge-active">{{ drupalInfo.apcStats.numEntries }}</span></li>
-			{% endif %}
-
-			{% if drupalInfo.opCacheStats %}
-			<li class="list-group-item"> <a href="/site-commander/clear-php-opcache" class="use-ajax site-commander-icon-action" alt="Clear PHP OpCache Now" title="Clear PHP OpCache Now"><span class="fa fa-trash fa-fw"></span></a> PHP OpCache # Entries: <span title="# cached scripts" id="num-php-opcache-scripts" class="badge badge-active">{{ drupalInfo.opCacheStats.opcache_statistics.num_cached_scripts }}</span> <span title="# cached keys" id="num-php-opcache-keys" class="badge badge-active">{{ drupalInfo.opCacheStats.opcache_statistics.num_cached_keys }}</span></li>
-			{% endif %}
-		</ul>
-	</div>
-
-	<div class="site-commander-text-stats-column">
-		<ul class="list-group">
-			<li class="list-group-item active"><span class="fa fa-envelope"></span>&nbsp; <strong>MailChimp Stats</strong> <a href="https://admin.mailchimp.com" target="_blank" class="pull-right btn btn-sm btn-default btn-search-more" alt="MailChimp Admin Panel" title="MailChimp Admin Panel"><span class="fa fa-external-link"></span></a></li>
-			{% if drupalInfo.mailchimp|length == 0 %}
-				<li class="list-group-item">Mailchimp not installed, or no lists created yet!</li>
-			{% endif %}
-			{% for listId, list in drupalInfo.mailchimp %}
-
-				{% if list.stats.member_count %}
-					{% set memberCountClass = 'badge-active' %}
-				{% else %}
-					{% set memberCountClass = 'badge-default' %}
-				{% endif %}
-
-				{% if list.stats.click_rate %}
-					{% set ctrClass = 'badge-clickrate' %}
-				{% else %}
-					{% set ctrClass = 'badge-default' %}
-				{% endif %}
-
-				{% if list.stats.open_rate %}
-					{% set openRateClass = 'badge-openrate' %}
-				{% else %}
-					{% set openRateClass = 'badge-default' %}
-				{% endif %}
-
-				<li class="list-group-item"> {{ list.name }} <span title="Number of subscribers" class="badge {{ memberCountClass }}">{{ list.stats.member_count }} Subs</span> <span title="Average click through rate (CTR)" class="badge {{ ctrClass }}">{{ list.stats.click_rate }}</span> <span title="Average open rate" class="badge {{ openRateClass }}">{{ list.stats.open_rate }}</span></li>
-			{% endfor %}
 		</ul>
 
-		<ul class="list-group">
-			<li class="list-group-item active"><span class="fa fa-search"></span>&nbsp; <strong>Top Site Searches Today <a href="/admin/reports/search" target="_blank" class="pull-right btn btn-sm btn-default btn-search-more" alt="Click for more ..." title="Click for more ..."><span class="fa fa-search"></span></a></strong></li>
-			{% if drupalInfo.topSearches %}
-				{% for search in drupalInfo.topSearches %}
-					<li class="list-group-item">{{ search.searchPhrase }} <span class="badge badge-active">{{ search.count }}</span></li>
-				{% endfor %}
-			{% else %}
-				<li class="list-group-item">No searches performed yet today!</li>
-			{% endif %}
-		</ul>
+	</div> <!-- row -->
+
+	<!-- Tab panes -->
+	<div class="row">
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane active" id="site-actions">
+				{% include '@sitecommander/tab-site-actions.html.twig' %}
+			</div>
+			<div role="tabpanel" class="tab-pane" id="server-performance">
+				{% include '@sitecommander/tab-server-performance.html.twig' %}
+			</div>
+			<div role="tabpanel" class="tab-pane" id="storage-health">
+				{% include '@sitecommander/tab-storage-health.html.twig' %}
+			</div>
+			<div role="tabpanel" class="tab-pane" id="caching-performance">
+				{% include '@sitecommander/tab-caching-performance.html.twig' %}
+			</div>
+			<div role="tabpanel" class="tab-pane" id="users-online">
+				{% include '@sitecommander/tab-users-online.html.twig' %}
+			</div>
+		</div>
+	</div> <!-- row -->
+
+	<div class="site-commander-footer">
+		<hr class="site-commander-hr" />
+		<p>Powered by SiteCommander, &copy; Copyright 2016, <a href="http://incurs.us">Incursus, Inc.</a></p>
 	</div>
 
-</div>
-
-<div id="site-commander-loading-message-container"><h2>Gathering statistics ...</h2></div>
-<h2>CPU Load Average</h2>
-<div class="gauges-container">
-	<div id="loadAverage1" class="gauge 200x160px"></div>
-	<div id="loadAverage2" class="gauge 200x160px"></div>
-	<div id="loadAverage3" class="gauge 200x160px"></div>
-</div>
-
-{% if drupalInfo.apcStats %}
-
-<h2>APC Opcode Cache Status</h2>
-<div class="gauges-container">
-	<div id="apcOpcacheStatus" class="gauge 200x160px"></div>
-	<div id="apcMemoryUsage" class="gauge 200x160px"></div>
-	<div style="clear:both"></div>
-</div>
-
-{% endif %}
-
-{% if drupalInfo.redisStats %}
-<h2>PHP OpCache Status</h2>
-
-<div class="gauges-container">
-	<div id="opCacheHits" class="gauge 200x160px"></div>
-	<div id="opCacheMemoryUsage" class="gauge 200x160px"></div>
-	<div style="clear:both"></div>
-</div>
-
-{% endif %}
-
-{% if drupalInfo.redisStats %}
-<h2>Redis Caching Status</h2>
-
-<div class="gauges-container">
-	<div id="redisKeyspaceHits" class="gauge 200x160px"></div>
-	<div id="redisMemoryUsage" class="gauge 200x160px"></div>
-	<div id="redisPeakMemoryUsage" class="gauge 200x160px"></div>
-	<div style="clear:both"></div>
-</div>
-
-<div class="redis-text-stats">
-	<div class="redis-text-stats-column">
-		<h3><label>Redis Version:</label> <span>v{{ drupalInfo.redisStats.redis_version }}</span></h3>
-		<h3><label>Uptime:</label> <span>{{ drupalInfo.redisStats.uptime_in_days }} day(s)</span></h3>
-		<h3><label>Connected Clients:</label> <span>{{ drupalInfo.redisStats.connected_clients }}</span></h3>
-		<h3><label>Connected Slaves:</label> <span>{{ drupalInfo.redisStats.connected_slaves }}</span></h3>
-	</div>
-
-	<div class="redis-text-stats-column">
-		<h3><label>Total Connections Received:</label> <span>{{ drupalInfo.redisStats.total_connections_received }}</span></h3>
-		<h3><label>Total Commands Processed:</label> <span>{{ drupalInfo.redisStats.total_commands_processed }}</span></h3>
-		<h3><label>Total Net Input (Bytes):</label> <span>{{ drupalInfo.redisStats.total_net_input_bytes }}</span></h3>
-		<h3><label>Total Net Output (Bytes):</label> <span>{{ drupalInfo.redisStats.total_net_output_bytes }}</span></h3>
-	</div>
-
-	<div class="redis-text-stats-column">
-		<h3><label>Cached Objects:</label> <span>{{ drupalInfo.redisStats.numObjectsCached }}</span></h3>
-		<h3><label>Expired Keys:</label> <span>{{ drupalInfo.redisStats.expired_keys }}</span></h3>
-		<h3><label>Evicted Keys:</label> <span>{{ drupalInfo.redisStats.evicted_keys }}</span></h3>
-		<h3><label>Mem Fragmentation Ratio:</label> <span>{{ drupalInfo.redisStats.mem_fragmentation_ratio }}</span></h3>
-	</div>
-
-</div>
-
-{% endif %}
-
-<div class="site-commander-footer">
-	<hr class="site-commander-hr" />
-	<p>Powered by SiteCommander, {{ sitecommanderVersion }}, &copy; Copyright 2016, <a href="http://incurs.us">Incursus, Inc.</a>, All rights reserved.</p>
-</div>
+</div> <!-- container -->

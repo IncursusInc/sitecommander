@@ -12,6 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\State\StateInterface;
+use Drupal\Core\Database\Database;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Session\AccountInterface;
@@ -85,6 +86,7 @@ class SiteCommanderController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'rebuildDrupalCache';
 		$responseData->last_cache_rebuild = SiteCommanderUtils::elapsedTime($this->state->get('sitecommander.timestamp_cache_last_rebuild'));
@@ -128,6 +130,7 @@ class SiteCommanderController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'cleanupOldFiles';
 		$responseData->oldFilesStorageSize = $oldFilesStorageSize;
@@ -141,14 +144,16 @@ class SiteCommanderController extends ControllerBase {
 	// Clear Redis cache
 	public function clearRedisCache()
 	{
-		$redisHostName = \Drupal::config('sitecommander.settings')->get('redisHostName');
-		$redisPort = \Drupal::config('sitecommander.settings')->get('redisPort');
+		$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
+		$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
+		$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
 
 		if (class_exists('Redis') && $redisHostName && $redisPort) {
 
 			$redis = new \Redis();
 
 			$redis->connect($redisHostName, $redisPort);
+			$redis->select($redisDatabaseIndex);
 
 			// Do not allow PhpRedis serialize itself data, we are going to do it
 			// ourself. This will ensure less memory footprint on Redis size when
@@ -162,6 +167,7 @@ class SiteCommanderController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'clearRedisCache';
     $response->addCommand( new ReadMessageCommand($responseData));
@@ -179,6 +185,7 @@ class SiteCommanderController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'clearPhpOpCache';
     $response->addCommand( new ReadMessageCommand($responseData));
@@ -199,6 +206,7 @@ class SiteCommanderController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'clearApcOpCache';
 		$responseData->newNumApcOpCacheEntries = $numEntries;
@@ -228,6 +236,7 @@ class SiteCommanderController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'purgeSessions';
 		$responseData->newNumSessionEntries = $newNumSessionEntries;
@@ -237,19 +246,24 @@ class SiteCommanderController extends ControllerBase {
 		return $response;
 	}
 
-	public function updateGauges()
+	public function updatePoll()
 	{
-		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage();
+		$drupalInfo['numCores'] = SiteCommanderUtils::getNumCores();
+		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage( $drupalInfo['numCores']);
+		$drupalInfo['memInfo'] = \Drupal\sitecommander\Controller\SiteCommanderController::getMemoryInfo();
 		$drupalInfo['redisStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getRedisStats();
 		$drupalInfo['opCacheStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getOpCacheStats();
 		$drupalInfo['apcStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getApcStats();
+		$drupalInfo['storageHealth'] = \Drupal\sitecommander\Controller\SiteCommanderController::getStorageHealth();
+		$drupalInfo['usersOnline'] = \Drupal\sitecommander\Controller\SiteCommanderController::getUsersOnline();
 
     // Create AJAX Response object.
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
-		$responseData->siteCommanderCommand = 'updateGauges';
+		$responseData->siteCommanderCommand = 'updatePoll';
 		$responseData->payload = $drupalInfo;
     $response->addCommand( new ReadMessageCommand($responseData));
 
@@ -262,12 +276,14 @@ class SiteCommanderController extends ControllerBase {
 	{
 		$redisHostName = \Drupal::config('sitecommander.settings')->get('redisHostName');
 		$redisPort = \Drupal::config('sitecommander.settings')->get('redisPort');
+		$redisDatabaseIndex = \Drupal::config('sitecommander.settings')->get('redisDatabaseIndex');
 
 		if (class_exists('Redis') && $redisHostName && $redisPort) {
 
 			$redis = new \Redis();
 
 			$redis->connect($redisHostName, $redisPort);
+			$redis->select($redisDatabaseIndex);
 
 			// Do not allow PhpRedis serialize itself data, we are going to do it
 			// ourself. This will ensure less memory footprint on Redis size when
@@ -294,17 +310,16 @@ class SiteCommanderController extends ControllerBase {
 			$redisStats['peakMemoryUsedByRedis'] = round($redisInfo['used_memory_peak'] / pow(1024, 2), 4);
 
 			// Number of cached objects
-			list($keys, $rest) = preg_split('/,/', $redisInfo['db0']);
+			list($keys, $rest) = preg_split('/,/', $redisInfo['db' . $redisDatabaseIndex]);
 			list($keys, $numObjects) = preg_split('/=/', $keys);
 
 			// Format I/O stats
-			$redisInfo['total_net_input_bytes'] = format_size($redisInfo['total_net_input_bytes']);
-			$redisInfo['total_net_output_bytes'] = format_size($redisInfo['total_net_output_bytes']);
+			$redisInfo['totalNetInputBytesFormatted'] = format_size( $redisInfo['total_net_input_bytes'] );
+			$redisInfo['totalNetOutputBytesFormatted'] = format_size( $redisInfo['total_net_output_bytes'] );
 
 			$redisStats['numObjectsCached'] = $numObjects ? $numObjects : 0;
 
 			$redisInfo = array_merge($redisStats, $redisInfo);
-
 			return $redisInfo;
 		}
 	}
@@ -344,22 +359,19 @@ class SiteCommanderController extends ControllerBase {
 		}
 	}
 
-	public static function getCpuLoadAverage()
+	public static function getCpuLoadAverage( $numCores = 1 )
 	{
 		// Get CPU load average
 		if(preg_match('/.*nux.*/', php_uname()))
 		{
-			// Get # of CPU cores
-			$numCPUs = SiteCommanderUtils::getNumCPUs();
-
 			ob_start();
 			$tmp = preg_split('/\s+/', system('cat /proc/loadavg'));
-			$loadAverage = array($tmp[0]/$numCPUs, $tmp[1]/$numCPUs, $tmp[2]/$numCPUs);
+			$loadAverage = array($tmp[0], $tmp[1], $tmp[2], $tmp[0]/$numCores, $tmp[1]/$numCores, $tmp[2]/$numCores);
 			ob_end_clean();
 		}
 		else
 		{
-			$loadAverage = array(0, 0, 0);
+			$loadAverage = array(0, 0, 0, 0, 0, 0);
 		}
 
 		return $loadAverage;
@@ -369,12 +381,14 @@ class SiteCommanderController extends ControllerBase {
 	{
 		$redisHostName = \Drupal::config('sitecommander.settings')->get('redisHostName');
 		$redisPort = \Drupal::config('sitecommander.settings')->get('redisPort');
+		$redisDatabaseIndex = \Drupal::config('sitecommander.settings')->get('redisDatabaseIndex');
 
 		if (class_exists('Redis') && $redisHostName && $redisPort) {
 
 			$redis = new \Redis();
 
 			$redis->connect($redisHostName, $redisPort);
+			$redis->select($redisDatabaseIndex);
 
 			// Do not allow PhpRedis serialize itself data, we are going to do it
 			// ourself. This will ensure less memory footprint on Redis size when
@@ -384,5 +398,128 @@ class SiteCommanderController extends ControllerBase {
 			$anonUserKeys = $redis->keys('siteCommander_anon_user_*');
 			return count($anonUserKeys);
 		}
+	}
+
+	// Determine health of attached storage devices
+	public static function getStorageHealth()
+	{
+		// Linux
+		if(preg_match('/.*nux.*/', php_uname()))
+		{
+			ob_start();
+			system('df');
+
+			$lines = preg_split('/\n/', ob_get_contents());
+			ob_end_clean();
+
+			$storageHealth = array();
+			foreach($lines as $line)
+			{
+				$flds = preg_split('/\s+/', $line);
+				if(count($flds) == 6)
+				{
+					$storageHealth[ $flds[0] ] = array(
+						'totalSizeHumanReadable' => format_size(1024 * $flds[1]),
+						'totalBlocks' => $flds[1],
+						'usedBlocks' => $flds[2],
+						'availableBlocks' => $flds[3],
+						'usePct' => $flds[4],
+						'mountPoint' => $flds[5]
+					);
+				}
+			}
+
+			// Eat the header row, /dev, etc
+			unset($storageHealth['Filesystem']);
+			unset($storageHealth['devtmpfs']);
+		}
+		else
+		{
+		}
+
+		return $storageHealth;
+	}
+
+	// Get Memory Information/Usage
+	public static function getMemoryInfo()
+	{
+		$memInfo = array();
+		if(preg_match('/.*nux.*/', php_uname()))
+		{
+			$tmp = file('/proc/meminfo', FILE_IGNORE_NEW_LINES);
+
+			$warningIndicator = 'default';
+
+			foreach($tmp as $line)
+			{
+				list($label, $value, $sizeLabel) = preg_split('/\s+/', $line);
+				
+				$label = str_replace(':', '', $label);
+
+				$memInfo[ $label ] = array('warningIndicator' => $warningIndicator, 'valueHuman' => format_size($value * 1024), 'value' => $value);
+			}
+
+			// These warning indicators are static
+			$memInfo['MemTotal']['warningIndicator'] = 'success';
+
+			// If available memory drops below a certain point, set the warning indicator
+			if($memInfo['MemAvailable']['value'] / $memInfo['MemTotal']['value'] <= .10)
+				$memInfo['MemAvailable']['warningIndicator'] = 'danger';
+			else
+			if($memInfo['MemAvailable']['value'] / $memInfo['MemTotal']['value'] <= .25)
+				$memInfo['MemAvailable']['warningIndicator'] = 'warning';
+			else
+				$memInfo['MemAvailable']['warningIndicator'] = 'success';
+
+			// If swap starts growing, set the warning indicator
+			if($memInfo['SwapFree']['value'] / $memInfo['SwapTotal']['value'] <= .50)
+				$memInfo['SwapFree']['warningIndicator'] = 'danger';
+			else
+			if($memInfo['SwapFree']['value'] / $memInfo['SwapTotal']['value'] <= .25)
+				$memInfo['SwapFree']['warningIndicator'] = 'warning';
+			else
+				$memInfo['SwapFree']['warningIndicator'] = 'success';
+			
+
+		}
+		else
+		{
+			// TODO - Windows
+		}
+
+		return $memInfo;
+	}
+
+	public static function getUsersOnline()
+	{
+		$usersOnline = array();
+
+		// Count users active within the defined period.
+		$interval = time() - 900;
+
+		$connection = \Drupal::database();
+
+		$query = \Drupal::entityQuery('user');
+		$query->condition('access', strtotime('15 minutes ago'), '>=');
+		$uids = $query->execute();
+		$users = entity_load_multiple('user', $uids);
+		return $users;
+
+
+
+
+		$query = $connection->select('users_field_data','u');
+		$query->leftJoin('user__field_first_name', 'ufn', 'u.uid = ufn.entity_id');
+		$query->leftJoin('user__field_last_name', 'uln', 'u.uid = uln.entity_id');
+		$query->fields('u', array('uid', 'name', 'mail'));
+		$query->fields('ufn', array('field_first_name_value'));
+		$query->fields('uln', array('field_last_name_value'));
+		$query->condition('access', strtotime('15 minutes ago'), '>=');
+
+		$data = $query->execute();
+		$results = $data->fetchAll(\PDO::FETCH_OBJ);
+
+		return $results;
+
 	}
 }

@@ -39,10 +39,10 @@ sitecommander.purgeSessions:
         _permission: 'access administration pages'
 
 sitecommander.ajaxUpdateGauges:
-    path: '/sitecommander/update-gauges'
+    path: '/sitecommander/update-poll'
     defaults:
-        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::updateGauges'
-        _title: 'Update Gauges'
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::updatePoll'
+        _title: 'Update Poll'
     requirements:
         _permission: 'access administration pages'
 

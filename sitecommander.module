@@ -32,42 +32,9 @@ function sitecommander_theme($existing, $type, $theme, $path) {
  */
 
 function sitecommander_rebuild() {
-	// Store the current timestamp in a state variable
+	// Store the current timestamp in state variables
 	\Drupal::state()->set('sitecommander.timestamp_cache_last_rebuild', time());
 	\Drupal::state()->set('sitecommander.timestamp_cssjs_last_rebuild', time());
 }
 
-/**
- * Implements hook_menu().
- */
-function sitecommander_menu() 
-{
-  $items['admin/config/system/sitecommander'] = array(
-    'title' => 'SiteCommander Configuration',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('sitecommander_form'),
-    'access arguments' => array('administer users'),
-    'type' => MENU_NORMAL_ITEM,
-  );
- 
-  return $items;
-}
-
-/**
- * Admin form to configure
- */
-/*
-function sitecommander_form($form, &$form_state) 
-{
-  $form['sitecommander_configuration'] = array(
-    '#type' => 'text',
-    '#title' => t('CPU Load Average AJAX Refresh Rate (in seconds)'),
-    '#required' => TRUE,
-  	'#default_value' => variable_get('sitecommander_configuration', '60'),
-  );
- 
-  return system_settings_form($form);
-
-}
-*/
 
