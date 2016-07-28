@@ -136,31 +136,6 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 			$drupalInfo['oldFilesStorageSize'] = 'Unknown';
 		}
 
-		// Get Memory Usage
-		if(preg_match('/.*nux.*/', php_uname()))
-		{
-			$drupalInfo['memoryUsage']['totalMemory'] = 0;
-			$drupalInfo['memoryUsage']['usedMemory'] = 0;
-
-			$tmp = file('/proc/meminfo', FILE_IGNORE_NEW_LINES);
-			foreach($tmp as $line)
-			{
-				if(preg_match('/^MemTotal:/', $line)) {
-					list($label, $drupalInfo['memoryUsage']['totalMemory'], $sizeLabel) = preg_split('/\s+/', $line);
-				}
-
-				if (preg_match('/^MemFree:\s+(\d+)\skB$/', $line, $matches)) {
-					$availableMemory = $matches[1];
-					$drupalInfo['memoryUsage']['usedMemory'] = $drupalInfo['memoryUsage']['totalMemory'] - $availableMemory;
-				}
-			}
-		}
-		else
-		{
-			$drupalInfo['memoryUsage']['totalMemory'] = 0;
-			$drupalInfo['memoryUsage']['usedMemory'] = 0;
-		}
-
 		// Get number of enabled modules
 		$drupalInfo['enabledModulesCount'] = count($this->moduleHandler->getModuleList());
 
@@ -245,6 +220,7 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 
 		$drupalInfo['numCores'] = SiteCommanderUtils::getNumCores();
 		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage( $drupalInfo['numCores']);
+		$drupalInfo['memInfo'] = \Drupal\sitecommander\Controller\SiteCommanderController::getMemoryInfo();
 		$drupalInfo['redisStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getRedisStats();
 		$drupalInfo['opCacheStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getOpCacheStats();
 		$drupalInfo['apcStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getApcStats();

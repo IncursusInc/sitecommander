@@ -9,6 +9,6 @@ services:
 
   sitecommander.listener:
     class: 'Drupal\sitecommander\EventSubscriber\SiteCommanderListener'
-    arguments: []
+    arguments: ['@current_user','@config.factory']
     tags:
       - { name: event_subscriber }

@@ -19,6 +19,18 @@
 	color: gold !important;
 }
 
+.card-container {
+}
+
+.card {
+	width: 25%;
+	border: 1px solid #ededed;
+	padding: 10px;
+	margin: 5px 0px;
+	text-align: center;
+	float: left;
+}
+
 .rounded-container {
 	border-radius: 6px;
 	overflow: hidden;
@@ -78,13 +90,13 @@
   margin-top: 3px !important;
 }
 
-.badge-green {
+.badge-green, .badge-success {
   color: white !important;
   background-color: #5cb85c !important;
   margin-top: 3px !important;
 }
 
-.badge-openrate {
+.badge-openrate, .badge-warning {
   color: white !important;
 	background-color: #ec971f !important;
   margin-top: 3px !important;
@@ -98,6 +110,18 @@
 
 .badge-default {
   color: white !important;
+  margin-top: 3px !important;
+}
+
+.badge-info {
+  color: white !important;
+	background-color: #5bc0de !important;
+  margin-top: 3px !important;
+}
+
+.badge-danger {
+  color: white !important;
+	background-color: #d9534f !important;
   margin-top: 3px !important;
 }
 

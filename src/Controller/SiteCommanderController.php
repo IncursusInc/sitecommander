@@ -143,10 +143,9 @@ class SiteCommanderController extends ControllerBase {
 	// Clear Redis cache
 	public function clearRedisCache()
 	{
-		$redisHostName = \Drupal::config('sitecommander.settings')->get('redisHostName');
-		$redisPort = \Drupal::config('sitecommander.settings')->get('redisPort');
-		$redisDatabaseIndex = \Drupal::config('sitecommander.settings')->get('redisDatabaseIndex');
-echo $redisDatabaseIndex;
+		$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
+		$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
+		$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
 
 		if (class_exists('Redis') && $redisHostName && $redisPort) {
 
@@ -250,6 +249,7 @@ echo $redisDatabaseIndex;
 	{
 		$drupalInfo['numCores'] = SiteCommanderUtils::getNumCores();
 		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage( $drupalInfo['numCores']);
+		$drupalInfo['memInfo'] = \Drupal\sitecommander\Controller\SiteCommanderController::getMemoryInfo();
 		$drupalInfo['redisStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getRedisStats();
 		$drupalInfo['opCacheStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getOpCacheStats();
 		$drupalInfo['apcStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getApcStats();
@@ -436,5 +436,55 @@ echo $redisDatabaseIndex;
 		}
 
 		return $storageHealth;
+	}
+
+	// Get Memory Information/Usage
+	public static function getMemoryInfo()
+	{
+		$memInfo = array();
+		if(preg_match('/.*nux.*/', php_uname()))
+		{
+			$tmp = file('/proc/meminfo', FILE_IGNORE_NEW_LINES);
+
+			$warningIndicator = 'default';
+
+			foreach($tmp as $line)
+			{
+				list($label, $value, $sizeLabel) = preg_split('/\s+/', $line);
+				
+				$label = str_replace(':', '', $label);
+
+				$memInfo[ $label ] = array('warningIndicator' => $warningIndicator, 'valueHuman' => format_size($value * 1024), 'value' => $value);
+			}
+
+			// These warning indicators are static
+			$memInfo['MemTotal']['warningIndicator'] = 'success';
+
+			// If available memory drops below a certain point, set the warning indicator
+			if($memInfo['MemAvailable']['value'] / $memInfo['MemTotal']['value'] <= .10)
+				$memInfo['MemAvailable']['warningIndicator'] = 'danger';
+			else
+			if($memInfo['MemAvailable']['value'] / $memInfo['MemTotal']['value'] <= .25)
+				$memInfo['MemAvailable']['warningIndicator'] = 'warning';
+			else
+				$memInfo['MemAvailable']['warningIndicator'] = 'success';
+
+			// If swap starts growing, set the warning indicator
+			if($memInfo['SwapFree']['value'] / $memInfo['SwapTotal']['value'] <= .50)
+				$memInfo['SwapFree']['warningIndicator'] = 'danger';
+			else
+			if($memInfo['SwapFree']['value'] / $memInfo['SwapTotal']['value'] <= .25)
+				$memInfo['SwapFree']['warningIndicator'] = 'warning';
+			else
+				$memInfo['SwapFree']['warningIndicator'] = 'success';
+			
+
+		}
+		else
+		{
+			// TODO - Windows
+		}
+
+		return $memInfo;
 	}
 }
