@@ -9,7 +9,7 @@ SiteCommander features include:
 * Implemented as a Drupal block, so you can put it on the same page as other blocks to make your own dashboard
 * Breakdown of published nodes by type, with shortcuts to create new nodes, or browse nodes by type
 * Quickly see how many modules you have installed and a shortcut to install new ones
-* Quickly see how many authenticated users are currently online
+* Quickly see how many authenticated users are currently online (and view a list of them)
 * Quickly see how many visitors (non authenticated) are currently online (if using Redis as a caching backend)
 * Quickly see today's top site searches
 * See when cron last ran and a shortcut to manually run it
