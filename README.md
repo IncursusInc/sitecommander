@@ -29,7 +29,13 @@ SiteCommander features include:
 
 ![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot2.png?itok=KnZedmz8 "SiteCommander Screenshot")
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot3.png?itok=DRqQjk2N "SiteCommander Screenshot")
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot3.png?itok=KnZedmz8 "SiteCommander Screenshot")
+
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot4.png?itok=KnZedmz8 "SiteCommander Screenshot")
+
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot5.png?itok=KnZedmz8 "SiteCommander Screenshot")
+
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot6.png?itok=KnZedmz8 "SiteCommander Screenshot")
 
 # Installation Instructions
 
