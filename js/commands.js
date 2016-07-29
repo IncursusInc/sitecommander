@@ -19,18 +19,18 @@
 
 		if(response.responseData.siteCommanderCommand == 'rebuildDrupalCache')
 		{
-			$('#last_cache_rebuild').html(response.responseData.last_cache_rebuild);
+			$('#timestamp_cache_last_rebuild').html(response.responseData.timestamp_cache_last_rebuild);
 		}
 
 		if(response.responseData.siteCommanderCommand == 'cleanupOldFiles')
 		{
-			$('#old-files-storage-size').html(response.responseData.oldFilesStorageSize);
-			$('#last_cache_rebuild').html(response.responseData.last_cache_rebuild);
+			$('#oldFilesStorageSize').html(response.responseData.oldFilesStorageSize);
+			$('#timestamp_cache_last_rebuild').html(response.responseData.timestamp_cache_last_rebuild);
 		}
 
 		if(response.responseData.siteCommanderCommand == 'purgeSessions')
 		{
-			$('#num-session-entries').html(response.responseData.newNumSessionEntries);
+			$('#numSessionEntries').html(response.responseData.newNumSessionEntries);
 		}
 
 		if(response.responseData.siteCommanderCommand == 'clearApcOpCache')

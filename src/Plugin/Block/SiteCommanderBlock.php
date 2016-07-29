@@ -18,6 +18,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\Core\Template\TwigEnvironment;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\sitecommander\SiteCommanderUtils;
 
@@ -47,8 +48,9 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 	protected $state;
 	protected $translation;
 	protected $currentUser;
+	protected $twig;
 
-	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state, AccountInterface $account ) 
+	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state, AccountInterface $account,TwigEnvironment $twig ) 
 	{
 		$this->connection = $connection;
 		$this->moduleHandler = $moduleHandler;
@@ -57,6 +59,7 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$this->configFactory = $configFactory;
 		$this->state = $state;
 		$this->currentUser = $currentUser;
+		$this->twig = $twig;
 	}
 
   /**
@@ -70,13 +73,14 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
       $container->get('file_system'),
       $container->get('config.factory'),
       $container->get('state'),
-      $container->get('current_user')
+      $container->get('current_user'),
+      $container->get('twig')
     );
   }
 
   public function build() {
 
-		$sc = new \Drupal\sitecommander\Controller\SiteCommanderController($this->connection, $this->moduleHandler, $this->entityQuery, $this->fileSystem, $this->configFactory, $this->state, $this->currentUser );
+		$sc = new \Drupal\sitecommander\Controller\SiteCommanderController($this->connection, $this->moduleHandler, $this->entityQuery, $this->fileSystem, $this->configFactory, $this->state, $this->currentUser, $this->twig );
 
 		list($drupalInfo['nodeTypeNames'], $drupalInfo['publishedNodeCounts']) = $sc->getPublishedNodeCounts();
 		$drupalInfo['userCount'] = $sc->getUserCount();
@@ -85,6 +89,8 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$drupalInfo['enabledModulesCount'] = $sc->getEnabledModulesCount();
 		$drupalInfo['numAuthUsersOnline'] =  $sc->getNumAuthUsersOnline();
 		$drupalInfo['numSessionEntries'] = $sc->getNumSessionEntries();
+		$drupalInfo['sessionedUsers'] = $sc->getSessionedUsers();
+		$drupalInfo['usersOnline'] = $sc->getUsersOnline();
 		$drupalInfo['mailchimp'] = $sc->getMailChimpInfo();
 		$drupalInfo['topSearches'] = $sc->getTodaysTopSearches();
 		$drupalInfo['numVisitorsOnline'] = $sc->getAnonymousUsers();
@@ -95,8 +101,6 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$drupalInfo['opCacheStats'] = $sc->getOpCacheStats();
 		$drupalInfo['apcStats'] = $sc->getApcStats();
 		$drupalInfo['storageHealth'] = $sc->getStorageHealth();
-		$drupalInfo['usersOnline'] = $sc->getUsersOnline();
-		$drupalInfo['sessionedUsers'] = $sc->getSessionedUsers();
 
 		// Drupal settings
 		$drupalInfo['settings'] = array();
@@ -109,6 +113,7 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 
 		// Last time Drupal/Modules were checked for updates
 		$drupalInfo['update_last_check'] = SiteCommanderUtils::elapsedTime($this->state->get('update.last_check'));
+
 		// The line below will send the admin user back to the status page, which may not be desirable
 		//$destination = \Drupal::destination('/admin/reports/updates')->getAsArray();
 		$destination = array('destination' => '/admin/reports/updates');
