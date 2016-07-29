@@ -1,3 +1,8 @@
+<audio id="task-complete">
+	<source src="{{ drupalInfo.sitecommanderInstallPath }}/audio/task-complete.mp3" type="audio/mp3" />
+	<source src="/modules/custom/sitecommander/audio/task-complete.ogg" type="audio/ogg" />
+</audio>
+
 <div class="container">
 	<div class="row">
 
@@ -26,12 +31,6 @@
 			</li>
 
 			<li class="">
-				<a href="#storage-health" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Storage Health">
-					<i class="fa fa-hdd-o"></i>
-				</a>
-			</li>
-
-			<li class="">
 				<a href="#users-online" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Authenticated Users Online Now">
 					<i class="fa fa-users"></i>
 				</a>
@@ -40,6 +39,24 @@
 			<li class="">
 				<a href="#sessions" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Browse/Manage Sessions">
 					<i class="fa fa-desktop"></i>
+				</a>
+			</li>
+
+			<li class="">
+				<a href="#storage-health" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Storage Health">
+					<i class="fa fa-hdd-o"></i>
+				</a>
+			</li>
+
+			<li class="">
+				<a href="#backup-manager" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Backup Manager">
+					<i class="fa fa-archive"></i>
+				</a>
+			</li>
+
+			<li class="">
+				<a href="#broadcasts" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Broadcasts">
+					<i class="fa fa-bullhorn"></i>
 				</a>
 			</li>
 
@@ -91,6 +108,12 @@
 			</div>
 			<div role="tabpanel" class="tab-pane" id="sessions">
 				{% include '@sitecommander/tab-sessions.html.twig' %}
+			</div>
+			<div role="tabpanel" class="tab-pane" id="backup-manager">
+				{% include '@sitecommander/tab-backup-manager.html.twig' %}
+			</div>
+			<div role="tabpanel" class="tab-pane" id="broadcasts">
+				{% include '@sitecommander/tab-broadcasts.html.twig' %}
 			</div>
 		</div>
 	</div> <!-- row -->

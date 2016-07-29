@@ -1,0 +1,36 @@
+<div class="col-md-6 text-left">
+	<h2>Backup Manager (<span class="icon-green"><strong>{{ drupalInfo.settings.admin.backupMaxAgeInDays }}-day</strong></span> Retention Set)</h2>
+</div>
+<div class="col-md-6 text-right">
+	<a href="/sitecommander/make-backup" class="use-ajax btn btn-md btn-success" alt="Make a New Backup Now" title="Make a New Backup Now"><span class="fa fa-archive"></span> Make a New Backup Now</a>
+</div>
+
+<div class="clearfix"></div>
+
+<hr class="site-commander-hr" />
+
+<div class="row">
+	<div class="col-md-12">
+		<table class="table table-striped" id="table-users-online">
+		<tr>
+			<th>Archive Name</th>
+			<th>Created On</th>
+			<th>Size</th>
+			<th>Options</th>
+		</tr>
+		<tbody>
+		{% for filename, b in drupalInfo.backupList %}
+			<tr>
+				<td>{{ filename }}</td>
+				<td>{{ b.ctime|date('Y.m.d H:i:s') }}</td>
+				<td>{{ b.fileSizeHuman }}</td>
+				<td>
+					<a class="btn btn-sm btn-primary disabled pull-left"><span class="fa fa-trash"></span> Restore</a>
+					<a class="btn btn-sm btn-danger disabled pull-right"><span class="fa fa-trash"></span> Delete</a>
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+		</table>
+	</div>
+</div>
