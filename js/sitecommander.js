@@ -201,8 +201,14 @@ jQuery(document).ready(function($){
 				dsg10.refresh(response[0].responseData.payload.opCacheStats.memory_usage.usedMemory);
 			}
 
-			// Update users online table
-			$('#users-online').html( response[0].responseData.payload.usersOnlineTable );
+			// Update users online table (only do the fade effect if it is currently visible!)
+			if($('#users-online').is(':visible')) {
+				$('#users-online').fadeOut(500, function() {
+					$(this).html( response[0].responseData.payload.usersOnlineTable ).fadeIn(500);
+				});
+			} else {
+				$('#users-online').html( response[0].responseData.payload.usersOnlineTable );
+			}
 
 			// Update all other fields
 			$.each(response[0].responseData.payload, function( key, value ) {
