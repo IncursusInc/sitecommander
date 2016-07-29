@@ -42,9 +42,9 @@
 			{% endif %}
 
 			<li class="list-group-item"> <a href="/admin/people/create" class="site-commander-icon-action"><span class="fa fa-user-plus fa-fw"></span></a> <a href="/admin/people" title="Browse user accounts">Total # Users</a>: <span class="badge badge-active">{{ drupalInfo.userCount }}</span></li>
-			<li class="list-group-item"> <a href="#" class="switch-users-online"><span class="fa fa-users fa-fw icon-green"></span></a> <a href="#" class="switch-users-online">Auth'd Users Online Now</a>: <span class="badge {{ userClass }}">{{ drupalInfo.numAuthUsersOnline }}</span></li>
-			<li class="list-group-item"> <span class="fa fa-users fa-fw site-commander-icon-noaction"></span> Visitors Online Now: <span class="badge {{ visitorClass }}">{{ drupalInfo.numVisitorsOnline }}</span></li>
-			<li class="list-group-item"> <a href="/sitecommander/purge-sessions" class="use-ajax site-commander-icon-action" alt="Purge sessions now (except this one!)" title="Purge sessions now (except this one!)"><span class="fa fa-trash fa-fw"></span></a> Number of Session Entries: <span id="num-session-entries" class="badge badge-active">{{ drupalInfo.numSessionEntries }}</span></li>
+			<li class="list-group-item"> <a href="#" class="switch-users-online"><span class="fa fa-users fa-fw icon-green"></span></a> <a href="#" class="switch-users-online">Auth'd Users Online Now</a>: <span id="numAuthUsersOnline" class="badge {{ userClass }}">{{ drupalInfo.numAuthUsersOnline }}</span></li>
+			<li class="list-group-item"> <span class="fa fa-users fa-fw site-commander-icon-noaction"></span> Visitors Online Now: <span id="numVisitorsOnline" class="badge {{ visitorClass }}">{{ drupalInfo.numVisitorsOnline }}</span></li>
+			<li class="list-group-item"> <a href="#" class="switch-sessions" alt="Browse/Manage Sessions" title="Browse/Manage Sessions"><span class="fa fa-desktop fa-fw icon-green"></span></a> Number of Session Entries: <span id="numSessionEntries" class="badge badge-active">{{ drupalInfo.numSessionEntries }}</span></li>
 
 			<li class="list-group-divider"></li>
 
@@ -57,15 +57,15 @@
 			{% endif %}
 
 			<li class="list-group-item"> <a href="/sitecommander/toggle-maintenance-mode" class="use-ajax site-commander-icon-action"><span id="toggleMaintenanceMode" title="Toggle maintenance mode"><span id="maintenanceModeIcon" class="fa {{ maintIcon }} fa-fw"></span></span></a>&nbsp; Maintenance Mode: <span id="maintenanceModeBadge" class="badge {{ maintenanceModeClass }}">{{ drupalInfo.maintenance_mode }}</span></li>
-			<li class="list-group-item"> <a href="/cron/{{ drupalInfo.cron.cron_key }}" alt="Run cron now" title="Run cron now" class="site-commander-icon-action"><span class="fa fa-clock-o fa-fw"></span></a> Cron Last Run: <span class="badge badge-active">{{ drupalInfo.cron.cron_last }}</span></li>
-			<li class="list-group-item"> <a href="{{ drupalInfo.updateCheckURL }}" class="site-commander-icon-action"><span class="fa fa-clock-o fa-fw"></span></a> Last Checked for Updates: <span class="badge badge-active">{{ drupalInfo.update_last_check }}</span></li>
+			<li class="list-group-item"> <a href="/cron/{{ drupalInfo.cron.cron_key }}" alt="Run cron now" title="Run cron now" class="site-commander-icon-action"><span class="fa fa-clock-o fa-fw"></span></a> Cron Last Run: <span id="cronLastRun" class="badge badge-active">{{ drupalInfo.cron.cron_last }}</span></li>
+			<li class="list-group-item"> <a href="{{ drupalInfo.updateCheckURL }}" class="site-commander-icon-action"><span class="fa fa-clock-o fa-fw"></span></a> Last Checked for Updates: <span id="lastCheckUpdates" class="badge badge-active">{{ drupalInfo.update_last_check }}</span></li>
 
-			<li class="list-group-item"> <a href="/sitecommander/rebuild-drupal-cache" class="use-ajax site-commander-icon-action" alt="Clear/rebuild cache now" title="Clear/rebuild cache now"><span class="fa fa-refresh fa-fw"></span></a> Drupal Cache Last Refreshed: <span id="last_cache_rebuild" class="badge badge-active">{{ drupalInfo.timestamp_cache_last_rebuild }}</span></li>
+			<li class="list-group-item"> <a href="/sitecommander/rebuild-drupal-cache" class="use-ajax site-commander-icon-action" alt="Clear/rebuild cache now" title="Clear/rebuild cache now"><span class="fa fa-refresh fa-fw"></span></a> Drupal Cache Last Refreshed: <span id="timestamp_cache_last_rebuild" class="badge badge-active">{{ drupalInfo.timestamp_cache_last_rebuild }}</span></li>
 			<li class="list-group-item"> <span class="fa fa-hdd-o fa-fw site-commander-icon-noaction"></span> Install Size: <span class="badge badge-active">{{ drupalInfo.installSize }}</span></li>
-			<li class="list-group-item"> <a href="/sitecommander/cleanup-old-files" class="use-ajax site-commander-icon-action" alt="Remove old aggregated css/js files now" title="Remove old aggregated css/js files now"><span class="fa fa-trash fa-fw"></span></a> Old Aggregated File Storage: <span id="old-files-storage-size" class="badge badge-active">{{ drupalInfo.oldFilesStorageSize }}</span></li>
+			<li class="list-group-item"> <a href="/sitecommander/cleanup-old-files" class="use-ajax site-commander-icon-action" alt="Remove old aggregated css/js files now" title="Remove old aggregated css/js files now"><span class="fa fa-trash fa-fw"></span></a> Old Aggregated File Storage: <span id="oldFilesStorageSize" class="badge badge-active">{{ drupalInfo.oldFilesStorageSize }}</span></li>
 
 			{% if drupalInfo.redisStats %}
-			<li class="list-group-item"> <a href="/sitecommander/clear-redis-cache" class="use-ajax site-commander-icon-action" alt="Clear Redis Cache Now" title="Clear Redis Cache Now"><span class="fa fa-trash fa-fw"></span></a> Redis Cache # Entries: <span id="num-redis-entries" class="badge badge-active">{{ drupalInfo.redisStats.numObjectsCached }}</span></li>
+			<li class="list-group-item"> <a href="/sitecommander/clear-redis-cache" class="use-ajax site-commander-icon-action" alt="Clear Redis Cache Now" title="Clear Redis Cache Now"><span class="fa fa-trash fa-fw"></span></a> Redis Cache # Entries: <span id="numRedisObjectsCached" class="badge badge-active">{{ drupalInfo.redisStats.numObjectsCached }}</span></li>
 			{% endif %}
 
 			{% if drupalInfo.apcStats %}
@@ -73,7 +73,7 @@
 			{% endif %}
 
 			{% if drupalInfo.opCacheStats %}
-			<li class="list-group-item"> <a href="/sitecommander/clear-php-opcache" class="use-ajax site-commander-icon-action" alt="Clear PHP OpCache Now" title="Clear PHP OpCache Now"><span class="fa fa-trash fa-fw"></span></a> PHP OpCache # Entries: <span title="# cached scripts" id="num-php-opcache-scripts" class="badge badge-active">{{ drupalInfo.opCacheStats.opcache_statistics.num_cached_scripts }}</span> <span title="# cached keys" id="num-php-opcache-keys" class="badge badge-active">{{ drupalInfo.opCacheStats.opcache_statistics.num_cached_keys }}</span></li>
+			<li class="list-group-item"> <a href="/sitecommander/clear-php-opcache" class="use-ajax site-commander-icon-action" alt="Clear PHP OpCache Now" title="Clear PHP OpCache Now"><span class="fa fa-trash fa-fw"></span></a> PHP OpCache # Entries: <span title="# cached scripts" id="numPhpOpcacheScripts" class="badge badge-active">{{ drupalInfo.opCacheStats.opcache_statistics.num_cached_scripts }}</span> <span title="# cached keys" id="numPhpOpcacheKeys" class="badge badge-active">{{ drupalInfo.opCacheStats.opcache_statistics.num_cached_keys }}</span></li>
 			{% endif %}
 		</ul>
 	</div>

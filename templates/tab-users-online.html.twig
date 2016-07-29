@@ -17,7 +17,7 @@
 				<td>{{ u.name.value }}</td>
 				<td>{{ u.field_first_name.value }} {{ u.field_last_name.value }}</td>
 				<td>{{ u.mail.value }}</td>
-				<td>{{ u.access.value|date('Y.m.d H:i:s') }}</td>
+				<td>{{ u.accessElapsedTime }}</td>
 			</tr>
 		{% endfor %}
 		</tbody>

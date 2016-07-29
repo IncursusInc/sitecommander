@@ -15,7 +15,12 @@ jQuery(document).ready(function($){
 
 			$('.switch-users-online').click(function(e) {
 				e.preventDefault();
-				$('#site-commander-tabs a[href="#users-online"]').tab('show')
+				$('#site-commander-tabs a[href="#users-online"]').tab('show');
+			});
+
+			$('.switch-sessions').click(function(e) {
+				e.preventDefault();
+				$('#site-commander-tabs a[href="#sessions"]').tab('show');
 			});
 
 			$('#reloadLink').click(function (e) {
@@ -195,6 +200,32 @@ jQuery(document).ready(function($){
 				dsg9.refresh(response[0].responseData.payload.opCacheStats.opcache_statistics.opcache_hit_rate);
 				dsg10.refresh(response[0].responseData.payload.opCacheStats.memory_usage.usedMemory);
 			}
+
+			// Update users online table (only do the fade effect if it is currently visible!)
+			if($('#users-online').is(':visible')) {
+				$('#users-online').fadeOut(500, function() {
+					$(this).html( response[0].responseData.payload.usersOnlineTable ).fadeIn(500);
+				});
+			} else {
+				$('#users-online').html( response[0].responseData.payload.usersOnlineTable );
+			}
+
+			// Update all other fields
+			$.each(response[0].responseData.payload, function( key, value ) {
+
+				//console.log(key);
+				//console.log('Old: ' + $('#' + key).html());
+				//console.log('New: ' + value);
+
+				// Only dop the fade in/out effect if there is a change in value
+				if($('#' + key).html() != value)
+				{
+					$('#' + key).fadeOut(500, function() {
+        		$(this).html(value).fadeIn(500);
+					});
+				}
+			});
+
 		});
 	}, drupalSettings.settings.admin.refreshRate * 1000);
 

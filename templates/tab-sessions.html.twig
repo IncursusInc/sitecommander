@@ -1,4 +1,6 @@
-<h2>Active Sessions ({{ drupalInfo.sessionedUsers|length }})</h2>
+<h2>Active Sessions ({{ drupalInfo.sessionedUsers|length }})  <a href="/sitecommander/purge-sessions" class="use-ajax pull-right btn btn-md btn-danger" alt="Purge sessions now (except this one!)" title="Purge sessions now (except this one!)"><span class="fa fa-trash"></span> Purge All Sessions (Except Your Current One!)</a></h2>
+
+<hr />
 
 <div class="row">
 	<div class="col-md-12">
@@ -18,7 +20,7 @@
 				<td>{{ su.u.name.value }}</td>
 				<td>{{ su.u.field_first_name.value }} {{ su.u.field_last_name.value }}</td>
 				<td>{{ su.u.mail.value }}</td>
-				<td>{{ su.u.access.value|date('Y.m.d H:i:s')}}</td>
+				<td>{{ su.u.accessElapsedTime }}</td>
 				<td class="text-center">
 					<a title="Delete this session" href="/sitecommander/delete-session/{{ su.s.sid }}" class="btn btn-sm btn-danger use-ajax" data-userid="{{ su.u.uid.value }}"><span class="fa fa-remove"></span></a>
 				</td>

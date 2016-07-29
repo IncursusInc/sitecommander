@@ -25,6 +25,7 @@ use Drupal\Core\Entity\Query\QueryAggregateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\sitecommander\Ajax\ReadMessageCommand;
 use Drupal\sitecommander\SiteCommanderUtils;
+use Drupal\Core\Template\TwigEnvironment;
 
 class SiteCommanderController extends ControllerBase {
 
@@ -36,8 +37,9 @@ class SiteCommanderController extends ControllerBase {
 	protected $state;
 	protected $translation;
 	protected $currentUser;
+	protected $twig;
 
-	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state, $account )
+	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state, $account, TwigEnvironment $twig )
 	{
 		$this->connection = $connection;
 		$this->moduleHandler = $moduleHandler;
@@ -46,6 +48,7 @@ class SiteCommanderController extends ControllerBase {
 		$this->configFactory = $configFactory;
 		$this->state = $state;
 		$this->currentUser = $account;
+		$this->twig = $twig;
 	}
 
   /**
@@ -59,7 +62,8 @@ class SiteCommanderController extends ControllerBase {
       $container->get('file_system'),
       $container->get('config.factory'),
       $container->get('state'),
-      $container->get('current_user')
+      $container->get('current_user'),
+      $container->get('twig')
     );
   }
 
@@ -103,7 +107,7 @@ class SiteCommanderController extends ControllerBase {
 		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'rebuildDrupalCache';
-		$responseData->last_cache_rebuild = SiteCommanderUtils::elapsedTime($this->state->get('sitecommander.timestamp_cache_last_rebuild'));
+		$responseData->timestamp_cache_last_rebuild = SiteCommanderUtils::elapsedTime($this->state->get('sitecommander.timestamp_cache_last_rebuild'));
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.
@@ -148,7 +152,7 @@ class SiteCommanderController extends ControllerBase {
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'cleanupOldFiles';
 		$responseData->oldFilesStorageSize = $oldFilesStorageSize;
-		$responseData->last_cache_rebuild = SiteCommanderUtils::elapsedTime($this->state->get('sitecommander.timestamp_cache_last_rebuild'));
+		$responseData->timestamp_cache_last_rebuild = SiteCommanderUtils::elapsedTime($this->state->get('sitecommander.timestamp_cache_last_rebuild'));
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.
@@ -286,10 +290,37 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage( $drupalInfo['numCores']);
 		$drupalInfo['memInfo'] = \Drupal\sitecommander\Controller\SiteCommanderController::getMemoryInfo();
 		$drupalInfo['redisStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getRedisStats();
+		$drupalInfo['numRedisObjectsCached'] = $drupalInfo['redisStats']['numObjectsCached'];
 		$drupalInfo['opCacheStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getOpCacheStats();
+		$drupalInfo['numPhpOpcacheScripts'] = $drupalInfo['opCacheStats']['opcache_statistics']['num_cached_scripts'];
+		$drupalInfo['numPhpOpcacheKeys'] = $drupalInfo['opCacheStats']['opcache_statistics']['num_cached_keys'];
 		$drupalInfo['apcStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getApcStats();
 		$drupalInfo['storageHealth'] = \Drupal\sitecommander\Controller\SiteCommanderController::getStorageHealth();
+		$drupalInfo['numAuthUsersOnline'] =  $this->getNumAuthUsersOnline();
+		$drupalInfo['numSessionEntries'] = $this->getNumSessionEntries();
+		$drupalInfo['numVisitorsOnline'] = $this->getAnonymousUsers();
+		$drupalInfo['oldFilesStorageSize'] = $this->getOldFilesStorageSize();
+
 		$drupalInfo['usersOnline'] = \Drupal\sitecommander\Controller\SiteCommanderController::getUsersOnline();
+    $path = '@sitecommander/tab-users-online.html.twig';
+    $template = $this->twig->loadTemplate($path);
+
+    $drupalInfo['usersOnlineTable'] = $template->render(['drupalInfo' => $drupalInfo]);
+
+
+		// Cron info
+		$drupalInfo['cron']['cron_key'] = $this->state->get('system.cron_key');
+		$drupalInfo['cronLastRun'] = SiteCommanderUtils::elapsedTime($this->state->get('system.cron_last'));
+
+		// Last time Drupal/Modules were checked for updates
+		$drupalInfo['lastCheckUpdates'] = SiteCommanderUtils::elapsedTime($this->state->get('update.last_check'));
+
+		// Get timestamp of last cache rebuild
+		$timestamp = $this->state->get('sitecommander.timestamp_cache_last_rebuild');
+		if(!$timestamp)
+			 $drupalInfo['timestamp_cache_last_rebuild'] = 'Unknown';
+		else
+			 $drupalInfo['timestamp_cache_last_rebuild'] = SiteCommanderUtils::elapsedTime($timestamp);
 
     // Create AJAX Response object.
     $response = new AjaxResponse();
@@ -523,15 +554,41 @@ class SiteCommanderController extends ControllerBase {
 	}
 
 	// Count users active within the defined period.
+	// TODO - tie this into having a session as well!
 	public function getUsersOnline()
 	{
 		$interval = time() - 900;
 
+		// First, find all users who have had activity in the last 15 minutes
 		$query = $this->entityQuery->get('user');
 		$query->condition('access', strtotime('15 minutes ago'), '>=');
 		$uids = $query->execute();
-		$users = entity_load_multiple('user', $uids);
-		return $users;
+		$activeUsers = entity_load_multiple('user', $uids);
+
+		// Now, let's get all the session IDs that we have
+		$query = $this->connection->select('sessions','s');
+		$query->condition('uid', 0, '>');
+		$query->fields('s', array('uid', 'sid'));
+		$sessionResult = $query->execute()->fetchAllAssoc('uid', \PDO::FETCH_ASSOC);
+		$sessionIds = array_keys($sessionResult);
+
+		// Marry them up / filter out the ones that have had no access in the last 15 minutes
+		$actualActiveUsers = array();
+
+		foreach($sessionResult as $uid => $sr)
+		{
+			foreach($activeUsers as $u)
+			{
+				if($u->uid->value == $uid)
+				{
+					$u->accessElapsedTime = SiteCommanderUtils::elapsedTime($u->access->value);
+					$actualActiveUsers[] = $u;
+					break;
+				}
+			}
+		}
+		
+		return $actualActiveUsers;
 	}
 
 	// Get sessioned user list
@@ -559,6 +616,7 @@ class SiteCommanderController extends ControllerBase {
 			{
 				if($u->uid->value == $uid)
 				{
+					$u->accessElapsedTime = SiteCommanderUtils::elapsedTime($u->access->value);
 					$sessionedUsers[] = array('u' => $u, 's' => $sr);
 					break;
 				}
