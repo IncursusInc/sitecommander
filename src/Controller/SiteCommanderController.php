@@ -290,7 +290,10 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage( $drupalInfo['numCores']);
 		$drupalInfo['memInfo'] = \Drupal\sitecommander\Controller\SiteCommanderController::getMemoryInfo();
 		$drupalInfo['redisStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getRedisStats();
+		$drupalInfo['numRedisObjectsCached'] = $drupalInfo['redisStats']['numObjectsCached'];
 		$drupalInfo['opCacheStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getOpCacheStats();
+		$drupalInfo['numPhpOpcacheScripts'] = $drupalInfo['opCacheStats']['opcache_statistics']['num_cached_scripts'];
+		$drupalInfo['numPhpOpcacheKeys'] = $drupalInfo['opCacheStats']['opcache_statistics']['num_cached_keys'];
 		$drupalInfo['apcStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getApcStats();
 		$drupalInfo['storageHealth'] = \Drupal\sitecommander\Controller\SiteCommanderController::getStorageHealth();
 		$drupalInfo['numAuthUsersOnline'] =  $this->getNumAuthUsersOnline();

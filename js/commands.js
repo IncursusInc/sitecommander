@@ -40,13 +40,13 @@
 
 		if(response.responseData.siteCommanderCommand == 'clearPhpOpCache')
 		{
-			$('#num-php-opcache-scripts').html('0');
-			$('#num-php-opcache-keys').html('0');
+			$('#numPhpOpcacheScripts').html('0');
+			$('#numPhpOpcacheKeys').html('0');
 		}
 
 		if(response.responseData.siteCommanderCommand == 'clearRedisCache')
 		{
-			$('#num-redis-entries').html('0');
+			$('#numRedisObjectsCached').html('0');
 		}
 
 		if(response.responseData.siteCommanderCommand == 'deleteSession')

@@ -65,7 +65,7 @@
 			<li class="list-group-item"> <a href="/sitecommander/cleanup-old-files" class="use-ajax site-commander-icon-action" alt="Remove old aggregated css/js files now" title="Remove old aggregated css/js files now"><span class="fa fa-trash fa-fw"></span></a> Old Aggregated File Storage: <span id="oldFilesStorageSize" class="badge badge-active">{{ drupalInfo.oldFilesStorageSize }}</span></li>
 
 			{% if drupalInfo.redisStats %}
-			<li class="list-group-item"> <a href="/sitecommander/clear-redis-cache" class="use-ajax site-commander-icon-action" alt="Clear Redis Cache Now" title="Clear Redis Cache Now"><span class="fa fa-trash fa-fw"></span></a> Redis Cache # Entries: <span id="num-redis-entries" class="badge badge-active">{{ drupalInfo.redisStats.numObjectsCached }}</span></li>
+			<li class="list-group-item"> <a href="/sitecommander/clear-redis-cache" class="use-ajax site-commander-icon-action" alt="Clear Redis Cache Now" title="Clear Redis Cache Now"><span class="fa fa-trash fa-fw"></span></a> Redis Cache # Entries: <span id="numRedisObjectsCached" class="badge badge-active">{{ drupalInfo.redisStats.numObjectsCached }}</span></li>
 			{% endif %}
 
 			{% if drupalInfo.apcStats %}
@@ -73,7 +73,7 @@
 			{% endif %}
 
 			{% if drupalInfo.opCacheStats %}
-			<li class="list-group-item"> <a href="/sitecommander/clear-php-opcache" class="use-ajax site-commander-icon-action" alt="Clear PHP OpCache Now" title="Clear PHP OpCache Now"><span class="fa fa-trash fa-fw"></span></a> PHP OpCache # Entries: <span title="# cached scripts" id="num-php-opcache-scripts" class="badge badge-active">{{ drupalInfo.opCacheStats.opcache_statistics.num_cached_scripts }}</span> <span title="# cached keys" id="num-php-opcache-keys" class="badge badge-active">{{ drupalInfo.opCacheStats.opcache_statistics.num_cached_keys }}</span></li>
+			<li class="list-group-item"> <a href="/sitecommander/clear-php-opcache" class="use-ajax site-commander-icon-action" alt="Clear PHP OpCache Now" title="Clear PHP OpCache Now"><span class="fa fa-trash fa-fw"></span></a> PHP OpCache # Entries: <span title="# cached scripts" id="numPhpOpcacheScripts" class="badge badge-active">{{ drupalInfo.opCacheStats.opcache_statistics.num_cached_scripts }}</span> <span title="# cached keys" id="numPhpOpcacheKeys" class="badge badge-active">{{ drupalInfo.opCacheStats.opcache_statistics.num_cached_keys }}</span></li>
 			{% endif %}
 		</ul>
 	</div>
