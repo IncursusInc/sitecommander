@@ -44,7 +44,7 @@
 			<li class="list-group-item"> <a href="/admin/people/create" class="site-commander-icon-action"><span class="fa fa-user-plus fa-fw"></span></a> <a href="/admin/people" title="Browse user accounts">Total # Users</a>: <span class="badge badge-active">{{ drupalInfo.userCount }}</span></li>
 			<li class="list-group-item"> <a href="#" class="switch-users-online"><span class="fa fa-users fa-fw icon-green"></span></a> <a href="#" class="switch-users-online">Auth'd Users Online Now</a>: <span class="badge {{ userClass }}">{{ drupalInfo.numAuthUsersOnline }}</span></li>
 			<li class="list-group-item"> <span class="fa fa-users fa-fw site-commander-icon-noaction"></span> Visitors Online Now: <span class="badge {{ visitorClass }}">{{ drupalInfo.numVisitorsOnline }}</span></li>
-			<li class="list-group-item"> <a href="/sitecommander/purge-sessions" class="use-ajax site-commander-icon-action" alt="Purge sessions now (except this one!)" title="Purge sessions now (except this one!)"><span class="fa fa-trash fa-fw"></span></a> Number of Session Entries: <span id="num-session-entries" class="badge badge-active">{{ drupalInfo.numSessionEntries }}</span></li>
+			<li class="list-group-item"> <a href="#" class="switch-sessions" alt="Browse/Manage Sessions" title="Browse/Manage Sessions"><span class="fa fa-desktop fa-fw icon-green"></span></a> Number of Session Entries: <span id="num-session-entries" class="badge badge-active">{{ drupalInfo.numSessionEntries }}</span></li>
 
 			<li class="list-group-divider"></li>
 

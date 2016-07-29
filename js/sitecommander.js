@@ -15,7 +15,12 @@ jQuery(document).ready(function($){
 
 			$('.switch-users-online').click(function(e) {
 				e.preventDefault();
-				$('#site-commander-tabs a[href="#users-online"]').tab('show')
+				$('#site-commander-tabs a[href="#users-online"]').tab('show');
+			});
+
+			$('.switch-sessions').click(function(e) {
+				e.preventDefault();
+				$('#site-commander-tabs a[href="#sessions"]').tab('show');
 			});
 
 			$('#reloadLink').click(function (e) {
