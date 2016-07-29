@@ -49,6 +49,11 @@
 			$('#num-redis-entries').html('0');
 		}
 
+		if(response.responseData.siteCommanderCommand == 'deleteSession')
+		{
+			$('#' + response.responseData.sid ).fadeOut("medium");
+		}
+
 	}
 	
 

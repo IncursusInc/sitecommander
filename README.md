@@ -11,6 +11,7 @@ SiteCommander features include:
 * Quickly see how many modules you have installed and a shortcut to install new ones
 * Quickly see how many authenticated users are currently online (and view a list of them)
 * Quickly see how many visitors (non authenticated) are currently online (if using Redis as a caching backend)
+* Quickly browse active sessions (by user) and optionally terminate them
 * Quickly see today's top site searches
 * See when cron last ran and a shortcut to manually run it
 * See when the updates checker last ran, and a shortcut to manually check for updates

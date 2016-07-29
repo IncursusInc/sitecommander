@@ -32,8 +32,14 @@
 			</li>
 
 			<li class="">
-				<a href="#users-online" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Users Online Now">
+				<a href="#users-online" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Authenticated Users Online Now">
 					<i class="fa fa-users"></i>
+				</a>
+			</li>
+
+			<li class="">
+				<a href="#sessions" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Browse/Manage Sessions">
+					<i class="fa fa-desktop"></i>
 				</a>
 			</li>
 
@@ -82,6 +88,9 @@
 			</div>
 			<div role="tabpanel" class="tab-pane" id="users-online">
 				{% include '@sitecommander/tab-users-online.html.twig' %}
+			</div>
+			<div role="tabpanel" class="tab-pane" id="sessions">
+				{% include '@sitecommander/tab-sessions.html.twig' %}
 			</div>
 		</div>
 	</div> <!-- row -->
