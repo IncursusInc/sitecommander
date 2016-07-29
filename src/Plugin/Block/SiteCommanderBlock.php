@@ -96,6 +96,7 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$drupalInfo['apcStats'] = $sc->getApcStats();
 		$drupalInfo['storageHealth'] = $sc->getStorageHealth();
 		$drupalInfo['usersOnline'] = $sc->getUsersOnline();
+		$drupalInfo['sessionedUsers'] = $sc->getSessionedUsers();
 
 		// Drupal settings
 		$drupalInfo['settings'] = array();

@@ -13,7 +13,7 @@ jQuery(document).ready(function($){
 
 			$('[data-feature="tooltip"]').tooltip();
 
-			$('#switch-users-online').click(function(e) {
+			$('.switch-users-online').click(function(e) {
 				e.preventDefault();
 				$('#site-commander-tabs a[href="#users-online"]').tab('show')
 			});

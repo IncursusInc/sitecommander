@@ -1,0 +1,30 @@
+<h2>Active Sessions ({{ drupalInfo.sessionedUsers|length }})</h2>
+
+<div class="row">
+	<div class="col-md-12">
+		<table class="table table-striped" id="table-users-online">
+		<tr>
+			<th></th>
+			<th>Username</th>
+			<th>Name</th>
+			<th>Email Address</th>
+			<th>Last Active</th>
+			<th class="text-center">Options</th>
+		</tr>
+		<tbody>
+		{% for su in drupalInfo.sessionedUsers %}
+			<tr id="{{ su.s.sid }}">
+				<td><img class="users-online-avatar img-rounded" src="{{ file_url(su.u.user_picture.entity.uri.value) }}"></td>
+				<td>{{ su.u.name.value }}</td>
+				<td>{{ su.u.field_first_name.value }} {{ su.u.field_last_name.value }}</td>
+				<td>{{ su.u.mail.value }}</td>
+				<td>{{ su.u.access.value|date('Y.m.d H:i:s')}}</td>
+				<td class="text-center">
+					<a title="Delete this session" href="/sitecommander/delete-session/{{ su.s.sid }}" class="btn btn-sm btn-danger use-ajax" data-userid="{{ su.u.uid.value }}"><span class="fa fa-remove"></span></a>
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+		</table>
+	</div>
+</div>

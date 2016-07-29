@@ -14,6 +14,7 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\State\StateInterface;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Statement;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Extension\ModuleHandler;
 use Drupal\Core\Session\AccountInterface;
@@ -253,6 +254,26 @@ class SiteCommanderController extends ControllerBase {
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'purgeSessions';
 		$responseData->newNumSessionEntries = $newNumSessionEntries;
+    $response->addCommand( new ReadMessageCommand($responseData));
+
+		// Return ajax response.
+		return $response;
+	}
+
+	public function deleteSession($sid = '') {
+
+		$query = $this->connection->delete('sessions');
+		$query->condition('sid', $sid, '=');
+		$query->execute();
+
+    // Create AJAX Response object.
+    $response = new AjaxResponse();
+
+    // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
+		$responseData->command = 'readMessage';
+		$responseData->siteCommanderCommand = 'deleteSession';
+		$responseData->sid = $sid;
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.
@@ -501,11 +522,9 @@ class SiteCommanderController extends ControllerBase {
 		return $memInfo;
 	}
 
+	// Count users active within the defined period.
 	public function getUsersOnline()
 	{
-		$usersOnline = array();
-
-		// Count users active within the defined period.
 		$interval = time() - 900;
 
 		$query = $this->entityQuery->get('user');
@@ -513,6 +532,40 @@ class SiteCommanderController extends ControllerBase {
 		$uids = $query->execute();
 		$users = entity_load_multiple('user', $uids);
 		return $users;
+	}
+
+	// Get sessioned user list
+	public function getSessionedUsers()
+	{
+		$query = $this->connection->select('sessions','s');
+		$query->condition('uid', 0, '>');
+		$query->fields('s', array('uid', 'sid'));
+		$sessionResult = $query->execute()->fetchAllAssoc('uid', \PDO::FETCH_ASSOC);
+
+		$sessionIds = array_keys($sessionResult);
+
+		$query = $this->entityQuery->get('user');
+		$query->condition('uid', $sessionIds, 'IN');
+		$uids = $query->execute();
+
+		$users = entity_load_multiple('user', $uids);
+
+		// Build a cohesive result set
+		$sessionedUsers = array();
+
+		foreach($sessionResult as $uid => $sr)
+		{
+			foreach($users as $u)
+			{
+				if($u->uid->value == $uid)
+				{
+					$sessionedUsers[] = array('u' => $u, 's' => $sr);
+					break;
+				}
+			}
+		}
+
+		return $sessionedUsers;
 	}
 
 	public function getPublishedNodeCounts() {

@@ -38,6 +38,14 @@ sitecommander.purgeSessions:
     requirements:
         _permission: 'access administration pages'
 
+sitecommander.deleteSession:
+    path: '/sitecommander/delete-session/{sid}'
+    defaults:
+        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::deleteSession'
+        _title: 'Delete Session'
+    requirements:
+        _permission: 'access administration pages'
+
 sitecommander.ajaxUpdateGauges:
     path: '/sitecommander/update-poll'
     defaults:
