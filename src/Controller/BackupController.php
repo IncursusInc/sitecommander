@@ -125,7 +125,10 @@ class BackupController extends ControllerBase {
 		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'makeBackup';
-		$responseData->payload = $backupResult;
+		$responseData->rowId = str_replace('.', '-', $archiveFileName);
+		$responseData->fileName = $archiveFileName;
+		$responseData->fileSize = format_size(filesize($backupDirectory . '/' . $archiveFileName));
+		$responseData->fileDate = date('Y.m.d H:i:s', filectime($backupDirectory . '/' . $archiveFileName));
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.
@@ -134,7 +137,16 @@ class BackupController extends ControllerBase {
 
 	function restoreBackup( $fileName )
 	{
+		// Prepare the site for restoration?
+			// Rename old web root temporarily
+			// Make the new web root and set perms
 
+		// Locate backup file
+
+		// Drush it!
+
+		// Prepare the site post-restoration
+			// Clear cache, etc.?
 	}
 
 }

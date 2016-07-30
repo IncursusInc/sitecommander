@@ -11,13 +11,51 @@ jQuery(document).ready(function($){
 
 		$('#site-commander-loading-message-container').fadeOut("medium", function() {
 
+
+			// Enable link to tab
+			var url = document.location.toString();
+			if (url.match('#')) {
+				$('#site-commander-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+			} 
+
+			// Change hash for page-reload
+			$('.nav-tabs a').on('shown.bs.tab', function (e) {
+				window.location.hash = e.target.hash;
+			})
+
 			$('a[data-toggle=modal], button[data-toggle=modal]').click(function () {
 				var data_id = '';
 				if (typeof $(this).attr('data-source-image') !== 'undefined') {
 					data_id = $(this).attr('data-source-image');
 					$('#dataSourceImage').html(data_id);
 				}
-			})
+			});
+
+			$('#btn-create-backup').click(function() {
+				//$('#modalBackup').find('.modal-body').load('/sitecommander/make-backup');
+				$('#modalBackup').find('.modal-body').html('<h3 class="white text-center">Working ...</h3><div class="progress"> <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div> </div> ');
+				
+				$.ajax({
+					url: '/sitecommander/make-backup',
+					dataType: 'json'
+				}).done(function(data) {
+					$('#modalBackup').find('.modal-body').html('<h2 class="white text-center">Backup Complete!</h2><p>Your backup image file should now be visible in the list of completed backups!');
+					$('#modalBackup').find('.modal-footer').html('<button type="button" class="btn btn-success" data-dismiss="modal">Close</button>');
+	
+					// Append the new backup file to the list of backup images
+					console.log(data);
+					var rowId = data[0].responseData.rowId;
+					var fileName = data[0].responseData.fileName;
+					var fileSize = data[0].responseData.fileSize;
+					var fileDate = data[0].responseData.fileDate;
+					$('#table-backup-images').find('tbody').prepend('<tr id="'+rowId+'"><td>'+fileName+'</td><td>'+fileDate+'</td><td>'+fileSize+'</td><td><a class="btn btn-sm btn-primary pull-left" role="button" data-toggle="modal" data-target="#modalRestore" data-source-image="'+ rowId +'"><span class="fa fa-trash"></span> Restore</a><a class="btn btn-sm btn-danger pull-right use-ajax" href="/sitecommander/delete-backup/'+ rowId +'"><span class="fa fa-trash"></span> Delete</a></td></tr>');
+
+					Drupal.attachBehaviors();
+
+					document.getElementById('task-complete').play();
+				});
+			});
+
 
 			$('[data-feature="tooltip"]').tooltip();
 
@@ -174,7 +212,7 @@ jQuery(document).ready(function($){
 
 			clearInterval( timer );
 		});
-	}, 2500);
+	}, 500);
 
 	// Update gauges via Ajax periodically
 	setInterval(function() {

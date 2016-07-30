@@ -63,7 +63,7 @@
 			$('#' + response.responseData.payload).fadeOut("medium");
 		}
 
-		document.getElementById('task-complete').play();
+		document.getElementById('task-complete').cloneNode(true).play();
 	}
 	
 

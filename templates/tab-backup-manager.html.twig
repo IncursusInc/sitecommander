@@ -1,9 +1,36 @@
-<!-- Restore Modal -->
-<div class="modal fade" id="modalRestore" tabindex="-1" data-modal-color="bluegray" role="dialog" aria-labelledby="modalRestoreLabel">
+
+<!-- Backup Modal -->
+<div class="modal fade" id="modalBackup" tabindex="-1" data-modal-color="bluegray" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="modalBackupLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="modalBackupLabel"><span class="fa fa-archive"></span> Create New Backup Image</h2>
+      </div>
+      <div class="modal-body">
+        <strong>Backup Folder:</strong> {{ drupalInfo.settings.admin.backupDirectory }}
+				<hr class="site-commander-hr" />
+				<p>
+						You are about to create a new backup image in the folder shown above. Note: Depending on the speed of your server and the 
+						size of your site, this operation may take several minutes to complete! Please do not close this browser window, or do 
+						anything to cancel or disrupt the operation while in progress!
+				</p>
+				<hr class="site-commander-hr" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button id="btn-create-backup" type="button" class="btn btn-success">Start the Backup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Restore Modal -->
+<div class="modal fade" id="modalRestore" tabindex="-1" data-modal-color="bluegray" data-keyboard="false" role="dialog" aria-labelledby="modalRestoreLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" data-backdrop="static" >&times;</span></button>
         <h2 class="modal-title" id="modalRestoreLabel"><span class="fa fa-archive"></span> Restore Backup</h2>
       </div>
       <div class="modal-body">
@@ -29,23 +56,25 @@
 <div class="clearfix"></div>
 
 <div class="col-md-6 text-left">
-	<h2>Backup Manager (<span class="icon-green"><strong>{{ drupalInfo.settings.admin.backupMaxAgeInDays }}-day</strong></span> Retention Set)</h2>
+	<h2 style="margin: 10px">Backup Manager (<span class="icon-green"><strong>{{ drupalInfo.settings.admin.backupMaxAgeInDays }}-day</strong></span> Retention Set)</h2>
 </div>
 <div class="col-md-6 text-right">
-	<a href="/sitecommander/make-backup" class="use-ajax btn btn-md btn-success" alt="Make a New Backup Now" title="Make a New Backup Now"><span class="fa fa-archive"></span> Make a New Backup Now</a>
+	<a class="btn btn-md btn-success" role="button" data-toggle="modal" data-target="#modalBackup" alt="Create New Backup Image" title="Create New Backup Image"><span class="fa fa-archive"></span> Create New Backup Image</a>
 </div>
 
 <hr class="site-commander-hr" />
 
 <div class="row">
 	<div class="col-md-12">
-		<table class="table table-striped" id="table-users-online">
-		<tr>
-			<th>Archive Name</th>
-			<th>Created On</th>
-			<th>Size</th>
-			<th>Options</th>
-		</tr>
+		<table class="table table-striped" id="table-backup-images">
+		<thead>
+			<tr>
+				<th>Archive Name</th>
+				<th>Created On</th>
+				<th>Size</th>
+				<th>Options</th>
+			</tr>
+		<thead>
 		<tbody>
 		{% for filename, b in drupalInfo.backupList %}
 			<tr id="{{ b.filenameId }}">
