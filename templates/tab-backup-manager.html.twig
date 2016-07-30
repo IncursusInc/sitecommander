@@ -1,11 +1,39 @@
+<!-- Restore Modal -->
+<div class="modal fade" id="modalRestore" tabindex="-1" data-modal-color="bluegray" role="dialog" aria-labelledby="modalRestoreLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="modalRestoreLabel"><span class="fa fa-archive"></span> Restore Backup</h2>
+      </div>
+      <div class="modal-body">
+        <strong>Restore Image:</strong> <span id="dataSourceImage"></span>
+				<hr class="site-commander-hr" />
+				<p>
+						Warning! You are about to restore a previously archived snapshot of this site onto a live environment. This is a dangerous operation, and we are not responsible
+					 	for any loss of data! You are strongly advised to ensure that you have a current site backup before proceeding!
+				</p>
+				<p> 
+						Note: Depending on the speed of your server and the size of the backup file, this operation may take several minutes to complete! Please do not close this browser
+						window, or do anything to cancel or disrupt the operation while in progress!
+				</p>
+				<hr class="site-commander-hr" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger">Restore This Image</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="clearfix"></div>
+
 <div class="col-md-6 text-left">
 	<h2>Backup Manager (<span class="icon-green"><strong>{{ drupalInfo.settings.admin.backupMaxAgeInDays }}-day</strong></span> Retention Set)</h2>
 </div>
 <div class="col-md-6 text-right">
 	<a href="/sitecommander/make-backup" class="use-ajax btn btn-md btn-success" alt="Make a New Backup Now" title="Make a New Backup Now"><span class="fa fa-archive"></span> Make a New Backup Now</a>
 </div>
-
-<div class="clearfix"></div>
 
 <hr class="site-commander-hr" />
 
@@ -25,7 +53,7 @@
 				<td>{{ b.ctime|date('Y.m.d H:i:s') }}</td>
 				<td>{{ b.fileSizeHuman }}</td>
 				<td>
-					<a class="btn btn-sm btn-primary disabled pull-left"><span class="fa fa-trash"></span> Restore</a>
+					<a class="btn btn-sm btn-primary pull-left" role="button" data-toggle="modal" data-target="#modalRestore" data-source-image="{{ filename }}"><span class="fa fa-trash"></span> Restore</a>
 					<a class="btn btn-sm btn-danger pull-right use-ajax" href="/sitecommander/delete-backup/{{ filename }}"><span class="fa fa-trash"></span> Delete</a>
 				</td>
 			</tr>
@@ -34,3 +62,4 @@
 		</table>
 	</div>
 </div>
+

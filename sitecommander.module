@@ -65,4 +65,16 @@ function sitecommander_cron() {
 
 }
 
+/**
+ * page_attachments hook
+ *
+ * Ensure Bootstrap .js is only loaded once, otherwise modals won't work right.
+ */
 
+function sitecommander_page_attachments( &$attachments )
+{
+}
+
+function sitecommander_library_info_alter(&$libraries, $extension)
+{
+}

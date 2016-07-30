@@ -132,4 +132,9 @@ class BackupController extends ControllerBase {
 		return $response;
 	}
 
+	function restoreBackup( $fileName )
+	{
+
+	}
+
 }

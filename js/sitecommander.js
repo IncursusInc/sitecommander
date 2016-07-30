@@ -11,6 +11,14 @@ jQuery(document).ready(function($){
 
 		$('#site-commander-loading-message-container').fadeOut("medium", function() {
 
+			$('a[data-toggle=modal], button[data-toggle=modal]').click(function () {
+				var data_id = '';
+				if (typeof $(this).attr('data-source-image') !== 'undefined') {
+					data_id = $(this).attr('data-source-image');
+					$('#dataSourceImage').html(data_id);
+				}
+			})
+
 			$('[data-feature="tooltip"]').tooltip();
 
 			$('.switch-users-online').click(function(e) {
@@ -228,5 +236,6 @@ jQuery(document).ready(function($){
 
 		});
 	}, drupalSettings.settings.admin.refreshRate * 1000);
+
 
 });
