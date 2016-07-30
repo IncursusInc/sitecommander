@@ -20,13 +20,13 @@
 		</tr>
 		<tbody>
 		{% for filename, b in drupalInfo.backupList %}
-			<tr>
+			<tr id="{{ b.filenameId }}">
 				<td>{{ filename }}</td>
 				<td>{{ b.ctime|date('Y.m.d H:i:s') }}</td>
 				<td>{{ b.fileSizeHuman }}</td>
 				<td>
 					<a class="btn btn-sm btn-primary disabled pull-left"><span class="fa fa-trash"></span> Restore</a>
-					<a class="btn btn-sm btn-danger disabled pull-right"><span class="fa fa-trash"></span> Delete</a>
+					<a class="btn btn-sm btn-danger pull-right use-ajax" href="/sitecommander/delete-backup/{{ filename }}"><span class="fa fa-trash"></span> Delete</a>
 				</td>
 			</tr>
 		{% endfor %}

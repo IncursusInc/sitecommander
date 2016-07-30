@@ -28,6 +28,9 @@ class SiteCommanderListener implements EventSubscriberInterface
 
 	public function onKernelResponse( $event )
 	{
+		if(!$this->configFactory->get('sitecommander.settings')->get('enableAnonymousUserTracking'))
+			return;
+
 		if($this->currentUser->isAnonymous() === TRUE)
 		{
 			$visitorIpAddressTTL = $this->configFactory->get('sitecommander.settings')->get('visitorIpAddressTTL');
@@ -45,7 +48,6 @@ class SiteCommanderListener implements EventSubscriberInterface
 				$redis = new \Redis();
 				$redis->connect($redisHostName, $redisPort);
 			}
-
 			$redis->select($redisDatabaseIndex);
 
 			// Do not allow PhpRedis serialize itself data, we are going to do it
@@ -57,8 +59,7 @@ class SiteCommanderListener implements EventSubscriberInterface
 
 			// Sets key & value, with 15 minute TTL
 			// TODO - make the 15 minute interval configurable
-			//$redis->setEx('siteCommander_anon_user_' . $ipAddress, $visitorIpAddressTTL * 60, '1'); 
-			$redis->setEx('siteCommander_anon_user_' . $ipAddress, 15 * 60, '1'); 
+			$redis->setEx('siteCommander_anon_user_' . $ipAddress, $visitorIpAddressTTL * 60, '1'); 
 		}
 	}
 }

@@ -10,6 +10,7 @@ namespace Drupal\sitecommander\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\File\FileSystem;
+use Drupal\Core\Cron;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\State\StateInterface;
 use Drupal\Core\Database\Database;
@@ -38,8 +39,9 @@ class SiteCommanderController extends ControllerBase {
 	protected $translation;
 	protected $currentUser;
 	protected $twig;
+	protected $cron;
 
-	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state, $account, TwigEnvironment $twig )
+	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state, $account, TwigEnvironment $twig, $cron )
 	{
 		$this->connection = $connection;
 		$this->moduleHandler = $moduleHandler;
@@ -49,6 +51,7 @@ class SiteCommanderController extends ControllerBase {
 		$this->state = $state;
 		$this->currentUser = $account;
 		$this->twig = $twig;
+		$this->cron = $cron;
 	}
 
   /**
@@ -63,7 +66,8 @@ class SiteCommanderController extends ControllerBase {
       $container->get('config.factory'),
       $container->get('state'),
       $container->get('current_user'),
-      $container->get('twig')
+      $container->get('twig'),
+      $container->get('cron')
     );
   }
 
@@ -307,7 +311,6 @@ class SiteCommanderController extends ControllerBase {
 
     $drupalInfo['usersOnlineTable'] = $template->render(['drupalInfo' => $drupalInfo]);
 
-
 		// Cron info
 		$drupalInfo['cron']['cron_key'] = $this->state->get('system.cron_key');
 		$drupalInfo['cronLastRun'] = SiteCommanderUtils::elapsedTime($this->state->get('system.cron_last'));
@@ -461,7 +464,11 @@ class SiteCommanderController extends ControllerBase {
 			$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
 
 			$anonUserKeys = $redis->keys('siteCommander_anon_user_*');
-			return count($anonUserKeys);
+
+			if(!isset($anonUserKeys) || !count($anonUserKeys))
+				return 0;
+			else
+				return count($anonUserKeys);
 		}
 	}
 
@@ -517,7 +524,12 @@ class SiteCommanderController extends ControllerBase {
 
 			foreach($tmp as $line)
 			{
-				list($label, $value, $sizeLabel) = preg_split('/\s+/', $line);
+				$tmpArray = preg_split('/\s+/', $line);
+				if(count($tmpArray) != 3) continue;
+
+				$label = $tmpArray[0];
+				$value = $tmpArray[1];
+				$sizeLabel = $tmpArray[2];
 				
 				$label = str_replace(':', '', $label);
 
@@ -769,5 +781,22 @@ class SiteCommanderController extends ControllerBase {
 		}
 
 		return $topSearches;
+	}
+
+	public function runCron()
+	{
+		$this->cron->run();
+
+    // Create AJAX Response object.
+    $response = new AjaxResponse();
+
+    // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
+		$responseData->command = 'readMessage';
+		$responseData->siteCommanderCommand = 'runCron';
+    $response->addCommand( new ReadMessageCommand($responseData));
+
+		// Return ajax response.
+		return $response;
 	}
 }

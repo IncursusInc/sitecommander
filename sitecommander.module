@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\sitecommander\Controller\BackupController;
 
 /**
  * Theme hook
@@ -35,6 +36,33 @@ function sitecommander_rebuild() {
 	// Store the current timestamp in state variables
 	\Drupal::state()->set('sitecommander.timestamp_cache_last_rebuild', time());
 	\Drupal::state()->set('sitecommander.timestamp_cssjs_last_rebuild', time());
+}
+
+/**
+ * Cron hook
+ */
+
+function sitecommander_cron() {
+
+	// Handle Backup Manager archive retention strategy
+	$backupDirectory = \Drupal::config('sitecommander.settings')->get('backupDirectory');
+	$maxAge = \Drupal::config('sitecommander.settings')->get('backupMaxAgeInDays');
+
+	$cutOff = strtotime($maxAge . ' days ago');
+
+	$fileList = BackupController::scScanDir($backupDirectory, 'ctime', 1);
+
+	if(isset($fileList) && count($fileList) > 0)
+	{
+		foreach($fileList as $fileName => $fileInfo)
+		{
+			if($cutOff > $fileInfo['ctime'])
+			{
+				@unlink($backupDirectory . '/' . $fileName);
+			}
+		}
+	}
+
 }
 
 

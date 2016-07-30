@@ -1,11 +1,15 @@
 services:
   sitecommander.sitecommander_block:
     class: Drupal\sitecommander\Plugin\Block\SiteCommanderBlock
-    arguments: ['@database', '@module_handler', '@entity.query', '@file_system', '@config.factory', '@state', '@current_user', '@twig.loader']
+    arguments: ['@database', '@module_handler', '@entity.query', '@file_system', '@config.factory', '@state', '@current_user', '@twig.loader', '@cron']
 
   sitecommander.sitecommander_controller:
     class: Drupal\sitecommander\Controller\SiteCommanderController
-    arguments: ['@database', '@module_handler', '@entity.query', '@file_system', '@config.factory', '@state', '@current_user', '@twig.loader']
+    arguments: ['@database', '@module_handler', '@entity.query', '@file_system', '@config.factory', '@state', '@current_user', '@twig.loader', '@cron']
+
+  sitecommander.backup_controller:
+    class: Drupal\sitecommander\Controller\BackupController
+    arguments: ['@database', '@file_system', '@config.factory']
 
   sitecommander.listener:
     class: 'Drupal\sitecommander\EventSubscriber\SiteCommanderListener'

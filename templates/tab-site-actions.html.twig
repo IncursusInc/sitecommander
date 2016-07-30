@@ -57,7 +57,7 @@
 			{% endif %}
 
 			<li class="list-group-item"> <a href="/sitecommander/toggle-maintenance-mode" class="use-ajax site-commander-icon-action"><span id="toggleMaintenanceMode" title="Toggle maintenance mode"><span id="maintenanceModeIcon" class="fa {{ maintIcon }} fa-fw"></span></span></a>&nbsp; Maintenance Mode: <span id="maintenanceModeBadge" class="badge {{ maintenanceModeClass }}">{{ drupalInfo.maintenance_mode }}</span></li>
-			<li class="list-group-item"> <a href="/cron/{{ drupalInfo.cron.cron_key }}" alt="Run cron now" title="Run cron now" class="site-commander-icon-action"><span class="fa fa-clock-o fa-fw"></span></a> Cron Last Run: <span id="cronLastRun" class="badge badge-active">{{ drupalInfo.cron.cron_last }}</span></li>
+			<li class="list-group-item"> <a href="/sitecommander/cron" alt="Run cron now" title="Run cron now" class="use-ajax site-commander-icon-action"><span class="fa fa-clock-o fa-fw"></span></a> Cron Last Run: <span id="cronLastRun" class="badge badge-active">{{ drupalInfo.cron.cron_last }}</span></li>
 			<li class="list-group-item"> <a href="{{ drupalInfo.updateCheckURL }}" class="site-commander-icon-action"><span class="fa fa-clock-o fa-fw"></span></a> Last Checked for Updates: <span id="lastCheckUpdates" class="badge badge-active">{{ drupalInfo.update_last_check }}</span></li>
 
 			<li class="list-group-item"> <a href="/sitecommander/rebuild-drupal-cache" class="use-ajax site-commander-icon-action" alt="Clear/rebuild cache now" title="Clear/rebuild cache now"><span class="fa fa-refresh fa-fw"></span></a> Drupal Cache Last Refreshed: <span id="timestamp_cache_last_rebuild" class="badge badge-active">{{ drupalInfo.timestamp_cache_last_rebuild }}</span></li>

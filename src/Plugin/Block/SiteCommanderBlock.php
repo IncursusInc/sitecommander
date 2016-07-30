@@ -4,6 +4,7 @@ namespace Drupal\sitecommander\Plugin\Block;
 
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Url;
+use Drupal\Core\Cron;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Extension\ModuleHandler;
@@ -21,6 +22,7 @@ use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\Core\Template\TwigEnvironment;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\sitecommander\SiteCommanderUtils;
+use Drupal\sitecommander\Controller\BackupController;
 
 /**
  * Provides a SiteCommander Block
@@ -49,8 +51,9 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 	protected $translation;
 	protected $currentUser;
 	protected $twig;
+	protected $cron;
 
-	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state, AccountInterface $account,TwigEnvironment $twig ) 
+	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state, AccountInterface $account,TwigEnvironment $twig, $cron ) 
 	{
 		$this->connection = $connection;
 		$this->moduleHandler = $moduleHandler;
@@ -58,8 +61,9 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$this->fileSystem = $fileSystem;
 		$this->configFactory = $configFactory;
 		$this->state = $state;
-		$this->currentUser = $currentUser;
+		$this->currentUser = $account;
 		$this->twig = $twig;
+		$this->cron = $cron;
 	}
 
   /**
@@ -74,13 +78,14 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
       $container->get('config.factory'),
       $container->get('state'),
       $container->get('current_user'),
-      $container->get('twig')
+      $container->get('twig'),
+      $container->get('cron')
     );
   }
 
   public function build() {
 
-		$sc = new \Drupal\sitecommander\Controller\SiteCommanderController($this->connection, $this->moduleHandler, $this->entityQuery, $this->fileSystem, $this->configFactory, $this->state, $this->currentUser, $this->twig );
+		$sc = new \Drupal\sitecommander\Controller\SiteCommanderController($this->connection, $this->moduleHandler, $this->entityQuery, $this->fileSystem, $this->configFactory, $this->state, $this->currentUser, $this->twig, $this->cron );
 
 		list($drupalInfo['nodeTypeNames'], $drupalInfo['publishedNodeCounts']) = $sc->getPublishedNodeCounts();
 		$drupalInfo['userCount'] = $sc->getUserCount();
@@ -129,8 +134,15 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		else
 			 $drupalInfo['timestamp_cache_last_rebuild'] = SiteCommanderUtils::elapsedTime($timestamp);
 
+		// Get the path to the module install directory
+		$drupalInfo['sitecommanderInstallPath'] = drupal_get_path('module', 'sitecommander');
+
 		// Load up SiteCommander config settings so we can pass them to the .js
 		$drupalInfo['settings']['admin'] = $this->configFactory->get('sitecommander.settings')->get();
+
+		// Get list of backups
+		$backupDir = $this->configFactory->get('sitecommander.settings')->get('backupDirectory');
+		$drupalInfo['backupList'] = BackupController::getBackupList( $backupDir );
 
     return array(
 			'#theme' => 'sitecommander',

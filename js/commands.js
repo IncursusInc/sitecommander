@@ -54,6 +54,16 @@
 			$('#' + response.responseData.sid ).fadeOut("medium");
 		}
 
+		if(response.responseData.siteCommanderCommand == 'makeBackup')
+		{
+		}
+
+		if(response.responseData.siteCommanderCommand == 'deleteBackup')
+		{
+			$('#' + response.responseData.payload).fadeOut("medium");
+		}
+
+		document.getElementById('task-complete').play();
 	}
 	
 
