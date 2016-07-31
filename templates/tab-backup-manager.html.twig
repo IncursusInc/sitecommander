@@ -98,6 +98,13 @@
 
 <hr class="site-commander-hr" />
 
+{% if drupalInfo.isBackupRunning %}
+	<div class="alert alert-warning">
+		<h3 class="text-center"><span class="fa fa-info-circle"></span> Attention: Scheduled or background backup currently in progress!</h3>
+	</div>
+	<hr class="site-commander-hr" />
+{% endif %}
+
 <div class="row">
 	<div class="col-md-12">
 		<table class="table table-striped" id="table-backup-images">

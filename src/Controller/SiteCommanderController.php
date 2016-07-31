@@ -315,6 +315,9 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['cron']['cron_key'] = $this->state->get('system.cron_key');
 		$drupalInfo['cronLastRun'] = SiteCommanderUtils::elapsedTime($this->state->get('system.cron_last'));
 
+		// Is a drush backup still running?
+		$drupalInfo['isBackupRunning'] = SiteCommanderUtils::isProcessRunning("drush archive-dump");
+
 		// Last time Drupal/Modules were checked for updates
 		$drupalInfo['lastCheckUpdates'] = SiteCommanderUtils::elapsedTime($this->state->get('update.last_check'));
 

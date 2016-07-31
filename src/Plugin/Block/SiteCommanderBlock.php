@@ -127,6 +127,9 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		// Maintenance mode status
 		$drupalInfo['maintenance_mode'] = $this->state->get('system.maintenance_mode') ? 'On' : 'Off';
 
+		// Is a drush backup still running?
+		$drupalInfo['isBackupRunning'] = SiteCommanderUtils::isProcessRunning("drush archive-dump");
+
 		// Get timestamp of last cache rebuild
 		$timestamp = $this->state->get('sitecommander.timestamp_cache_last_rebuild');
 		if(!$timestamp)
