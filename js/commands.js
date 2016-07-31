@@ -58,12 +58,16 @@
 		{
 		}
 
+		if(response.responseData.siteCommanderCommand == 'restoreBackup')
+		{
+		}
+
 		if(response.responseData.siteCommanderCommand == 'deleteBackup')
 		{
 			$('#' + response.responseData.payload).fadeOut("medium");
 		}
 
-		document.getElementById('task-complete').cloneNode(true).play();
+		document.getElementById('sitecommander-task-complete').cloneNode(true).play();
 	}
 	
 

@@ -1,9 +1,6 @@
-jQuery(document).ready(function($){
+//jQuery(document).ready(function($){
 
-	$('#site-commander-tabs a').click(function (e) {
-		e.preventDefault()
-		$(this).tab('show')
-	})
+(function($, Drupal) {
 
 	var dsg1, dsg2, dsg3, dsg4, dsg5, dsg6, dsg7, dsg8, dsg9, dsg10, dsg11, dsg12, dsg13;
 
@@ -11,6 +8,14 @@ jQuery(document).ready(function($){
 
 		$('#site-commander-loading-message-container').fadeOut("medium", function() {
 
+			$('#site-commander-tabs a').click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+			})
+
+			$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+				document.getElementById('sitecommander-click').cloneNode(true).play();
+			})
 
 			// Enable link to tab
 			var url = document.location.toString();
@@ -50,13 +55,13 @@ jQuery(document).ready(function($){
 
 					Drupal.attachBehaviors();
 
-					document.getElementById('task-complete').play();
+					document.getElementById('sitecommander-task-complete').cloneNode(true).play();
 				});
 			});
 
 			$('#btn-start-backup-background').click(function() {
 				$.ajax({
-					url: '/sitecommander/make-backup-background',
+					url: '/sitecommander/make-backup-background/' + rowId,
 					dataType: 'json'
 				});
 
@@ -64,6 +69,17 @@ jQuery(document).ready(function($){
 				$('#btn-create-backup').addClass('disabled');
 				$('#btn-create-backup-background').addClass('disabled');
 
+			});
+
+			$('#btn-start-restore').click(function() {
+				$.ajax({
+					url: '/sitecommander/restore-backup/' + $('#dataSourceImage').text(),
+					dataType: 'json'
+				}).done(function( data ) {
+					$('#modalRestore').find('.modal-body').html('<h2 class="white text-center">Backup Complete!</h2><p>Your restore job has completed!');
+					$('#modalRestore').find('.modal-footer').html('<button type="button" class="btn btn-success" data-dismiss="modal">Close</button>');
+					document.getElementById('sitecommander-task-complete').cloneNode(true).play();
+				});
 			});
 
 			$('[data-feature="tooltip"]').tooltip();
@@ -285,4 +301,5 @@ jQuery(document).ready(function($){
 	}, drupalSettings.settings.admin.refreshRate * 1000);
 
 
-});
+})(jQuery, Drupal);
+//});

@@ -48,7 +48,15 @@ class ConfigureForm extends ConfigFormBase {
     			'#title' => t('Include Bootstrap CSS via CDN'),
     			'#required' => FALSE,
 					'#default_value' => $config->get('includeBootstrapCSS'),
-					'#description' => 'If your Drupal theme is built around Bootstrap CSS, there is no need to check this. The side effect of it loading twice will be that modals will disappear as soon as they appear - FYI.'
+					'#description' => 'If your Drupal theme is built around Bootstrap CSS, there is no need to check this. The side effect of it loading twice will be that modals will disappear as soon as they appear, and the module might format strangely - FYI.'
+				);
+
+				$form['sitecommander_settings']['general']['includejQuery'] = array(
+    			'#type' => 'checkbox',
+    			'#title' => t('Include jQuery via CDN'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('includejQuery'),
+					'#description' => 'If your Drupal theme or perhaps a mod already includes jQuery, there is no need to check this. If things like the tabbed interface do not function properly, check this box, clear your cache, and try again - FYI.'
 				);
 
 				$form['sitecommander_settings']['general']['refreshRate'] = array(
@@ -194,6 +202,7 @@ class ConfigureForm extends ConfigFormBase {
 
 		// General settings
 		$config->set('includeBootstrapCSS', $form_state->getValue('includeBootstrapCSS'))->save();
+		$config->set('includejQuery', $form_state->getValue('includejQuery'))->save();
 		$config->set('refreshRate', $form_state->getValue('refreshRate'))->save();
 
 		// Redis settings

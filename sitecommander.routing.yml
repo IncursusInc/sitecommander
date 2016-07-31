@@ -1,4 +1,4 @@
-sitecommander_configure:
+itecommander_configure:
   path: 'admin/config/sitecommander'
   defaults:
     _form: '\Drupal\sitecommander\Form\ConfigureForm'
@@ -99,6 +99,14 @@ sitecommander.ajaxMakeBackup:
   defaults:
     _controller: '\Drupal\sitecommander\Controller\BackupController::makeBackup'
     _title: 'Make Backup'
+  requirements:
+    _permission: 'access administration pages'
+
+sitecommander.ajaxRestoreBackup:
+  path: '/sitecommander/restore-backup/{fileName}'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\BackupController::restoreBackup'
+    _title: 'Restore Backup'
   requirements:
     _permission: 'access administration pages'
 

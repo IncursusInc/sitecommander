@@ -146,16 +146,56 @@ class BackupController extends ControllerBase {
 
 	function restoreBackup( $fileName )
 	{
+		// Get the config options we need
+		$backupDirectory = $this->configFactory->get('sitecommander.settings')->get('backupDirectory');
+		$drushPath = $this->configFactory->get('sitecommander.settings')->get('drushPath');
+
 		// Prepare the site for restoration?
-			// Rename old web root temporarily
-			// Make the new web root and set perms
+		// Rename old web root temporarily
+		$webRoot = DRUPAL_ROOT;
+
+		if(!rename($webRoot, $webRoot . '-renamed'))
+		{
+    	// Create AJAX Response object.
+    	$response = new AjaxResponse();
+
+			$responseData = new \StdClass();
+			$responseData->command = 'readMessage';
+			$responseData->siteCommanderCommand = 'restoreBackup';
+			$responseData->errorMessage = 'Could not rename the current document root! Likely a permission problem.';
+    	$response->addCommand( new ReadMessageCommand($responseData));
+
+			// Return ajax response.
+			return $response;
+		}
+
+		// Make the new web root and set perms
+		mkdir($webRoot);
 
 		// Locate backup file
+		$backupImage = $backupDirectory . '/' . $fileName;
 
 		// Drush it!
+		$cmd = $drushPath . ' archive-restore ' . $backupImage . ' --destination=' . $webRoot;
+
+		ob_start();
+		system($cmd);
+		$backupResult = ob_get_contents();
+		ob_end_clean();
 
 		// Prepare the site post-restoration
-			// Clear cache, etc.?
+		// Clear cache, etc.?
+
+    // Create AJAX Response object.
+    $response = new AjaxResponse();
+
+		$responseData = new \StdClass();
+		$responseData->command = 'readMessage';
+		$responseData->siteCommanderCommand = 'restoreBackup';
+    $response->addCommand( new ReadMessageCommand($responseData));
+
+		// Return ajax response.
+		return $response;
 	}
 
 }
