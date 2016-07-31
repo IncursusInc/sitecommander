@@ -13,10 +13,11 @@ SiteCommander features include:
 * Quickly browse active sessions (by user) and optionally terminate them
 * Quickly see today's top site searches
 * Full featured Backup Manager, with 1 click backup/restore, backup scheduler
-* CPU load average gauges, so you can monitor your server's workload
 * See when cron last ran and a shortcut to manually run it
 * See when the updates checker last ran, and a shortcut to manually check for updates
 * Shortcut to clear/rebuild the Drupal cache
+* CPU load average gauges, so you can monitor your server's workload
+* Status of server memory pool
 * Integration with Redis for stats, ability to clear Redis cache
 * Integration with PHP Opcache for stats, ability to clear Opcache
 * Integration with APC for stats, ability to clear APC cache

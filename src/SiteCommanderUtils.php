@@ -87,4 +87,28 @@ class SiteCommanderUtils {
   
 		return $numCores;
 	}
+
+	public static function makePidFile( $pidFileName )
+	{
+		$fp = fopen(drupal_get_path('module', 'sitecommander') . '/' . $pidFileName, 'w');
+		fputs($fp, posix_getpid());
+		fclose($fp);
+	}
+
+	public static function deletePidFile( $pidFileName )
+	{
+		@unlink(drupal_get_path('module', 'sitecommander') . '/' . $pidFileName);
+	}
+
+	public static function isProcessRunning( $processString )
+	{
+		ob_start();
+		system('ps xa | grep "' . $processString . '" | grep -v grep');
+		$rawOutput = ob_get_contents();
+		ob_end_clean();
+
+		$outputArray = array_filter(explode('\n', $rawOutput));
+
+		if(count($outputArray) > 0) return true; else return false;
+	}
 }

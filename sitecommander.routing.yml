@@ -1,4 +1,4 @@
-sitecommander_configure:
+itecommander_configure:
   path: 'admin/config/sitecommander'
   defaults:
     _form: '\Drupal\sitecommander\Form\ConfigureForm'
@@ -6,75 +6,115 @@ sitecommander_configure:
   requirements:
     _permission: 'administer site configuration'
 
+sitecommander.deleteBackup:
+  path: '/sitecommander/delete-backup/{fileName}'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\BackupController::deleteBackup'
+    _title: 'Delete Backup'
+  requirements:
+    _permission: 'access administration pages'
+
 sitecommander.ajaxToggleMaintenanceMode:
-    path: '/sitecommander/toggle-maintenance-mode'
-    defaults:
-        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::toggleMaintenanceMode'
-        _title: 'Toggle Maintenance Mode'
-    requirements:
-        _permission: 'access administration pages'
+  path: '/sitecommander/toggle-maintenance-mode'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::toggleMaintenanceMode'
+    _title: 'Toggle Maintenance Mode'
+  requirements:
+    _permission: 'access administration pages'
 
 sitecommander.ajaxRebuildCache:
-    path: '/sitecommander/rebuild-drupal-cache'
-    defaults:
-        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::rebuildDrupalCache'
-        _title: 'Rebuild Drupal Cache'
-    requirements:
-        _permission: 'access administration pages'
+  path: '/sitecommander/rebuild-drupal-cache'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::rebuildDrupalCache'
+    _title: 'Rebuild Drupal Cache'
+  requirements:
+    _permission: 'access administration pages'
 
 sitecommander.ajaxCleanupOldFiles:
-    path: '/sitecommander/cleanup-old-files'
-    defaults:
-        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::cleanupOldFiles'
-        _title: 'Cleanup Old Files'
-    requirements:
-        _permission: 'access administration pages'
+  path: '/sitecommander/cleanup-old-files'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::cleanupOldFiles'
+    _title: 'Cleanup Old Files'
+  requirements:
+    _permission: 'access administration pages'
 
 sitecommander.purgeSessions:
-    path: '/sitecommander/purge-sessions'
-    defaults:
-        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::purgeSessions'
-        _title: 'Purge Sessions'
-    requirements:
-        _permission: 'access administration pages'
+  path: '/sitecommander/purge-sessions'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::purgeSessions'
+    _title: 'Purge Sessions'
+  requirements:
+    _permission: 'access administration pages'
 
 sitecommander.deleteSession:
-    path: '/sitecommander/delete-session/{sid}'
-    defaults:
-        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::deleteSession'
-        _title: 'Delete Session'
-    requirements:
-        _permission: 'access administration pages'
+  path: '/sitecommander/delete-session/{sid}'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::deleteSession'
+    _title: 'Delete Session'
+  requirements:
+    _permission: 'access administration pages'
 
 sitecommander.ajaxUpdateGauges:
-    path: '/sitecommander/update-poll'
-    defaults:
-        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::updatePoll'
-        _title: 'Update Poll'
-    requirements:
-        _permission: 'access administration pages'
+  path: '/sitecommander/update-poll'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::updatePoll'
+    _title: 'Update Poll'
+  requirements:
+    _permission: 'access administration pages'
 
 sitecommander.clearApcOpCache:
-    path: '/sitecommander/clear-apc-opcache'
-    defaults:
-        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::clearApcOpCache'
-        _title: 'Clear APC Op Cache'
-    requirements:
-        _permission: 'access administration pages'
+  path: '/sitecommander/clear-apc-opcache'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::clearApcOpCache'
+    _title: 'Clear APC Op Cache'
+  requirements:
+    _permission: 'access administration pages'
 
 sitecommander.clearPhpOpCache:
-    path: '/sitecommander/clear-php-opcache'
-    defaults:
-        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::clearPhpOpCache'
-        _title: 'Clear PHP OpCache'
-    requirements:
-        _permission: 'access administration pages'
+  path: '/sitecommander/clear-php-opcache'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::clearPhpOpCache'
+    _title: 'Clear PHP OpCache'
+  requirements:
+    _permission: 'access administration pages'
+
+sitecommander.runCron:
+  path: '/sitecommander/cron'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::runCron'
+    _title: 'Run Cron'
+  requirements:
+    _permission: 'access administration pages'
+
+sitecommander.ajaxMakeBackupBackground:
+  path: '/sitecommander/make-backup-background'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\BackupController::makeBackupBackground'
+    _title: 'Make Backup Background'
+  requirements:
+    _permission: 'access administration pages'
+
+sitecommander.ajaxMakeBackup:
+  path: '/sitecommander/make-backup'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\BackupController::makeBackup'
+    _title: 'Make Backup'
+  requirements:
+    _permission: 'access administration pages'
+
+sitecommander.ajaxRestoreBackup:
+  path: '/sitecommander/restore-backup/{fileName}'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\BackupController::restoreBackup'
+    _title: 'Restore Backup'
+  requirements:
+    _permission: 'access administration pages'
 
 sitecommander.clearRedisCache:
-    path: '/sitecommander/clear-redis-cache'
-    defaults:
-        _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::clearRedisCache'
-        _title: 'Clear Redis Cache'
-    requirements:
-        _permission: 'access administration pages'
+  path: '/sitecommander/clear-redis-cache'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::clearRedisCache'
+    _title: 'Clear Redis Cache'
+  requirements:
+    _permission: 'access administration pages'
 

@@ -1,0 +1,142 @@
+
+<!-- Backup Modal -->
+<div class="modal fade" id="modalBackup" tabindex="-1" data-modal-color="bluegray" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="modalBackupLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="modalBackupLabel"><span class="fa fa-archive"></span> Create New Backup Image</h2>
+      </div>
+      <div class="modal-body">
+        <strong>Backup Folder:</strong> {{ drupalInfo.settings.admin.backupDirectory }}
+				<hr class="site-commander-hr" />
+				<p>
+						You are about to create a new backup image in the folder shown above. Note: Depending on the speed of your server and the 
+						size of your site, this operation may take several minutes to complete! Please do not close this browser window, or do 
+						anything to cancel or disrupt the operation while in progress!
+				</p>
+				<hr class="site-commander-hr" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button id="btn-start-backup" type="button" class="btn btn-success">Start the Backup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Backup Modal (Background) -->
+<div class="modal fade" id="modalBackupBackground" tabindex="-1" data-modal-color="bluegray" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="modalBackupBackgroundLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="modalBackupBackgroundLabel"><span class="fa fa-archive"></span> Create New Backup Image (Background)</h2>
+      </div>
+      <div class="modal-body">
+        <strong>Backup Folder:</strong> {{ drupalInfo.settings.admin.backupDirectory }}
+				<hr class="site-commander-hr" />
+				<p>
+						You are about to create a new backup image in the folder shown above. Note: Depending on the speed of your server and the 
+						size of your site, this operation may take several minutes to complete! This job will run in the background. Once completed,
+						your new backup image will be seen in the list of image files, however, you will need to refresh SiteCommander in order to
+						see it!
+				</p>
+				<hr class="site-commander-hr" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button id="btn-start-backup-background" type="button" class="btn btn-success">Start the Backup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Restore Modal -->
+<div class="modal fade" id="modalRestore" tabindex="-1" data-modal-color="bluegray" data-keyboard="false" role="dialog" aria-labelledby="modalRestoreLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" data-backdrop="static" >&times;</span></button>
+        <h2 class="modal-title" id="modalRestoreLabel"><span class="fa fa-archive"></span> Restore Backup</h2>
+      </div>
+      <div class="modal-body">
+        <strong>Restore Image:</strong> <span id="dataSourceImage"></span>
+				<hr class="site-commander-hr" />
+				<p>
+						Warning! You are about to restore a previously archived snapshot of this site onto a live environment. This is a dangerous operation, and we are not responsible
+					 	for any loss of data! You are strongly advised to ensure that you have a current site backup before proceeding!
+				</p>
+				<p> 
+						Note: Depending on the speed of your server and the size of the backup file, this operation may take several minutes to complete! Please do not close this browser
+						window, or do anything to cancel or disrupt the operation while in progress!
+				</p>
+				<hr class="site-commander-hr" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button id="btn-start-restore" type="button" class="btn btn-danger">Restore This Image</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="clearfix"></div>
+
+<div class="col-md-7 text-left">
+	{% if drupalInfo.settings.admin.enableScheduledBackups %}
+		{% set scheduledBackupStrategy = '<span class="icon-green"><strong>' ~ drupalInfo.settings.admin.minHoursBetweenBackups ~ '</strong></span>' ~ ' hour(s) schedule' %}
+	{% else %}
+		{% set scheduledBackupStrategy = '<span class="text-danger"><strong>No schedule set</strong></span>' %}
+	{% endif %}
+
+	<h2 style="margin: 10px">Backup Manager (<span class="icon-green"><strong>{{ drupalInfo.settings.admin.backupMaxAgeInDays }}-day</strong></span> Retention, {{ scheduledBackupStrategy|raw }})</h2>
+</div>
+<div class="col-md-5 text-right">
+
+  {% if drupalInfo.isBackupRunning %}
+		{% set disabledClass = 'disabled' %}
+	{% else %}
+		{% set disabledClass = '' %}
+	{% endif %}
+
+	<a id="btn-create-backup" class="btn btn-md btn-success {{ disabledClass }}" role="button" data-toggle="modal" data-target="#modalBackup" alt="Create New Backup Image" title="Create New Backup Image"><span class="fa fa-archive"></span> Create New Backup</a>
+	<a id="btn-create-backup-background" class="btn btn-md btn-success {{ disabledClass }}" role="button" data-toggle="modal" data-target="#modalBackupBackground" alt="Create New Backup Image (Background)" title="Create New Backup Image (Background)"><span class="fa fa-archive"></span> Create New Backup (Background)</a>
+</div>
+
+<hr class="site-commander-hr" />
+
+{% if drupalInfo.isBackupRunning %}
+	<div class="alert alert-warning">
+		<h3 class="text-center"><span class="fa fa-info-circle"></span> Attention: Scheduled or background backup currently in progress!</h3>
+	</div>
+	<hr class="site-commander-hr" />
+{% endif %}
+
+<div class="row">
+	<div class="col-md-12">
+		<table class="table table-striped" id="table-backup-images">
+		<thead>
+			<tr>
+				<th>Archive Name</th>
+				<th>Created On</th>
+				<th>Size</th>
+				<th>Options</th>
+			</tr>
+		<thead>
+		<tbody>
+		{% for filename, b in drupalInfo.backupList %}
+			<tr id="{{ b.filenameId }}">
+				<td>{{ filename }}</td>
+				<td>{{ b.ctime|date('Y.m.d H:i:s') }}</td>
+				<td>{{ b.fileSizeHuman }}</td>
+				<td>
+					<a class="btn btn-sm btn-primary pull-left" role="button" data-toggle="modal" data-target="#modalRestore" data-source-image="{{ filename }}"><span class="fa fa-trash"></span> Restore</a>
+					<a class="btn btn-sm btn-danger pull-right use-ajax" href="/sitecommander/delete-backup/{{ filename }}"><span class="fa fa-trash"></span> Delete</a>
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+		</table>
+	</div>
+</div>
+
