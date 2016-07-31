@@ -147,16 +147,24 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$backupDir = $this->configFactory->get('sitecommander.settings')->get('backupDirectory');
 		$drupalInfo['backupList'] = BackupController::getBackupList( $backupDir );
 
-    return array(
+		// Attach Bootstrap CSS if they've configured it
+		if( $this->configFactory->get('sitecommander.settings')->get('includeBootstrapCSS') )
+			$library = 'sitecommander/sitecommander.BootstrapCSS';
+		else
+			$library = 'sitecommander/sitecommander';
+
+    $buildArray = array(
 			'#theme' => 'sitecommander',
 			'#attached' => array(
 				'library' =>  array(
-					'sitecommander/sitecommander'
+					$library
 				),
 				'drupalSettings' => $drupalInfo
 			),
 			'#drupalInfo' => $drupalInfo,
 			'#cache' => [ 'max-age' => 0, ],
     );
+
+		return $buildArray;
   }
 }
