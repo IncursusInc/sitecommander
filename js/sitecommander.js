@@ -32,7 +32,6 @@ jQuery(document).ready(function($){
 			});
 
 			$('#btn-create-backup').click(function() {
-				//$('#modalBackup').find('.modal-body').load('/sitecommander/make-backup');
 				$('#modalBackup').find('.modal-body').html('<h3 class="white text-center">Working ...</h3><div class="progress"> <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div> </div> ');
 				
 				$.ajax({
@@ -43,7 +42,6 @@ jQuery(document).ready(function($){
 					$('#modalBackup').find('.modal-footer').html('<button type="button" class="btn btn-success" data-dismiss="modal">Close</button>');
 	
 					// Append the new backup file to the list of backup images
-					console.log(data);
 					var rowId = data[0].responseData.rowId;
 					var fileName = data[0].responseData.fileName;
 					var fileSize = data[0].responseData.fileSize;
@@ -56,6 +54,15 @@ jQuery(document).ready(function($){
 				});
 			});
 
+			$('#btn-create-backup-background').click(function() {
+				$.ajax({
+					url: '/sitecommander/make-backup-background',
+					dataType: 'json'
+				});
+
+				$('#modalBackupBackground').modal('hide');
+
+			});
 
 			$('[data-feature="tooltip"]').tooltip();
 

@@ -12,8 +12,16 @@ sitecommander:
     js/hideThrobber.js: {}
     js/commands.js: {}
     https://use.fontawesome.com/2675f3c443.js: { type: external, minified: true }
-    #https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js: { type: external, minified: true }
+    https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js: { type: external, minified: true }
   dependencies:
     - core/jquery
     - core/drupal.ajax
 
+sitecommanderBootstrapCSS:
+  version: 1.0
+  css:
+    theme:
+      https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css: { type: external, minified: true }
+      https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css: { type: external, minified: true }
+  js:
+    #https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js: { type: external, minified: true }

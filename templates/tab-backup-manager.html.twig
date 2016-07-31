@@ -25,6 +25,33 @@
   </div>
 </div>
 
+<!-- Backup Modal (Background) -->
+<div class="modal fade" id="modalBackupBackground" tabindex="-1" data-modal-color="bluegray" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="modalBackupBackgroundLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="modalBackupBackgroundLabel"><span class="fa fa-archive"></span> Create New Backup Image (Background)</h2>
+      </div>
+      <div class="modal-body">
+        <strong>Backup Folder:</strong> {{ drupalInfo.settings.admin.backupDirectory }}
+				<hr class="site-commander-hr" />
+				<p>
+						You are about to create a new backup image in the folder shown above. Note: Depending on the speed of your server and the 
+						size of your site, this operation may take several minutes to complete! This job will run in the background. Once completed,
+						your new backup image will be seen in the list of image files, however, you will need to refresh SiteCommander in order to
+						see it!
+				</p>
+				<hr class="site-commander-hr" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button id="btn-create-backup-background" type="button" class="btn btn-success">Start the Backup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Restore Modal -->
 <div class="modal fade" id="modalRestore" tabindex="-1" data-modal-color="bluegray" data-keyboard="false" role="dialog" aria-labelledby="modalRestoreLabel">
   <div class="modal-dialog" role="document">
@@ -55,11 +82,18 @@
 </div>
 <div class="clearfix"></div>
 
-<div class="col-md-6 text-left">
-	<h2 style="margin: 10px">Backup Manager (<span class="icon-green"><strong>{{ drupalInfo.settings.admin.backupMaxAgeInDays }}-day</strong></span> Retention Set)</h2>
+<div class="col-md-7 text-left">
+	{% if drupalInfo.settings.admin.enableScheduledBackups %}
+		{% set scheduledBackupStrategy = '<span class="icon-green"><strong>' ~ drupalInfo.settings.admin.minHoursBetweenBackups ~ '</strong></span>' ~ ' hour(s) schedule' %}
+	{% else %}
+		{% set scheduledBackupStrategy = '<span class="text-danger"><strong>No schedule set</strong></span>' %}
+	{% endif %}
+
+	<h2 style="margin: 10px">Backup Manager (<span class="icon-green"><strong>{{ drupalInfo.settings.admin.backupMaxAgeInDays }}-day</strong></span> Retention, {{ scheduledBackupStrategy|raw }})</h2>
 </div>
-<div class="col-md-6 text-right">
-	<a class="btn btn-md btn-success" role="button" data-toggle="modal" data-target="#modalBackup" alt="Create New Backup Image" title="Create New Backup Image"><span class="fa fa-archive"></span> Create New Backup Image</a>
+<div class="col-md-5 text-right">
+	<a class="btn btn-md btn-success" role="button" data-toggle="modal" data-target="#modalBackup" alt="Create New Backup Image" title="Create New Backup Image"><span class="fa fa-archive"></span> Create New Backup</a>
+	<a class="btn btn-md btn-success" role="button" data-toggle="modal" data-target="#modalBackupBackground" alt="Create New Backup Image (Background)" title="Create New Backup Image (Background)"><span class="fa fa-archive"></span> Create New Backup (Background)</a>
 </div>
 
 <hr class="site-commander-hr" />

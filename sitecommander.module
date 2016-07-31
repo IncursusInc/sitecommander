@@ -25,7 +25,23 @@ function sitecommander_theme($existing, $type, $theme, $path) {
 	);
 
 	return $variables;
+}
 
+/**
+ * page_attachments hook
+ *
+ * Ensure Bootstrap .js is only loaded once, otherwise modals won't work right.
+ *
+ * NOTE: This is a theme hook, probably won't work here.
+ */
+
+function sitecommander_page_attachments(&$page)
+{
+	if (!\Drupal::config('sitecommander.settings')->get('includeBootstrapCSS')) {
+		return;
+	}
+
+	$page['#attached']['library'][] = 'sitecommander/BootstrapCSS';
 }
 
 /**
@@ -63,16 +79,32 @@ function sitecommander_cron() {
 		}
 	}
 
-}
+	// Make a new backup in the background if we meet the requirements
+	if(\Drupal::config('sitecommander.settings')->get('enableScheduledBackups'))
+	{
+		// Get the timestamp of when we made the last backup
+		$now = time();
+		$lastBackupTimestamp = \Drupal::state()->get('sitecommander.timestamp_last_backup', 0);
 
-/**
- * page_attachments hook
- *
- * Ensure Bootstrap .js is only loaded once, otherwise modals won't work right.
- */
+		// Compare to current timestamp. If >= to minHoursBetweenBackups, we need to make a new one
+		$minHoursBetweenBackups = \Drupal::config('sitecommander.settings')->get('minHoursBetweenBackups');
+		if($now >= $lastBackupTimestamp + ($minHoursBetweenBackups * 60 * 60))
+		{
+			// Get the config options we need
+			$backupDirectory = \Drupal::config('sitecommander.settings')->get('backupDirectory');
+			$drushPath = \Drupal::config('sitecommander.settings')->get('drushPath');
+			$backupMaxAgeInDays = \Drupal::config('sitecommander.settings')->get('backupMaxAgeInDays');
+	
+			// Build the drush command line
+			$archiveFileName = 'sitecommander-scheduled-backup.' . time() . '.tar.gz';
+			$cmd = $drushPath . ' archive-dump --destination=' . $backupDirectory . '/' . $archiveFileName;
+	
+			shell_exec('/usr/bin/nohup ' . $cmd . ' 2>/dev/null >/dev/null &');
 
-function sitecommander_page_attachments( &$attachments )
-{
+			// Update the time stamp
+			\Drupal::state()->set('sitecommander.timestamp_last_backup', $now);
+		}
+	}
 }
 
 function sitecommander_library_info_alter(&$libraries, $extension)

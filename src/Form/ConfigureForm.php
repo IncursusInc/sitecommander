@@ -43,6 +43,14 @@ class ConfigureForm extends ConfigFormBase {
 			//'#markup' => '<p>' . t('These are general settings.') . '</p>'
 		);
 
+				$form['sitecommander_settings']['general']['includeBootstrapCSS'] = array(
+    			'#type' => 'checkbox',
+    			'#title' => t('Include Bootstrap CSS via CDN'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('includeBootstrapCSS'),
+					'#description' => 'If your Drupal theme is built around Bootstrap CSS, there is no need to check this. The side effect of it loading twice will be that modals will disappear as soon as they appear - FYI.'
+				);
+
 				$form['sitecommander_settings']['general']['refreshRate'] = array(
     			'#type' => 'number',
     			'#title' => t('Dashboard AJAX Refresh Rate (in seconds)'),
@@ -148,6 +156,20 @@ class ConfigureForm extends ConfigFormBase {
 					'#description' => 'The maximum age for backup files. Backups older than this will be automatically purged.'
 				);
 
+				$form['sitecommander_settings']['backupManager']['enableScheduledBackups'] = array(
+    			'#type' => 'checkbox',
+    			'#title' => t('Enable scheduled backups?'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('enableScheduledBackups')
+				);
+
+				$form['sitecommander_settings']['backupManager']['minHoursBetweenBackups'] = array(
+    			'#type' => 'number',
+    			'#title' => t('Minimum number of hours between backups'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('minHoursBetweenBackups') ? $config->get('minHoursBetweenBackups') : 24
+				);
+
 		// Broadcast Manager settings
 		$form['sitecommander_settings']['broadcastManager'] = array(
 			'#type' => 'fieldset',
@@ -171,6 +193,7 @@ class ConfigureForm extends ConfigFormBase {
 		$config = \Drupal::service('config.factory')->getEditable('sitecommander.settings');
 
 		// General settings
+		$config->set('includeBootstrapCSS', $form_state->getValue('includeBootstrapCSS'))->save();
 		$config->set('refreshRate', $form_state->getValue('refreshRate'))->save();
 
 		// Redis settings
@@ -186,6 +209,8 @@ class ConfigureForm extends ConfigFormBase {
 		$config->set('backupDirectory', $form_state->getValue('backupDirectory'))->save();
 		$config->set('drushPath', $form_state->getValue('drushPath'))->save();
 		$config->set('backupMaxAgeInDays', $form_state->getValue('backupMaxAgeInDays'))->save();
+		$config->set('enableScheduledBackups', $form_state->getValue('enableScheduledBackups'))->save();
+		$config->set('minHoursBetweenBackups', $form_state->getValue('minHoursBetweenBackups'))->save();
 
 		// Broadcast Manager settings
 

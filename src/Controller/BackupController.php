@@ -103,7 +103,19 @@ class BackupController extends ControllerBase {
   public function runBackup() {
 	}
 
-  public function makeBackup() {
+  public function makeBackupBackground() {
+		$this->makeBackup(true);
+
+   	$response = new AjaxResponse();
+
+		$responseData = new \StdClass();
+		$responseData->command = 'readMessage';
+		$responseData->siteCommanderCommand = 'makeBackupBackground';
+   	$response->addCommand( new ReadMessageCommand($responseData));
+		return $response;
+	}
+
+  public function makeBackup( $backgroundMode = false) {
 
 		// Get the config options we need
 		$backupDirectory = $this->configFactory->get('sitecommander.settings')->get('backupDirectory');
@@ -114,10 +126,16 @@ class BackupController extends ControllerBase {
 		$archiveFileName = 'sitecommander-backup.' . time() . '.tar.gz';
 		$cmd = $drushPath . ' archive-dump --destination=' . $backupDirectory . '/' . $archiveFileName;
 
-		ob_start();
-		system($cmd);
-		$backupResult = ob_get_contents();
-		ob_end_clean();
+		if($backgroundMode)
+		{
+			shell_exec('/usr/bin/nohup ' . $cmd . ' 2>/dev/null >/dev/null &');
+			return;
+		} else {
+			ob_start();
+			system($cmd);
+			$backupResult = ob_get_contents();
+			ob_end_clean();
+		}
 
     // Create AJAX Response object.
     $response = new AjaxResponse();

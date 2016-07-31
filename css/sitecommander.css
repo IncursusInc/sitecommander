@@ -236,6 +236,7 @@
 .modal .modal-header {
   padding: 23px 26px;
   border-bottom: 1px solid transparent;
+	background: rgba(0, 0, 0, 0.1);
 }
 
 .modal .modal-content {

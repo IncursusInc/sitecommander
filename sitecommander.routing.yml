@@ -86,6 +86,14 @@ sitecommander.runCron:
   requirements:
     _permission: 'access administration pages'
 
+sitecommander.ajaxMakeBackupBackground:
+  path: '/sitecommander/make-backup-background'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\BackupController::makeBackupBackground'
+    _title: 'Make Backup Background'
+  requirements:
+    _permission: 'access administration pages'
+
 sitecommander.ajaxMakeBackup:
   path: '/sitecommander/make-backup'
   defaults:
