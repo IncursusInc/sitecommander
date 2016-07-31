@@ -36,15 +36,18 @@
 				}
 			});
 
-			$('#btn-create-backup').click(function() {
+			$('#btn-start-backup').click(function() {
 				$('#modalBackup').find('.modal-body').html('<h3 class="white text-center">Working ...</h3><div class="progress"> <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div> </div> ');
 				
+				$('#modalBackup').find('.modal-footer').html('');
+
 				$.ajax({
 					url: '/sitecommander/make-backup',
 					dataType: 'json'
 				}).done(function(data) {
 					$('#modalBackup').find('.modal-body').html('<h2 class="white text-center">Backup Complete!</h2><p>Your backup image file should now be visible in the list of completed backups!');
 					$('#modalBackup').find('.modal-footer').html('<button type="button" class="btn btn-success" data-dismiss="modal">Close</button>');
+					$('#modalBackup').attr('data-modal-color', 'green');
 	
 					// Append the new backup file to the list of backup images
 					var rowId = data[0].responseData.rowId;
@@ -78,6 +81,7 @@
 				}).done(function( data ) {
 					$('#modalRestore').find('.modal-body').html('<h2 class="white text-center">Backup Complete!</h2><p>Your restore job has completed!');
 					$('#modalRestore').find('.modal-footer').html('<button type="button" class="btn btn-success" data-dismiss="modal">Close</button>');
+					$('#modalRestore').attr('data-modal-color', 'green');
 					document.getElementById('sitecommander-task-complete').cloneNode(true).play();
 				});
 			});
