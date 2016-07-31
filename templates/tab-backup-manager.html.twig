@@ -19,7 +19,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button id="btn-create-backup" type="button" class="btn btn-success">Start the Backup</button>
+        <button id="btn-start-backup" type="button" class="btn btn-success">Start the Backup</button>
       </div>
     </div>
   </div>
@@ -46,7 +46,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button id="btn-create-backup-background" type="button" class="btn btn-success">Start the Backup</button>
+        <button id="btn-start-backup-background" type="button" class="btn btn-success">Start the Backup</button>
       </div>
     </div>
   </div>
@@ -92,8 +92,15 @@
 	<h2 style="margin: 10px">Backup Manager (<span class="icon-green"><strong>{{ drupalInfo.settings.admin.backupMaxAgeInDays }}-day</strong></span> Retention, {{ scheduledBackupStrategy|raw }})</h2>
 </div>
 <div class="col-md-5 text-right">
-	<a class="btn btn-md btn-success" role="button" data-toggle="modal" data-target="#modalBackup" alt="Create New Backup Image" title="Create New Backup Image"><span class="fa fa-archive"></span> Create New Backup</a>
-	<a class="btn btn-md btn-success" role="button" data-toggle="modal" data-target="#modalBackupBackground" alt="Create New Backup Image (Background)" title="Create New Backup Image (Background)"><span class="fa fa-archive"></span> Create New Backup (Background)</a>
+
+  {% if drupalInfo.isBackupRunning %}
+		{% set disabledClass = 'disabled' %}
+	{% else %}
+		{% set disabledClass = '' %}
+	{% endif %}
+
+	<a id="btn-create-backup" class="btn btn-md btn-success {{ disabledClass }}" role="button" data-toggle="modal" data-target="#modalBackup" alt="Create New Backup Image" title="Create New Backup Image"><span class="fa fa-archive"></span> Create New Backup</a>
+	<a id="btn-create-backup-background" class="btn btn-md btn-success {{ disabledClass }}" role="button" data-toggle="modal" data-target="#modalBackupBackground" alt="Create New Backup Image (Background)" title="Create New Backup Image (Background)"><span class="fa fa-archive"></span> Create New Backup (Background)</a>
 </div>
 
 <hr class="site-commander-hr" />

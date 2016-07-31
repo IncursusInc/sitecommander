@@ -54,13 +54,15 @@ jQuery(document).ready(function($){
 				});
 			});
 
-			$('#btn-create-backup-background').click(function() {
+			$('#btn-start-backup-background').click(function() {
 				$.ajax({
 					url: '/sitecommander/make-backup-background',
 					dataType: 'json'
 				});
 
 				$('#modalBackupBackground').modal('hide');
+				$('#btn-create-backup').addClass('disabled');
+				$('#btn-create-backup-background').addClass('disabled');
 
 			});
 
