@@ -65,23 +65,26 @@ function sitecommander_cron() {
 	$backupDirectory = \Drupal::config('sitecommander.settings')->get('backupDirectory');
 	$maxAge = \Drupal::config('sitecommander.settings')->get('backupMaxAgeInDays');
 
-	$cutOff = strtotime($maxAge . ' days ago');
-
-	$fileList = BackupController::scScanDir($backupDirectory, 'ctime', 1);
-
-	if(isset($fileList) && count($fileList) > 0)
+	if(\Drupal::config('sitecommander.settings')->get('backupMaxAgeInDays') && \Drupal::config('sitecommander.settings')->get('backupDirectory'))
 	{
-		foreach($fileList as $fileName => $fileInfo)
+		$cutOff = strtotime($maxAge . ' days ago');
+
+		$fileList = BackupController::scScanDir($backupDirectory, 'ctime', 1);
+
+		if(isset($fileList) && count($fileList) > 0)
 		{
-			if($cutOff > $fileInfo['ctime'])
+			foreach($fileList as $fileName => $fileInfo)
 			{
-				@unlink($backupDirectory . '/' . $fileName);
+				if($cutOff > $fileInfo['ctime'])
+				{
+					@unlink($backupDirectory . '/' . $fileName);
+				}
 			}
 		}
 	}
 
 	// Make a new backup in the background if we meet the requirements
-	if(\Drupal::config('sitecommander.settings')->get('enableScheduledBackups'))
+	if(\Drupal::config('sitecommander.settings')->get('enableScheduledBackups') && \Drupal::config('sitecommander.settings')->get('backupDirectory'))
 	{
 		// Make sure no backup is currently running
 		if(!SiteCommanderUtils::isProcessRunning("drush archive-dump"))
