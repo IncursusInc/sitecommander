@@ -45,7 +45,7 @@
 						url: '/sitecommander/make-backup',
 						dataType: 'json'
 					}).done(function(data) {
-						$('#modalBackup').find('.modal-body').html('<h2 class="white text-center">Backup Complete!</h2><p>Your backup image file should now be visible in the list of completed backups!');
+						$('#modalBackup').find('.modal-body').html('<h2 class="white text-center"><span class="fa fa-check-square"></span> Backup Complete!</h2><p>Your backup image file should now be visible in the list of completed backups!');
 						$('#modalBackup').find('.modal-footer').html('<button type="button" class="btn btn-success" data-dismiss="modal">Close</button>');
 						$('#modalBackup').attr('data-modal-color', 'green');
 	

@@ -500,6 +500,7 @@ class SiteCommanderController extends ControllerBase {
 				{
 					$storageHealth[ $flds[0] ] = array(
 						'totalSizeHumanReadable' => format_size(1024 * $flds[1]),
+						'freeSpaceHumanReadable' => format_size(1024 * $flds[3]),
 						'totalBlocks' => $flds[1],
 						'usedBlocks' => $flds[2],
 						'availableBlocks' => $flds[3],
