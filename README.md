@@ -27,7 +27,7 @@ SiteCommander features include:
 * Tabbed interface for ease of navigation
 * More to come!
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot1_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot1_2.png?itok=BpuRa1jE "SiteCommander Screenshot")
 
 ![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot2_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
 
@@ -41,9 +41,9 @@ SiteCommander features include:
 
 ![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot7_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot8_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot8_2.png?itok=BpuRa1jE "SiteCommander Screenshot")
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot9_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot9_2.png?itok=BpuRa1jE "SiteCommander Screenshot")
 
 # Installation Instructions
 
