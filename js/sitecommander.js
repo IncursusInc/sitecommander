@@ -8,7 +8,7 @@
 
 			$('#site-commander-loading-message-container').fadeOut("medium", function() {
 
-				$('#site-commander-tabs a').click(function (e) {
+				$('#site-commander-tabs a[data-toggle="tab"]').click(function (e) {
 					e.preventDefault();
 					$(this).tab('show');
 				})
