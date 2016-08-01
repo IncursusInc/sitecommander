@@ -26,6 +26,12 @@ SiteCommander features include:
 * Integration with the MailChimp module to see some high level statistics about your lists, subscribers, open rates, and click through rates.
 * Tabbed interface for ease of navigation
 * More to come!
+ 
+# Known Issues
+
+* Certain parts of the look/feel are going to depend on your theme, which means your install may not look like these screenshots. We are working on making the CSS more encapsulated to provide a more consistent experience.
+
+# Screenshots
 
 ![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot1_2.png?itok=BpuRa1jE "SiteCommander Screenshot")
 
