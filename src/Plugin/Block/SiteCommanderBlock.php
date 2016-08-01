@@ -106,9 +106,11 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$drupalInfo['opCacheStats'] = $sc->getOpCacheStats();
 		$drupalInfo['apcStats'] = $sc->getApcStats();
 		$drupalInfo['storageHealth'] = $sc->getStorageHealth();
+		$drupalInfo['minHoursBetweenBackups'] = $this->configFactory->get('sitecommander.settings')->get('minHoursBetweenBackups');
+		$drupalInfo['backupMaxAgeInDays'] = $this->configFactory->get('sitecommander.settings')->get('backupMaxAgeInDays');
 
 		if($this->state->get('sitecommander.timestamp_last_backup'))
-			$drupalInfo['timeStampNextBackup'] = date('Y.m.d H:i:s', $this->state->get('sitecommander.timestamp_last_backup') + 24*60*60);
+			$drupalInfo['timeStampNextBackup'] = date('Y.m.d H:i:s', $this->state->get('sitecommander.timestamp_last_backup') + ($drupalInfo['minHoursBetweenBackups'] * 60 * 60));
 		else
 			$drupalInfo['timeStampNextBackup'] = 'Unknown';
 

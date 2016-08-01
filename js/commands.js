@@ -10,11 +10,19 @@
 		{
 			$('#maintenanceModeIcon').toggleClass('fa-toggle-on fa-toggle-off');
 			$('#maintenanceModeBadge').toggleClass('badge-active badge-green');
-			//if($('#maintenanceModeBadge').hasClass('badge-green'))
 			if(response.responseData.mode == 1)
 				$('#maintenanceModeBadge').html('On');
 			else
 				$('#maintenanceModeBadge').html('Off');
+		}
+
+		if(response.responseData.siteCommanderCommand == 'toggleScheduledBackups')
+		{
+			$('#backupKillSwitch').toggleClass('fa-toggle-on fa-toggle-off');
+			$('#backupKillSwitch').toggleClass('icon-green site-commander-icon-noaction');
+
+			$('#minHoursBetweenBackups').toggleClass('label-success label-default');
+			$('#timeStampNextBackup').toggleClass('label-success label-default');
 		}
 
 		if(response.responseData.siteCommanderCommand == 'rebuildDrupalCache')

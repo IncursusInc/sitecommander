@@ -339,3 +339,6 @@
   background: #607d8b;
 }
 
+#backupMaxAgeInDays, #minHoursBetweenBackups, #timeStampNextBackup {
+	font-weight: bold;
+}

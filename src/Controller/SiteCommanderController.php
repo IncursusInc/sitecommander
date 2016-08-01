@@ -74,7 +74,7 @@ class SiteCommanderController extends ControllerBase {
 	// AJAX Callback to toggle maintenance mode
   public function toggleMaintenanceMode() {
 
-		// Toggle maintenance mode via Drupal CLI
+		// Toggle maintenance mode via Drupal
 		// First, figure out if we are already in maintenance mode
 		$currStatus = $this->state->get('system.maintenance_mode');
 		if($currStatus)
@@ -91,6 +91,34 @@ class SiteCommanderController extends ControllerBase {
 		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'toggleMaintenanceMode';
+		$responseData->mode = $mode;
+    $response->addCommand( new ReadMessageCommand($responseData));
+
+		// Return ajax response.
+		return $response;
+	}
+
+	// AJAX Callback to toggle scheduled backups
+  public function toggleScheduledBackups() {
+
+		// Toggle scheduled backups via Drupal 
+		// First, figure out if we are already in maintenance mode
+		$currStatus = $this->configFactory->get('sitecommander.settings')->get('enableScheduledBackups');
+		if($currStatus)
+			$mode = 0;
+		else
+			$mode = 1;
+
+		$config = $this->configFactory->getEditable('sitecommander.settings');
+		$config->set('enableScheduledBackups', $mode)->save();
+
+    // Create AJAX Response object.
+    $response = new AjaxResponse();
+
+    // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
+		$responseData->command = 'readMessage';
+		$responseData->siteCommanderCommand = 'toggleScheduledBackups';
 		$responseData->mode = $mode;
     $response->addCommand( new ReadMessageCommand($responseData));
 
@@ -304,9 +332,12 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['numSessionEntries'] = $this->getNumSessionEntries();
 		$drupalInfo['numVisitorsOnline'] = $this->getAnonymousUsers();
 		$drupalInfo['oldFilesStorageSize'] = $this->getOldFilesStorageSize();
+		$drupalInfo['minHoursBetweenBackups'] = $this->configFactory->get('sitecommander.settings')->get('minHoursBetweenBackups');
+		$drupalInfo['backupMaxAgeInDays'] = $this->configFactory->get('sitecommander.settings')->get('backupMaxAgeInDays');
+		$drupalInfo['enableScheduledBackups'] = $this->configFactory->get('sitecommander.settings')->get('enableScheduledBackups');
 
 		if($this->state->get('sitecommander.timestamp_last_backup'))
-			$drupalInfo['timeStampNextBackup'] = date('Y.m.d H:i:s', $this->state->get('sitecommander.timestamp_last_backup') + 24*60*60);
+			$drupalInfo['timeStampNextBackup'] = date('Y.m.d H:i:s', $this->state->get('sitecommander.timestamp_last_backup') + ($drupalInfo['minHoursBetweenBackups'] * 60 * 60));
 		else
 			$drupalInfo['timeStampNextBackup'] = 'Unknown';
 

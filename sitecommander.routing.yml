@@ -22,6 +22,14 @@ sitecommander.ajaxToggleMaintenanceMode:
   requirements:
     _permission: 'access administration pages'
 
+sitecommander.ajaxToggleScheduledBackups:
+  path: '/sitecommander/toggle-scheduled-backups'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::toggleScheduledBackups'
+    _title: 'Toggle Scheduled Backups'
+  requirements:
+    _permission: 'access administration pages'
+
 sitecommander.ajaxRebuildCache:
   path: '/sitecommander/rebuild-drupal-cache'
   defaults:
