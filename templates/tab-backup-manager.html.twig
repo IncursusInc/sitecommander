@@ -89,8 +89,13 @@
 		{% set scheduledBackupStrategy = '<span class="text-danger"><strong>No schedule set</strong></span>' %}
 	{% endif %}
 
-	<h2 style="margin: 10px">Backup Manager (<span class="icon-green"><strong>{{ drupalInfo.settings.admin.backupMaxAgeInDays }}-day</strong></span> Retention, {{ scheduledBackupStrategy|raw }})</h2>
+	<h2 style="margin: 10px 0px">Backup Manager (<span class="icon-green"><strong>{{ drupalInfo.settings.admin.backupMaxAgeInDays }}-day</strong></span> Retention, {{ scheduledBackupStrategy|raw }})</h2>
+
+	{% if drupalInfo.settings.admin.enableScheduledBackups and drupalInfo.settings.admin.backupMaxAgeInDays %}
+		<p><strong>Next scheduled backup:</strong> <span id="timeStampNextBackup" class="label label-success"><i>@{{ drupalInfo.timeStampNextBackup }}</i></span></p>
+	{% endif %}
 </div>
+
 <div class="col-md-5 text-right">
 
   {% if drupalInfo.isBackupRunning %}

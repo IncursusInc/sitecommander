@@ -86,7 +86,7 @@
 					});
 				});
 
-				$('[data-feature="tooltip"]').tooltip();
+				$('[data-feature="tooltip"]').tooltip({ trigger: 'hover' });
 
 				$('.switch-users-online').click(function(e) {
 					e.preventDefault();

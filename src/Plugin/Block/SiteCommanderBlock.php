@@ -107,6 +107,11 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$drupalInfo['apcStats'] = $sc->getApcStats();
 		$drupalInfo['storageHealth'] = $sc->getStorageHealth();
 
+		if($this->state->get('sitecommander.timestamp_last_backup'))
+			$drupalInfo['timeStampNextBackup'] = date('Y.m.d H:i:s', $this->state->get('sitecommander.timestamp_last_backup') + 24*60*60);
+		else
+			$drupalInfo['timeStampNextBackup'] = 'Unknown';
+
 		// Drupal settings
 		$drupalInfo['settings'] = array();
 		$drupalInfo['settings']['system']['site'] = $this->configFactory->get('system.site')->get();

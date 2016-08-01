@@ -97,6 +97,9 @@ function sitecommander_cron() {
 			$minHoursBetweenBackups = \Drupal::config('sitecommander.settings')->get('minHoursBetweenBackups');
 			if($now >= $lastBackupTimestamp + ($minHoursBetweenBackups * 60 * 60))
 			{
+				// Update the time stamp
+				\Drupal::state()->set('sitecommander.timestamp_last_backup', $now);
+
 				// Get the config options we need
 				$backupDirectory = \Drupal::config('sitecommander.settings')->get('backupDirectory');
 				$drushPath = \Drupal::config('sitecommander.settings')->get('drushPath');
@@ -107,9 +110,6 @@ function sitecommander_cron() {
 				$cmd = $drushPath . ' archive-dump --destination=' . $backupDirectory . '/' . $archiveFileName;
 	
 				shell_exec('/usr/bin/nohup ' . $cmd . ' 2>/dev/null >/dev/null &');
-
-				// Update the time stamp
-				\Drupal::state()->set('sitecommander.timestamp_last_backup', $now);
 			}
 		}
 	}

@@ -305,6 +305,11 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['numVisitorsOnline'] = $this->getAnonymousUsers();
 		$drupalInfo['oldFilesStorageSize'] = $this->getOldFilesStorageSize();
 
+		if($this->state->get('sitecommander.timestamp_last_backup'))
+			$drupalInfo['timeStampNextBackup'] = date('Y.m.d H:i:s', $this->state->get('sitecommander.timestamp_last_backup') + 24*60*60);
+		else
+			$drupalInfo['timeStampNextBackup'] = 'Unknown';
+
 		$drupalInfo['usersOnline'] = \Drupal\sitecommander\Controller\SiteCommanderController::getUsersOnline();
     $path = '@sitecommander/tab-users-online.html.twig';
     $template = $this->twig->loadTemplate($path);
