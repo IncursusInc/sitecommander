@@ -43,6 +43,20 @@ class ConfigureForm extends ConfigFormBase {
 			//'#markup' => '<p>' . t('These are general settings.') . '</p>'
 		);
 
+				// Get content types so we can choose to exclude certain content types from the dashboard
+				$nodeTypeNames = node_type_get_names();
+
+				$config = \Drupal::service('config.factory')->getEditable('sitecommander.settings');
+				$excludedContentTypes = $config->get('excludedContentTypes');
+
+				$form['sitecommander_settings']['general']['excludedContentTypes'] = array(
+				'#type' => 'checkboxes',
+				'#title' => t('Exclude Specific Content Types From Dashboard'),
+				'#required' => FALSE,
+				'#options' => $nodeTypeNames,
+				'#default_value' => $excludedContentTypes,
+				);
+
 				$form['sitecommander_settings']['general']['includeBootstrapCSS'] = array(
     			'#type' => 'checkbox',
     			'#title' => t('Include Bootstrap CSS via CDN'),
@@ -70,6 +84,7 @@ class ConfigureForm extends ConfigFormBase {
 		$form['sitecommander_settings']['redis'] = array(
 			'#type' => 'fieldset',
 			'#title' => t('Redis Settings'),
+			'#markup' => t('Redis can be used to temporarily track IP addresses of non-authenticated visitors, for reporting visitor counts on the dashboard.')
 			//'#markup' => '<p>' . t('These are general settings.') . '</p>'
 		);
 
@@ -136,7 +151,7 @@ class ConfigureForm extends ConfigFormBase {
     			'#title' => t('Backup directory'),
     			'#required' => FALSE,
 					'#default_value' => $config->get('backupDirectory') ? $config->get('backupDirectory') : '',
-    			'#description' => t('The directory to be used for storing archived backup files.'),
+    			'#description' => t('The directory to be used for storing archived backup files. We recommend a remote share mounted on a local mountpoint, but regular directories will suffice!'),
     			'#placeholder' => t('e.g. /var/backups'),
 				);
 
@@ -182,7 +197,7 @@ class ConfigureForm extends ConfigFormBase {
 		$form['sitecommander_settings']['broadcastManager'] = array(
 			'#type' => 'fieldset',
 			'#title' => t('Broadcast Manager Settings'),
-			//'#markup' => '<p>' . t('These are general settings.') . '</p>'
+			'#markup' => t('In development ... stay tuned!')
 		);
 
 		return parent::buildForm($form, $form_state);
@@ -201,6 +216,7 @@ class ConfigureForm extends ConfigFormBase {
 		$config = \Drupal::service('config.factory')->getEditable('sitecommander.settings');
 
 		// General settings
+		$config->set('excludedContentTypes', $form_state->getValue('excludedContentTypes'))->save();
 		$config->set('includeBootstrapCSS', $form_state->getValue('includeBootstrapCSS'))->save();
 		$config->set('includejQuery', $form_state->getValue('includejQuery'))->save();
 		$config->set('refreshRate', $form_state->getValue('refreshRate'))->save();

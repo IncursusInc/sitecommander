@@ -621,7 +621,6 @@ class SiteCommanderController extends ControllerBase {
 	}
 
 	// Count users active within the defined period.
-	// TODO - tie this into having a session as well!
 	public function getUsersOnline()
 	{
 		$interval = time() - 900;
@@ -695,31 +694,47 @@ class SiteCommanderController extends ControllerBase {
 
 	public function getPublishedNodeCounts() {
 
+		// Figure out if we are excluding certain content types in the configuration
+		$excludedContentTypes = $this->configFactory->get('sitecommander.settings')->get('excludedContentTypes');
+		$excludedContentTypes = array_filter($excludedContentTypes);
+
 		// Get breakdown of published nodes by content type
 		$nodeTypeNames = node_type_get_names();
 
-		$query = $this->entityQuery->getAggregate('node')
-											->condition('type', array_keys($nodeTypeNames), 'IN')
-											->condition('status', 1)
-											->groupBy('type')
-											->aggregate('type', 'COUNT')
-											->sortAggregate('type', 'COUNT', 'DESC');
+		$query = $this->entityQuery->getAggregate('node');
+
+		$query->andConditionGroup()
+							->condition('type', array_keys($nodeTypeNames), 'IN')
+							->condition('status', 1);
+
+		$query->groupBy('type')
+					->aggregate('type', 'COUNT')
+					->sortAggregate('type', 'COUNT', 'DESC');
 
 		$tmpResult = $query->execute();
 
 		// Put the results in a format that is easier for us to work with, using the node type machine name as the index in the array
 		$result = array();
 		foreach($tmpResult as $val)
-			$result[ $val['type'] ] = $val;
+		{
+			if(!array_key_exists($val['type'], $excludedContentTypes))
+			{
+				$result[ $val['type'] ] = $val;
+				$result[ $val['type'] ]['name'] = $nodeTypeNames[ $val['type'] ];
+			}
+		}
 
 		// Add back in the ones that don't have any nodes yet, as the query won't pick those up
 		foreach($nodeTypeNames as $machineName => $nodeTypeName)
 		{
-			if(!array_key_exists($machineName, $result))
-				$result[] = array('type' => $machineName, 'type_count' => '0');
+			if(!in_array($machineName, $excludedContentTypes))
+			{
+				if(!array_key_exists($machineName, $result))
+					$result[] = array('type' => $machineName, 'type_count' => '0', 'name' => $nodeTypeNames[ $machineName ]);
+			}
 		}
 
-		return array($nodeTypeNames, $result);
+		return $result;
 	}
 
 	// Get # of users

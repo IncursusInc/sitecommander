@@ -87,7 +87,8 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 
 		$sc = new \Drupal\sitecommander\Controller\SiteCommanderController($this->connection, $this->moduleHandler, $this->entityQuery, $this->fileSystem, $this->configFactory, $this->state, $this->currentUser, $this->twig, $this->cron );
 
-		list($drupalInfo['nodeTypeNames'], $drupalInfo['publishedNodeCounts']) = $sc->getPublishedNodeCounts();
+		//list($drupalInfo['nodeTypeNames'], $drupalInfo['publishedNodeCounts']) = $sc->getPublishedNodeCounts();
+		$drupalInfo['publishedNodeCounts'] = $sc->getPublishedNodeCounts();
 		$drupalInfo['userCount'] = $sc->getUserCount();
 		$drupalInfo['installSize'] = $sc->getInstallSize();
 		$drupalInfo['oldFilesStorageSize'] = $sc->getOldFilesStorageSize();
