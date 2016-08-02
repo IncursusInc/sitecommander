@@ -106,8 +106,25 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$drupalInfo['opCacheStats'] = $sc->getOpCacheStats();
 		$drupalInfo['apcStats'] = $sc->getApcStats();
 		$drupalInfo['storageHealth'] = $sc->getStorageHealth();
+		$drupalInfo['backupStorageSize'] = $sc->getBackupStorageSize();
 		$drupalInfo['minHoursBetweenBackups'] = $this->configFactory->get('sitecommander.settings')->get('minHoursBetweenBackups');
 		$drupalInfo['backupMaxAgeInDays'] = $this->configFactory->get('sitecommander.settings')->get('backupMaxAgeInDays');
+
+		// Let's figure out how many modules need to be (or can/should be) updated
+		$available = update_get_available(TRUE);
+		$project_data = update_calculate_project_data($available);
+
+		$drupalInfo['moduleUpdatesAvailable'] = 0;
+
+		foreach($project_data as $name => $project)
+		{
+			// Skip ones that are already up to date
+			if ($project['status'] == UPDATE_CURRENT) continue;
+  
+			$recommended_release = $project['releases'][$project['recommended']];
+			if ($recommended_release['version_major'] != $project['existing_major'])
+				$drupalInfo['moduleUpdatesAvailable']++;
+		}
 
 		if($this->state->get('sitecommander.timestamp_last_backup'))
 			$drupalInfo['timeStampNextBackup'] = date('Y.m.d H:i:s', $this->state->get('sitecommander.timestamp_last_backup') + ($drupalInfo['minHoursBetweenBackups'] * 60 * 60));

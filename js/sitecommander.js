@@ -93,6 +93,11 @@
 					$('#site-commander-tabs a[href="#users-online"]').tab('show');
 				});
 
+				$('.switch-backup-manager').click(function(e) {
+					e.preventDefault();
+					$('#site-commander-tabs a[href="#backup-manager"]').tab('show');
+				});
+
 				$('.switch-sessions').click(function(e) {
 					e.preventDefault();
 					$('#site-commander-tabs a[href="#sessions"]').tab('show');

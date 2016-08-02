@@ -332,6 +332,7 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['numSessionEntries'] = $this->getNumSessionEntries();
 		$drupalInfo['numVisitorsOnline'] = $this->getAnonymousUsers();
 		$drupalInfo['oldFilesStorageSize'] = $this->getOldFilesStorageSize();
+		$drupalInfo['backupStorageSize'] = $this->getBackupStorageSize();
 		$drupalInfo['minHoursBetweenBackups'] = $this->configFactory->get('sitecommander.settings')->get('minHoursBetweenBackups');
 		$drupalInfo['backupMaxAgeInDays'] = $this->configFactory->get('sitecommander.settings')->get('backupMaxAgeInDays');
 		$drupalInfo['enableScheduledBackups'] = $this->configFactory->get('sitecommander.settings')->get('enableScheduledBackups');
@@ -752,6 +753,32 @@ class SiteCommanderController extends ControllerBase {
 		}
 
 		return $oldFilesStorageSize;
+	}
+
+	public function getBackupStorageSize()
+	{
+		if(preg_match('/.*nux.*/', php_uname()))
+		{
+			$config = $this->configFactory->getEditable('sitecommander.settings');
+			$backupDir = $config->get('backupDirectory');
+
+			if($backupDir && is_dir($backupDir))
+			{
+				ob_start();
+				$tmp = preg_split('/\s+/', system('du -sbc ' . $backupDir));
+				ob_end_clean();
+
+				$backupStorageSize = format_size($tmp[ 0 ]);
+			} else {
+				$backupStorageSize = 'Unknown';
+			}
+		}
+		else
+		{
+			$backupStorageSize = 'Unknown';
+		}
+
+		return $backupStorageSize;
 	}
 
 	// Get number of enabled modules
