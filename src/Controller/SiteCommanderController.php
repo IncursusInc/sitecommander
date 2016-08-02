@@ -337,6 +337,16 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['backupMaxAgeInDays'] = $this->configFactory->get('sitecommander.settings')->get('backupMaxAgeInDays');
 		$drupalInfo['enableScheduledBackups'] = $this->configFactory->get('sitecommander.settings')->get('enableScheduledBackups');
 
+		$drupalInfo['moduleUpdatesAvailable'] = 0;
+
+		foreach($project_data as $name => $project)
+		{
+			// Skip ones that are already up to date
+			if ($project['status'] == UPDATE_CURRENT) continue;
+  
+			$drupalInfo['moduleUpdatesAvailable']++;
+		}
+
 		if($this->state->get('sitecommander.timestamp_last_backup'))
 			$drupalInfo['timeStampNextBackup'] = date('Y.m.d H:i:s', $this->state->get('sitecommander.timestamp_last_backup') + ($drupalInfo['minHoursBetweenBackups'] * 60 * 60));
 		else

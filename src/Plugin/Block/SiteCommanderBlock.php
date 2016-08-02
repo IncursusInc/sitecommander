@@ -121,9 +121,7 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 			// Skip ones that are already up to date
 			if ($project['status'] == UPDATE_CURRENT) continue;
   
-			$recommended_release = $project['releases'][$project['recommended']];
-			if ($recommended_release['version_major'] != $project['existing_major'])
-				$drupalInfo['moduleUpdatesAvailable']++;
+			$drupalInfo['moduleUpdatesAvailable']++;
 		}
 
 		if($this->state->get('sitecommander.timestamp_last_backup'))
