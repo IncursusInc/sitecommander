@@ -3,6 +3,7 @@
 	$(document).ready(function () {
 
 		var dsg1, dsg2, dsg3, dsg4, dsg5, dsg6, dsg7, dsg8, dsg9, dsg10, dsg11, dsg12, dsg13;
+		var dbPerf1, dbPerf2, dbPerf3;
 
 		var timer = setInterval( function() {
 
@@ -240,6 +241,39 @@
 						title: "Memory Usage (MB)",
 						label: 'Cache Size >>'
 					});
+				}
+
+				// Database performance charts
+				if(drupalSettings.dbDriver == 'mysql')
+				{
+					dbPerf1 = new JustGage({
+						id: "dbPerf1",
+						value: drupalSettings.dbStats.max_used_connections,
+						min: 0,
+						max: drupalSettings.dbConfig.max_connections,
+						title: "Max Used Connections",
+						label: '# Connections'
+					});
+	
+
+					dbPerf2 = new JustGage({
+						id: "dbPerf2",
+						value: (1 - (( drupalSettings.dbStats.key_blocks_unused * drupalSettings.dbConfig.key_cache_block_size) / drupalSettings.dbConfig.key_buffer_size)) * 100,
+						min: 0,
+						max: 100,
+						title: "MyISAM Key Buffer Used",
+						label: 'Percentage'
+					});
+	
+					dbPerf3 = new JustGage({
+						id: "dbPerf3",
+						value: ((drupalSettings.dbStats.innodb_buffer_pool_pages_total - drupalSettings.dbStats.innodb_buffer_pool_pages_free) / drupalSettings.dbStats.innodb_buffer_pool_pages_total) * 100,
+						min: 0,
+						max: 100,
+						title: "InnoDB Buffer Usage",
+						label: 'Percentage'
+					});
+	
 				}
 
 				clearInterval( timer );

@@ -16,3 +16,7 @@ services:
     arguments: ['@current_user','@config.factory']
     tags:
       - { name: event_subscriber }
+  TextColorizer.twig_extension:
+    class: Drupal\sitecommander\TwigExtension\SiteCommanderTwigFilters
+    tags:
+      - { name: twig.extension }

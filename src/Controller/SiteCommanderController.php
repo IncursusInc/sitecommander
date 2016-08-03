@@ -879,6 +879,44 @@ class SiteCommanderController extends ControllerBase {
 		return $topSearches;
 	}
 
+	public function getDatabaseConfig( $dbDriver )
+	{
+		switch($dbDriver)
+		{
+			case 'mysql': return $this->getMySqlConfig();
+		}
+
+		return array();
+	}
+
+	public function getDatabaseStats( $dbDriver )
+	{
+		switch($dbDriver)
+		{
+			case 'mysql': return $this->getMySqlStats();
+		}
+
+		return array();
+	}
+
+	public function getMySqlStats()
+	{
+		$result = $this->connection->query('SHOW GLOBAL STATUS')->fetchAll();
+		$stats = array();
+		foreach($result as $r)
+			$stats[strtolower($r->Variable_name)] = $r->Value;
+		return $stats;
+	}
+
+	public function getMySqlConfig()
+	{
+		$result = $this->connection->query('SHOW VARIABLES')->fetchAll();
+		$stats = array();
+		foreach($result as $r)
+			$stats[strtolower($r->Variable_name)] = $r->Value;
+		return $stats;
+	}
+
 	public function runCron()
 	{
 		$this->cron->run();

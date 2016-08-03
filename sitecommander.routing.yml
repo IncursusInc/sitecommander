@@ -1,4 +1,4 @@
-itecommander_configure:
+sitecommander_configure:
   path: 'admin/config/sitecommander'
   defaults:
     _form: '\Drupal\sitecommander\Form\ConfigureForm'

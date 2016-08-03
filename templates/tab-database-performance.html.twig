@@ -1,0 +1,8 @@
+<h2>Database Performance (<span class="icon-green">{{ drupalInfo.dbDriver }}</span> driver)</h2>
+
+<hr class="site-commander-hr" />
+
+{% if drupalInfo.dbDriver == 'mysql' %}
+	{% include '@sitecommander/tab-db-mysql.html.twig' %}
+{% endif %}
+

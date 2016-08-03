@@ -30,8 +30,14 @@
 			</li>
 
 			<li class="">
-				<a href="#caching-performance" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Caching Performance">
+				<a href="#database-performance" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Database Performance">
 					<i class="fa fa-database"></i>
+				</a>
+			</li>
+
+			<li class="">
+				<a href="#caching-performance" data-toggle="tab" data-feature="tooltip" data-placement="top" title="Caching Performance">
+					<i class="fa fa-cubes"></i>
 				</a>
 			</li>
 
@@ -104,6 +110,9 @@
 			</div>
 			<div role="tabpanel" class="tab-pane" id="storage-health">
 				{% include '@sitecommander/tab-storage-health.html.twig' %}
+			</div>
+			<div role="tabpanel" class="tab-pane" id="database-performance">
+				{% include '@sitecommander/tab-database-performance.html.twig' %}
 			</div>
 			<div role="tabpanel" class="tab-pane" id="caching-performance">
 				{% include '@sitecommander/tab-caching-performance.html.twig' %}

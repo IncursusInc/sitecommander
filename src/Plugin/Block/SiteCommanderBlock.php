@@ -111,6 +111,10 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$drupalInfo['minHoursBetweenBackups'] = $this->configFactory->get('sitecommander.settings')->get('minHoursBetweenBackups');
 		$drupalInfo['backupMaxAgeInDays'] = $this->configFactory->get('sitecommander.settings')->get('backupMaxAgeInDays');
 
+		$drupalInfo['dbDriver'] = $this->connection->driver();
+		$drupalInfo['dbStats'] = $sc->getDatabaseStats( $drupalInfo['dbDriver'] );
+		$drupalInfo['dbConfig'] = $sc->getDatabaseConfig( $drupalInfo['dbDriver'] );
+
 		// Let's figure out how many modules need to be (or can/should be) updated
 		$available = update_get_available(TRUE);
 		$project_data = update_calculate_project_data($available);
