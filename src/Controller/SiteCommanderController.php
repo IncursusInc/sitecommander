@@ -340,6 +340,7 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['dbDriver'] = $this->connection->driver();
 		$drupalInfo['dbStats'] = $this->getDatabaseStats( $drupalInfo['dbDriver'] );
 		$drupalInfo['dbConfig'] = $this->getDatabaseConfig( $drupalInfo['dbDriver'] );
+		$this->calculateDbFields($drupalInfo);
 
 		// Let's figure out how many modules need to be (or can/should be) updated
 		$available = update_get_available(TRUE);
@@ -919,6 +920,21 @@ class SiteCommanderController extends ControllerBase {
 		foreach($result as $r)
 			$stats[strtolower($r->Variable_name)] = $r->Value;
 		return $stats;
+	}
+
+	public function calculateDbFields( &$drupalInfo )
+	{
+		switch($drupalInfo['dbDriver'])
+		{
+			case 'mysql': $drupalInfo['dbUptime'] = SiteCommanderUtils::formatUptime($drupalInfo['dbStats']['uptime']);
+										$drupalInfo['dbTotalQueries'] = SiteCommanderUtils::formatNumber($drupalInfo['dbStats']['questions']);
+										$drupalInfo['dbQPS'] = round($drupalInfo['dbStats']['questions'] / $drupalInfo['dbStats']['uptime'], 2);
+										$drupalInfo['dbTotalConnections'] = SiteCommanderUtils::formatNumber($drupalInfo['dbStats']['connections']);
+										$drupalInfo['dbBytesSent'] = format_size($drupalInfo['dbStats']['bytes_sent']);
+										$drupalInfo['dbBytesReceived'] = format_size($drupalInfo['dbStats']['bytes_received']);
+										break;
+			
+		}
 	}
 
 	public function runCron()

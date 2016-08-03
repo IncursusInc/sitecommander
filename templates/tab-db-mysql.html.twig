@@ -3,12 +3,12 @@
 
 <div class="row">
 	<div class="col-md-12">
-			<div class="col-md-2 text-center">Uptime:<br /><span class="label label-info">{{ drupalInfo.dbStats.uptime|format_uptime }}</span></div>
-			<div class="col-md-2 text-center"># Queries:<br /><span class="label label-info">{{ drupalInfo.dbStats.questions|format_number }}</span></div>
-			<div class="col-md-2 text-center">Queries/Sec:<br /><span class="label label-info">{{ (drupalInfo.dbStats.questions / drupalInfo.dbStats.uptime)|round(2) }}</span></div>
-			<div class="col-md-2 text-center">Total Connections:<br /><span class="label label-info">{{ drupalInfo.dbStats.connections|format_number }}</span></div>
-			<div class="col-md-2 text-center">Bytes Sent:<br /><span class="label label-info">{{ drupalInfo.dbStats.bytes_sent|format_size }}</span></div>
-			<div class="col-md-2 text-center">Bytes Sent:<br /><span class="label label-info">{{ drupalInfo.dbStats.bytes_received|format_size }}</span></div>
+			<div class="col-md-2 text-center">Uptime:<br /><span class="label label-info" id="dbUptime">{{ drupalInfo.dbUptime }}</span></div>
+			<div class="col-md-2 text-center"># Queries:<br /><span class="label label-info" id="dbTotalQueries">{{ drupalInfo.dbTotalQueries }}</span></div>
+			<div class="col-md-2 text-center">Queries/Sec:<br /><span class="label label-info" id="dpQPS">{{ drupalInfo.dbQPS }}</span></div>
+			<div class="col-md-2 text-center">Total Connections:<br /><span class="label label-info" id="dbTotalConnections">{{ drupalInfo.dbTotalConnections }}</span></div>
+			<div class="col-md-2 text-center">Bytes Sent:<br /><span class="label label-info" id="dbBytesSent">{{ drupalInfo.dbBytesSent }}</span></div>
+			<div class="col-md-2 text-center">Bytes Sent:<br /><span class="label label-info" id="dbBytesReceived">{{ drupalInfo.dbBytesReceived }}</span></div>
 	</div>
 </div>
 

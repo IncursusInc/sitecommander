@@ -321,7 +321,7 @@
 						(1 - (( response[0].responseData.payload.dbStats.key_blocks_unused * response[0].responseData.payload.dbConfig.key_cache_block_size) / response[0].responseData.payload.dbConfig.key_buffer_size)) * 100
 					);
 					dbPerf3.refresh(
-						((ponse[0].responseData.payload.dbStats.innodb_buffer_pool_pages_total - response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_free) / response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_total) * 100
+						((response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_total - response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_free) / response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_total) * 100
 					);
 				}
 				

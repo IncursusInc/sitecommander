@@ -114,6 +114,7 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$drupalInfo['dbDriver'] = $this->connection->driver();
 		$drupalInfo['dbStats'] = $sc->getDatabaseStats( $drupalInfo['dbDriver'] );
 		$drupalInfo['dbConfig'] = $sc->getDatabaseConfig( $drupalInfo['dbDriver'] );
+		$sc->calculateDbFields($drupalInfo);
 
 		// Let's figure out how many modules need to be (or can/should be) updated
 		$available = update_get_available(TRUE);
