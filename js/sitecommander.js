@@ -307,11 +307,24 @@
 					dsg7.refresh(response[0].responseData.payload.redisStats.memoryUsedByRedis, response[0].responseData.payload.redisStats.memoryAllocatedByRedis);
 					dsg8.refresh(response[0].responseData.payload.redisStats.peakMemoryUsedByRedis, response[0].responseData.payload.redisStats.memoryAllocatedByRedis);
 				}
+
 				if(response[0].responseData.payload.opCacheStats)
 				{
 					dsg9.refresh(response[0].responseData.payload.opCacheStats.opcache_statistics.opcache_hit_rate);
 					dsg10.refresh(response[0].responseData.payload.opCacheStats.memory_usage.usedMemory);
 				}
+
+				if(response[0].responseData.payload.dbStats && response[0].responseData.payload.dbDriver == 'mysql')
+				{
+					dbPerf1.refresh(response[0].responseData.payload.dbStats.max_used_connections);
+					dbPerf2.refresh(
+						(1 - (( response[0].responseData.payload.dbStats.key_blocks_unused * response[0].responseData.payload.dbConfig.key_cache_block_size) / response[0].responseData.payload.dbConfig.key_buffer_size)) * 100
+					);
+					dbPerf3.refresh(
+						((ponse[0].responseData.payload.dbStats.innodb_buffer_pool_pages_total - response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_free) / response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_total) * 100
+					);
+				}
+				
 
 				// Update users online table (only do the fade effect if it is currently visible!)
 				if($('#users-online').is(':visible')) {

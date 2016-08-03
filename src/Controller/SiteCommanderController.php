@@ -337,6 +337,10 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['backupMaxAgeInDays'] = $this->configFactory->get('sitecommander.settings')->get('backupMaxAgeInDays');
 		$drupalInfo['enableScheduledBackups'] = $this->configFactory->get('sitecommander.settings')->get('enableScheduledBackups');
 
+		$drupalInfo['dbDriver'] = $this->connection->driver();
+		$drupalInfo['dbStats'] = $this->getDatabaseStats( $drupalInfo['dbDriver'] );
+		$drupalInfo['dbConfig'] = $this->getDatabaseConfig( $drupalInfo['dbDriver'] );
+
 		// Let's figure out how many modules need to be (or can/should be) updated
 		$available = update_get_available(TRUE);
 		$project_data = update_calculate_project_data($available);
