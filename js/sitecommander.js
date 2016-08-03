@@ -332,7 +332,7 @@
 					dbPerf3.refresh(
 						((response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_total - response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_free) / response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_total) * 100
 					);
-					dbPerf4.refresh(drupalSettings.dbQueryCacheHitRatio);
+					dbPerf4.refresh(response[0].responseData.payload.dbQueryCacheHitRatio);
 				}
 				
 
