@@ -932,6 +932,7 @@ class SiteCommanderController extends ControllerBase {
 										$drupalInfo['dbTotalConnections'] = SiteCommanderUtils::formatNumber($drupalInfo['dbStats']['connections']);
 										$drupalInfo['dbBytesSent'] = format_size($drupalInfo['dbStats']['bytes_sent']);
 										$drupalInfo['dbBytesReceived'] = format_size($drupalInfo['dbStats']['bytes_received']);
+										$drupalInfo['dbQueryCacheHitRatio'] = format_size(($drupalInfo['dbStats']['qcache_hits'] / ($drupalInfo['dbStats']['com_select'] + $drupalInfo['dbStats']['qcache_hits'])) * 100);
 										break;
 			
 		}

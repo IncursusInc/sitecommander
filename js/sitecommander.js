@@ -3,7 +3,7 @@
 	$(document).ready(function () {
 
 		var dsg1, dsg2, dsg3, dsg4, dsg5, dsg6, dsg7, dsg8, dsg9, dsg10, dsg11, dsg12, dsg13;
-		var dbPerf1, dbPerf2, dbPerf3;
+		var dbPerf1, dbPerf2, dbPerf3, dbPerf4;
 
 		var timer = setInterval( function() {
 
@@ -274,6 +274,15 @@
 						label: 'Percentage'
 					});
 	
+					dbPerf4 = new JustGage({
+						id: "dbPerf4",
+						value: drupalSettings.dbQueryCacheHitRatio,
+						min: 0,
+						max: 100,
+						title: "Query Cache Hit Ratio",
+						label: 'Percentage'
+					});
+	
 				}
 
 				clearInterval( timer );
@@ -323,6 +332,7 @@
 					dbPerf3.refresh(
 						((response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_total - response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_free) / response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_total) * 100
 					);
+					dbPerf4.refresh(drupalSettings.dbQueryCacheHitRatio);
 				}
 				
 
