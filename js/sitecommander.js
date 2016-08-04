@@ -203,6 +203,7 @@
 						min: 0,
 						max: drupalSettings.redisStats.memoryAllocatedByRedis,
 						title: "Memory Usage (MB)",
+						levelColors: ["#a9d70b"],
 						label: "Cache Size >>",
         		humanFriendlyDecimal: 2,
         		decimals: 2
@@ -214,6 +215,7 @@
 						min: 0,
 						max: drupalSettings.redisStats.memoryAllocatedByRedis,
 						title: "Peak Memory Usage (MB)",
+						levelColors: ["#a9d70b"],
 						label: "Cache Size >>",
         		humanFriendlyDecimal: 2,
         		decimals: 2
