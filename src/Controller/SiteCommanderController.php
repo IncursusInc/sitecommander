@@ -933,9 +933,66 @@ class SiteCommanderController extends ControllerBase {
 										$drupalInfo['dbBytesSent'] = format_size($drupalInfo['dbStats']['bytes_sent']);
 										$drupalInfo['dbBytesReceived'] = format_size($drupalInfo['dbStats']['bytes_received']);
 										$drupalInfo['dbQueryCacheHitRatio'] = round(($drupalInfo['dbStats']['qcache_hits'] / ($drupalInfo['dbStats']['com_select'] + $drupalInfo['dbStats']['qcache_hits'])) * 100, 2);
+
+										$per_thread_buffers =
+											@$drupalInfo['dbConfig']['record_buffer'] +
+											@$drupalInfo['dbConfig']['record_rnd_buffer'] +
+											@$drupalInfo['dbConfig']['sort_buffer'] +
+											@$drupalInfo['dbConfig']['thread_stack'] +
+											@$drupalInfo['dbConfig']['join_buffer_size'];
+
+										$total_per_thread_buffers = $per_thread_buffers * $drupalInfo['dbConfig']['max_connections'];
+										$max_total_per_thread_buffers = $per_thread_buffers * $drupalInfo['dbStats']['max_used_connections'];
+
+    								$max_tmp_table_size =
+      								( $drupalInfo['dbConfig']{'tmp_table_size'} > $drupalInfo['dbConfig']{'max_heap_table_size'} )
+      									? $drupalInfo['dbConfig']{'max_heap_table_size'}
+      									: $drupalInfo['dbConfig']{'tmp_table_size'};
+    								$server_buffers =
+      								$drupalInfo['dbConfig']{'key_buffer_size'} + $max_tmp_table_size;
+    								$server_buffers +=
+      								$drupalInfo['dbConfig']{'innodb_buffer_pool_size'}
+      								? $drupalInfo['dbConfig']{'innodb_buffer_pool_size'}
+      								: 0;
+    								$server_buffers +=
+      								$drupalInfo['dbConfig']{'innodb_additional_mem_pool_size'}
+      								? $drupalInfo['dbConfig']{'innodb_additional_mem_pool_size'}
+      								: 0;
+    								$server_buffers +=
+      								$drupalInfo['dbConfig']{'innodb_log_buffer_size'}
+      								? $drupalInfo['dbConfig']{'innodb_log_buffer_size'}
+      								: 0;
+    								$server_buffers +=
+      								$drupalInfo['dbConfig']{'query_cache_size'} ? $drupalInfo['dbConfig']{'query_cache_size'} : 0;
+    								$server_buffers +=
+      								@$drupalInfo['dbConfig']{'aria_pagecache_buffer_size'}
+      								? @$drupalInfo['dbConfig']{'aria_pagecache_buffer_size'}
+      								: 0;
+
+										$max_used_memory = $server_buffers + $max_total_per_thread_buffers + $this->getPerformanceSchemaMemory() + $this->getgCacheMemory();
+										$max_peak_memory = $server_buffers + $total_per_thread_buffers + $this->getPerformanceSchemaMemory() + $this->getgCacheMemory();
+
+										$drupalInfo['dbMaxMemoryUsage'] = format_size($max_used_memory);
+										$drupalInfo['dbMaxPossibleMemoryUsage'] = format_size($max_peak_memory);
 										break;
-			
 		}
+	}
+
+	// TODO
+	public function getgCacheMemory()
+	{
+		return 0;
+	}
+
+	public function getPerformanceSchemaMemory()
+	{
+		$result = $this->connection->query('SHOW ENGINE PERFORMANCE_SCHEMA STATUS')->fetchAll();
+
+		foreach($result as $r)
+			if($r->Name == 'performance_schema.memory')
+				return $r->Status;
+	
+		return 0;
 	}
 
 	public function runCron()
