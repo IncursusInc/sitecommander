@@ -167,7 +167,7 @@ class ConfigureForm extends ConfigFormBase {
     			'#title' => t('Path to drush'),
     			'#required' => FALSE,
 					'#default_value' => $config->get('drushPath') ? $config->get('drushPath') : '',
-    			'#description' => t('The fill path and filename to the drush command, which is used to perform backups and restores. We have attempted to find it for you: <i>' . $drushAutoFindPath . '</i>'),
+    			'#description' => t('The full path and filename to the drush command, which is used to perform backups and restores. We have attempted to find it for you: <i>' . $drushAutoFindPath . '</i>'),
     			'#placeholder' => t('e.g. /usr/local/bin/drush'),
 				);
 
@@ -191,6 +191,63 @@ class ConfigureForm extends ConfigFormBase {
     			'#title' => t('Minimum number of hours between backups'),
     			'#required' => FALSE,
 					'#default_value' => $config->get('minHoursBetweenBackups') ? $config->get('minHoursBetweenBackups') : 24
+				);
+
+				$form['sitecommander_settings']['backupManager']['enableMirroring'] = array(
+    			'#type' => 'checkbox',
+    			'#title' => t('Enable mirroring backup files to a remote host?'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('enableMirroring')
+				);
+
+				$form['sitecommander_settings']['backupManager']['mirrorMode'] = array(
+    			'#type' => 'radios',
+    			'#title' => t('Interface to use for mirroring backup files to a remote host'),
+    			'#required' => FALSE,
+					'#options' => array('SFTP' => 'SFTP'),
+					'#default_value' => $config->get('mirrorMode')
+				);
+
+				$form['sitecommander_settings']['backupManager']['remotePort'] = array(
+    			'#type' => 'number',
+    			'#title' => t('Remote port #'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('remotePort') ? $config->get('remotePort') : '',
+    			'#description' => t('Generally this is 22 for SFTP or 21 for FTP.'),
+				);
+
+				$form['sitecommander_settings']['backupManager']['remoteHost'] = array(
+    			'#type' => 'textfield',
+    			'#title' => t('Remote mirror host'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('remoteHost') ? $config->get('remoteHost') : '',
+    			'#description' => t('The hostname or IP address of the remote system that will be used as the mirror destination.'),
+    			'#placeholder' => t('e.g. hostname.somedomain.com'),
+				);
+
+				$form['sitecommander_settings']['backupManager']['remoteDir'] = array(
+    			'#type' => 'textfield',
+    			'#title' => t('Remote directory'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('remoteDir') ? $config->get('remoteDir') : '',
+    			'#description' => t('The absolute path to the remote destinationdirectory on the mirror host.'),
+					'#placeholder' => t('e.g. /some/path')
+				);
+
+				$form['sitecommander_settings']['backupManager']['remoteUserName'] = array(
+    			'#type' => 'textfield',
+    			'#title' => t('Remote username'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('remoteUserName') ? $config->get('remoteUserName') : '',
+    			'#description' => t('The username to be used for logging into the remote host.'),
+				);
+
+				$form['sitecommander_settings']['backupManager']['remotePassword'] = array(
+    			'#type' => 'textfield',
+    			'#title' => t('Remote password'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('remotePassword') ? $config->get('remotePassword') : '',
+    			'#description' => t('The password to be used for logging into the remote host.'),
 				);
 
 		// Broadcast Manager settings
@@ -236,6 +293,13 @@ class ConfigureForm extends ConfigFormBase {
 		$config->set('backupMaxAgeInDays', $form_state->getValue('backupMaxAgeInDays'))->save();
 		$config->set('enableScheduledBackups', $form_state->getValue('enableScheduledBackups'))->save();
 		$config->set('minHoursBetweenBackups', $form_state->getValue('minHoursBetweenBackups'))->save();
+		$config->set('remoteHost', $form_state->getValue('remoteHost'))->save();
+		$config->set('remotePort', $form_state->getValue('remotePort'))->save();
+		$config->set('remoteUserName', $form_state->getValue('remoteUserName'))->save();
+		$config->set('remotePassword', $form_state->getValue('remotePassword'))->save();
+		$config->set('remoteDir', $form_state->getValue('remoteDir'))->save();
+		$config->set('enableMirroring', $form_state->getValue('enableMirroring'))->save();
+		$config->set('mirrorMode', $form_state->getValue('mirrorMode'))->save();
 
 		// Broadcast Manager settings
 

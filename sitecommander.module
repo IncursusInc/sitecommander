@@ -110,6 +110,14 @@ function sitecommander_cron() {
 				$cmd = $drushPath . ' archive-dump --destination=' . $backupDirectory . '/' . $archiveFileName;
 	
 				shell_exec('/usr/bin/nohup ' . $cmd . ' 2>/dev/null >/dev/null &');
+
+				// Optional mirroring of backups
+				//$mirrorEnabled = \Drupal::config('sitecommander.settings')->get('mirrorEnabled');
+				//if($mirrorEnabled)
+				//{
+					//BackupController::mirrorBackup( $backupDirectory . '/' . $archiveFileName );
+				//}
+
 			}
 		}
 	}
