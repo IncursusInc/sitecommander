@@ -62,7 +62,12 @@ class BackupController extends ControllerBase {
 			} 
 			closedir($dh); 
 
-			$r = array_reverse($r);
+			// Sort files by created timestamp (reverse chronological order)
+			$customSort = function($a, $b) {
+				return $a['ctime'] < $b['ctime'];
+			};
+
+			uasort($r, $customSort);
 
 			return $r;
 		} 
