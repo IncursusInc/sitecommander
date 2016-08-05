@@ -240,10 +240,13 @@ class BackupController extends ControllerBase {
 					echo("Could not send file.");
 
 			} catch (Exception $e) {
-				echo 'ERROR: ';
-				echo $e->getMessage() . "\n";
+				echo 'ERROR: ' . $e->getMessage() . "\n";
+				return false;
 			}
+
+			return true;
 		}
+
 	}
 
 }
