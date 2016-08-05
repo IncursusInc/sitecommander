@@ -27,17 +27,35 @@ SiteCommander features include:
 * Tabbed interface for ease of navigation
 * More to come!
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot1.png?itok=KnZedmz8 "SiteCommander Screenshot")
+# Requirements
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot2.png?itok=KnZedmz8 "SiteCommander Screenshot")
+* Drupal 8.x
+* PHP 5.5 or higher (untested under PHP 7)
+* ssh2 module for PHP (optional, but needed for backup mirroring functionality)
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot3.png?itok=KnZedmz8 "SiteCommander Screenshot")
+# Known Issues
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot4.png?itok=KnZedmz8 "SiteCommander Screenshot")
+* Certain parts of the look/feel are going to depend on your theme, which means your install may not look like these screenshots. We are working on making the CSS more encapsulated to provide a more consistent experience.
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot5.png?itok=KnZedmz8 "SiteCommander Screenshot")
+# Screenshots
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot6.png?itok=KnZedmz8 "SiteCommander Screenshot")
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot1_2.png?itok=BpuRa1jE "SiteCommander Screenshot")
+
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot2_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
+
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot3_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
+
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot4_0.png?itok=BpuRa1jE "SiteCommander Screenshot")
+
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot5_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
+
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot6_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
+
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot7_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
+
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot8_0.png?itok=BpuRa1jE "SiteCommander Screenshot")
+
+![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot9_0.png?itok=BpuRa1jE "SiteCommander Screenshot")
 
 # Installation Instructions
 

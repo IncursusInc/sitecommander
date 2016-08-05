@@ -3,12 +3,13 @@
 	$(document).ready(function () {
 
 		var dsg1, dsg2, dsg3, dsg4, dsg5, dsg6, dsg7, dsg8, dsg9, dsg10, dsg11, dsg12, dsg13;
+		var dbPerf1, dbPerf2, dbPerf3, dbPerf4;
 
 		var timer = setInterval( function() {
 
 			$('#site-commander-loading-message-container').fadeOut("medium", function() {
 
-				$('#site-commander-tabs a').click(function (e) {
+				$('#site-commander-tabs a[data-toggle="tab"]').click(function (e) {
 					e.preventDefault();
 					$(this).tab('show');
 				})
@@ -45,7 +46,7 @@
 						url: '/sitecommander/make-backup',
 						dataType: 'json'
 					}).done(function(data) {
-						$('#modalBackup').find('.modal-body').html('<h2 class="white text-center">Backup Complete!</h2><p>Your backup image file should now be visible in the list of completed backups!');
+						$('#modalBackup').find('.modal-body').html('<h2 class="white text-center"><span class="fa fa-check-square"></span> Backup Complete!</h2><p>Your backup image file should now be visible in the list of completed backups!');
 						$('#modalBackup').find('.modal-footer').html('<button type="button" class="btn btn-success" data-dismiss="modal">Close</button>');
 						$('#modalBackup').attr('data-modal-color', 'green');
 	
@@ -86,11 +87,16 @@
 					});
 				});
 
-				$('[data-feature="tooltip"]').tooltip();
+				$('[data-feature="tooltip"]').tooltip({ trigger: 'hover' });
 
 				$('.switch-users-online').click(function(e) {
 					e.preventDefault();
 					$('#site-commander-tabs a[href="#users-online"]').tab('show');
+				});
+
+				$('.switch-backup-manager').click(function(e) {
+					e.preventDefault();
+					$('#site-commander-tabs a[href="#backup-manager"]').tab('show');
 				});
 
 				$('.switch-sessions').click(function(e) {
@@ -197,6 +203,7 @@
 						min: 0,
 						max: drupalSettings.redisStats.memoryAllocatedByRedis,
 						title: "Memory Usage (MB)",
+						levelColors: ["#a9d70b"],
 						label: "Cache Size >>",
         		humanFriendlyDecimal: 2,
         		decimals: 2
@@ -208,6 +215,7 @@
 						min: 0,
 						max: drupalSettings.redisStats.memoryAllocatedByRedis,
 						title: "Peak Memory Usage (MB)",
+						levelColors: ["#a9d70b"],
 						label: "Cache Size >>",
         		humanFriendlyDecimal: 2,
         		decimals: 2
@@ -235,6 +243,48 @@
 						title: "Memory Usage (MB)",
 						label: 'Cache Size >>'
 					});
+				}
+
+				// Database performance charts
+				if(drupalSettings.dbDriver == 'mysql')
+				{
+					dbPerf1 = new JustGage({
+						id: "dbPerf1",
+						value: drupalSettings.dbStats.max_used_connections,
+						min: 0,
+						max: drupalSettings.dbConfig.max_connections,
+						title: "Max Used Connections",
+						label: '# Connections'
+					});
+	
+
+					dbPerf2 = new JustGage({
+						id: "dbPerf2",
+						value: (1 - (( drupalSettings.dbStats.key_blocks_unused * drupalSettings.dbConfig.key_cache_block_size) / drupalSettings.dbConfig.key_buffer_size)) * 100,
+						min: 0,
+						max: 100,
+						title: "MyISAM Key Buffer Used",
+						label: 'Percentage'
+					});
+	
+					dbPerf3 = new JustGage({
+						id: "dbPerf3",
+						value: ((drupalSettings.dbStats.innodb_buffer_pool_pages_total - drupalSettings.dbStats.innodb_buffer_pool_pages_free) / drupalSettings.dbStats.innodb_buffer_pool_pages_total) * 100,
+						min: 0,
+						max: 100,
+						title: "InnoDB Buffer Usage",
+						label: 'Percentage'
+					});
+	
+					dbPerf4 = new JustGage({
+						id: "dbPerf4",
+						value: drupalSettings.dbQueryCacheHitRatio,
+						min: 0,
+						max: 100,
+						title: "Query Cache Hit Ratio",
+						label: 'Percentage'
+					});
+	
 				}
 
 				clearInterval( timer );
@@ -268,11 +318,25 @@
 					dsg7.refresh(response[0].responseData.payload.redisStats.memoryUsedByRedis, response[0].responseData.payload.redisStats.memoryAllocatedByRedis);
 					dsg8.refresh(response[0].responseData.payload.redisStats.peakMemoryUsedByRedis, response[0].responseData.payload.redisStats.memoryAllocatedByRedis);
 				}
+
 				if(response[0].responseData.payload.opCacheStats)
 				{
 					dsg9.refresh(response[0].responseData.payload.opCacheStats.opcache_statistics.opcache_hit_rate);
 					dsg10.refresh(response[0].responseData.payload.opCacheStats.memory_usage.usedMemory);
 				}
+
+				if(response[0].responseData.payload.dbStats && response[0].responseData.payload.dbDriver == 'mysql')
+				{
+					dbPerf1.refresh(response[0].responseData.payload.dbStats.max_used_connections);
+					dbPerf2.refresh(
+						(1 - (( response[0].responseData.payload.dbStats.key_blocks_unused * response[0].responseData.payload.dbConfig.key_cache_block_size) / response[0].responseData.payload.dbConfig.key_buffer_size)) * 100
+					);
+					dbPerf3.refresh(
+						((response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_total - response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_free) / response[0].responseData.payload.dbStats.innodb_buffer_pool_pages_total) * 100
+					);
+					dbPerf4.refresh(response[0].responseData.payload.dbQueryCacheHitRatio);
+				}
+				
 
 				// Update users online table (only do the fade effect if it is currently visible!)
 				if($('#users-online').is(':visible')) {

@@ -62,7 +62,12 @@ class BackupController extends ControllerBase {
 			} 
 			closedir($dh); 
 
-			$r = array_reverse($r);
+			// Sort files by created timestamp (reverse chronological order)
+			$customSort = function($a, $b) {
+				return $a['ctime'] < $b['ctime'];
+			};
+
+			uasort($r, $customSort);
 
 			return $r;
 		} 
@@ -128,7 +133,14 @@ class BackupController extends ControllerBase {
 			ob_end_clean();
 		}
 
-    // Create AJAX Response object.
+		// Optional mirroring of backups
+		$mirrorEnabled = \Drupal::config('sitecommander.settings')->get('mirrorEnabled');
+		if($mirrorEnabled)
+		{
+			self::mirrorFile( $backupDirectory . '/' . $archiveFileName );
+		}
+
+		// Create AJAX Response object.
     $response = new AjaxResponse();
 
 		$responseData = new \StdClass();
@@ -196,6 +208,45 @@ class BackupController extends ControllerBase {
 
 		// Return ajax response.
 		return $response;
+	}
+
+	public static function mirrorFile( $fileName )
+	{
+		$mirrorMode = \Drupal::config('sitecommander.settings')->get('mirrorMode');
+		$remoteUserName = \Drupal::config('sitecommander.settings')->get('remoteUserName');
+		$remotePassword = \Drupal::config('sitecommander.settings')->get('remotePassword');
+		$remoteHost = \Drupal::config('sitecommander.settings')->get('remoteHost');
+		$remotePort = \Drupal::config('sitecommander.settings')->get('remotePort');
+		$remoteDir = \Drupal::config('sitecommander.settings')->get('remoteDir');
+
+		if($mirrorMode == 'SFTP')
+		{
+			try {
+				$connection = ssh2_connect($remoteHost, $remotePort);
+
+				if(!$connection)
+					echo("Could not connect to $remoteHost on port $remotePort.");
+
+				if(!ssh2_auth_password($connection, $remoteUserName, $remotePassword))
+					echo("Could not authenticate with username $remoteUserName " .  "and password $remotePassword.");
+
+				$sftp = ssh2_sftp($connection);
+				if(!$sftp)
+					echo("Could not initialize SFTP subsystem.");
+
+				$pathParts = pathinfo($fileName);
+
+				if(!ssh2_scp_send($connection, $fileName, $remoteDir . '/' . $pathParts['filename']))
+					echo("Could not send file.");
+
+			} catch (Exception $e) {
+				echo 'ERROR: ' . $e->getMessage() . "\n";
+				return false;
+			}
+
+			return true;
+		}
+
 	}
 
 }

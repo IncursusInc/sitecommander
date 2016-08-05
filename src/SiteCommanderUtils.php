@@ -111,4 +111,42 @@ class SiteCommanderUtils {
 
 		if(count($outputArray) > 0) return true; else return false;
 	}
+
+  public static function formatNumber($value) {
+		// first strip any formatting;
+		$n = (0+str_replace(",", "", $value));
+
+		// is this a number?
+		if (!is_numeric($n)) return false;
+
+		// now filter it;
+		if ($n > 1000000000000) return round(($n/1000000000000), 2).' T';
+		elseif ($n > 1000000000) return round(($n/1000000000), 2).' B';
+		elseif ($n > 1000000) return round(($n/1000000), 2).' M';
+		elseif ($n > 1000) return round(($n/1000), 2).' K';
+
+		return number_format($n);
+ 	}
+
+	public static function formatUptime( $uptime )
+	{
+    $seconds = (integer)$uptime % 60;
+    $minutes = (integer)(( $uptime % 3600 ) / 60);
+    $hours   = (integer)(( $uptime % 86400 ) / 3600);
+    $days    = (integer)($uptime / 86400);
+
+		if ( $days > 0 ) {
+        $uptimestring = "${days}d ${hours}h ${minutes}m ${seconds}s";
+    }
+    elseif ( $hours > 0 ) {
+        $uptimestring = "${hours}h ${minutes}m ${seconds}s";
+    }
+    elseif ( $minutes > 0 ) {
+        $uptimestring = "${minutes}m ${seconds}s";
+    }
+    else {
+        $uptimestring = "${seconds}s";
+    }
+    return $uptimestring;
+	}
 }

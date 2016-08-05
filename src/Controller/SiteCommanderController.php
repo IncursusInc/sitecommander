@@ -74,7 +74,7 @@ class SiteCommanderController extends ControllerBase {
 	// AJAX Callback to toggle maintenance mode
   public function toggleMaintenanceMode() {
 
-		// Toggle maintenance mode via Drupal CLI
+		// Toggle maintenance mode via Drupal
 		// First, figure out if we are already in maintenance mode
 		$currStatus = $this->state->get('system.maintenance_mode');
 		if($currStatus)
@@ -91,6 +91,34 @@ class SiteCommanderController extends ControllerBase {
 		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'toggleMaintenanceMode';
+		$responseData->mode = $mode;
+    $response->addCommand( new ReadMessageCommand($responseData));
+
+		// Return ajax response.
+		return $response;
+	}
+
+	// AJAX Callback to toggle scheduled backups
+  public function toggleScheduledBackups() {
+
+		// Toggle scheduled backups via Drupal 
+		// First, figure out if we are already in maintenance mode
+		$currStatus = $this->configFactory->get('sitecommander.settings')->get('enableScheduledBackups');
+		if($currStatus)
+			$mode = 0;
+		else
+			$mode = 1;
+
+		$config = $this->configFactory->getEditable('sitecommander.settings');
+		$config->set('enableScheduledBackups', $mode)->save();
+
+    // Create AJAX Response object.
+    $response = new AjaxResponse();
+
+    // Call the SiteCommanderAjaxCommand javascript function.
+		$responseData = new \StdClass();
+		$responseData->command = 'readMessage';
+		$responseData->siteCommanderCommand = 'toggleScheduledBackups';
 		$responseData->mode = $mode;
     $response->addCommand( new ReadMessageCommand($responseData));
 
@@ -291,6 +319,11 @@ class SiteCommanderController extends ControllerBase {
 	public function updatePoll()
 	{
 		$drupalInfo['numCores'] = SiteCommanderUtils::getNumCores();
+		$uptime = \Drupal\sitecommander\Controller\SiteCommanderController::getUptime( $drupalInfo['numCores'] );
+		$drupalInfo['uptime'] = $uptime['uptime'];
+		$drupalInfo['idletime'] = $uptime['idletime'];
+		$drupalInfo['idlepct'] = $uptime['idlepct'];
+
 		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage( $drupalInfo['numCores']);
 		$drupalInfo['memInfo'] = \Drupal\sitecommander\Controller\SiteCommanderController::getMemoryInfo();
 		$drupalInfo['redisStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getRedisStats();
@@ -304,6 +337,34 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['numSessionEntries'] = $this->getNumSessionEntries();
 		$drupalInfo['numVisitorsOnline'] = $this->getAnonymousUsers();
 		$drupalInfo['oldFilesStorageSize'] = $this->getOldFilesStorageSize();
+		$drupalInfo['backupStorageSize'] = $this->getBackupStorageSize();
+		$drupalInfo['minHoursBetweenBackups'] = $this->configFactory->get('sitecommander.settings')->get('minHoursBetweenBackups');
+		$drupalInfo['backupMaxAgeInDays'] = $this->configFactory->get('sitecommander.settings')->get('backupMaxAgeInDays');
+		$drupalInfo['enableScheduledBackups'] = $this->configFactory->get('sitecommander.settings')->get('enableScheduledBackups');
+
+		$drupalInfo['dbDriver'] = $this->connection->driver();
+		$drupalInfo['dbStats'] = $this->getDatabaseStats( $drupalInfo['dbDriver'] );
+		$drupalInfo['dbConfig'] = $this->getDatabaseConfig( $drupalInfo['dbDriver'] );
+		$this->calculateDbFields($drupalInfo);
+
+		// Let's figure out how many modules need to be (or can/should be) updated
+		$available = update_get_available(TRUE);
+		$project_data = update_calculate_project_data($available);
+
+		$drupalInfo['moduleUpdatesAvailable'] = 0;
+
+		foreach($project_data as $name => $project)
+		{
+			// Skip ones that are already up to date
+			if ($project['status'] == UPDATE_CURRENT) continue;
+  
+			$drupalInfo['moduleUpdatesAvailable']++;
+		}
+
+		if($this->state->get('sitecommander.timestamp_last_backup'))
+			$drupalInfo['timeStampNextBackup'] = date('Y.m.d H:i:s', $this->state->get('sitecommander.timestamp_last_backup') + ($drupalInfo['minHoursBetweenBackups'] * 60 * 60));
+		else
+			$drupalInfo['timeStampNextBackup'] = 'Unknown';
 
 		$drupalInfo['usersOnline'] = \Drupal\sitecommander\Controller\SiteCommanderController::getUsersOnline();
     $path = '@sitecommander/tab-users-online.html.twig';
@@ -430,6 +491,31 @@ class SiteCommanderController extends ControllerBase {
 		}
 	}
 
+	// Get uptime/idletime
+	public function getUptime( $numCores=1 )
+	{
+		if(preg_match('/.*nux.*/', php_uname()))
+		{
+			ob_start();
+			list($uptime, $idletime) = preg_split('/\s+/', system('cat /proc/uptime'));
+			ob_end_clean();
+
+			$now = time();
+
+			$idlepct = round( ($idletime/$numCores) / $uptime * 100, 2);
+			$uptime = SiteCommanderUtils::formatUptime($uptime);
+			$idletime = SiteCommanderUtils::formatUptime($idletime / $numCores);
+		}
+		else
+		{
+			$uptime = 'Unknown';
+			$idletime = 'Unknown';
+			$idlepct = 'Unknown';
+		}
+
+		return array('uptime' => $uptime, 'idletime' => $idletime, 'idlepct' => $idlepct);
+	}
+
 	public function getCpuLoadAverage( $numCores = 1 )
 	{
 		// Get CPU load average
@@ -495,6 +581,7 @@ class SiteCommanderController extends ControllerBase {
 				{
 					$storageHealth[ $flds[0] ] = array(
 						'totalSizeHumanReadable' => format_size(1024 * $flds[1]),
+						'freeSpaceHumanReadable' => format_size(1024 * $flds[3]),
 						'totalBlocks' => $flds[1],
 						'usedBlocks' => $flds[2],
 						'availableBlocks' => $flds[3],
@@ -569,7 +656,6 @@ class SiteCommanderController extends ControllerBase {
 	}
 
 	// Count users active within the defined period.
-	// TODO - tie this into having a session as well!
 	public function getUsersOnline()
 	{
 		$interval = time() - 900;
@@ -643,31 +729,47 @@ class SiteCommanderController extends ControllerBase {
 
 	public function getPublishedNodeCounts() {
 
+		// Figure out if we are excluding certain content types in the configuration
+		$excludedContentTypes = $this->configFactory->get('sitecommander.settings')->get('excludedContentTypes');
+		$excludedContentTypes = array_filter($excludedContentTypes);
+
 		// Get breakdown of published nodes by content type
 		$nodeTypeNames = node_type_get_names();
 
-		$query = $this->entityQuery->getAggregate('node')
-											->condition('type', array_keys($nodeTypeNames), 'IN')
-											->condition('status', 1)
-											->groupBy('type')
-											->aggregate('type', 'COUNT')
-											->sortAggregate('type', 'COUNT', 'DESC');
+		$query = $this->entityQuery->getAggregate('node');
+
+		$query->andConditionGroup()
+							->condition('type', array_keys($nodeTypeNames), 'IN')
+							->condition('status', 1);
+
+		$query->groupBy('type')
+					->aggregate('type', 'COUNT')
+					->sortAggregate('type', 'COUNT', 'DESC');
 
 		$tmpResult = $query->execute();
 
 		// Put the results in a format that is easier for us to work with, using the node type machine name as the index in the array
 		$result = array();
 		foreach($tmpResult as $val)
-			$result[ $val['type'] ] = $val;
+		{
+			if(!array_key_exists($val['type'], $excludedContentTypes))
+			{
+				$result[ $val['type'] ] = $val;
+				$result[ $val['type'] ]['name'] = $nodeTypeNames[ $val['type'] ];
+			}
+		}
 
 		// Add back in the ones that don't have any nodes yet, as the query won't pick those up
 		foreach($nodeTypeNames as $machineName => $nodeTypeName)
 		{
-			if(!array_key_exists($machineName, $result))
-				$result[] = array('type' => $machineName, 'type_count' => '0');
+			if(!in_array($machineName, $excludedContentTypes))
+			{
+				if(!array_key_exists($machineName, $result))
+					$result[] = array('type' => $machineName, 'type_count' => '0', 'name' => $nodeTypeNames[ $machineName ]);
+			}
 		}
 
-		return array($nodeTypeNames, $result);
+		return $result;
 	}
 
 	// Get # of users
@@ -715,6 +817,32 @@ class SiteCommanderController extends ControllerBase {
 		}
 
 		return $oldFilesStorageSize;
+	}
+
+	public function getBackupStorageSize()
+	{
+		if(preg_match('/.*nux.*/', php_uname()))
+		{
+			$config = $this->configFactory->getEditable('sitecommander.settings');
+			$backupDir = $config->get('backupDirectory');
+
+			if($backupDir && is_dir($backupDir))
+			{
+				ob_start();
+				$tmp = preg_split('/\s+/', system('du -sbc ' . $backupDir));
+				ob_end_clean();
+
+				$backupStorageSize = format_size($tmp[ 0 ]);
+			} else {
+				$backupStorageSize = 'Unknown';
+			}
+		}
+		else
+		{
+			$backupStorageSize = 'Unknown';
+		}
+
+		return $backupStorageSize;
 	}
 
 	// Get number of enabled modules
@@ -784,6 +912,117 @@ class SiteCommanderController extends ControllerBase {
 		}
 
 		return $topSearches;
+	}
+
+	public function getDatabaseConfig( $dbDriver )
+	{
+		switch($dbDriver)
+		{
+			case 'mysql': return $this->getMySqlConfig();
+		}
+
+		return array();
+	}
+
+	public function getDatabaseStats( $dbDriver )
+	{
+		switch($dbDriver)
+		{
+			case 'mysql': return $this->getMySqlStats();
+		}
+
+		return array();
+	}
+
+	public function getMySqlStats()
+	{
+		$result = $this->connection->query('SHOW GLOBAL STATUS')->fetchAll();
+		$stats = array();
+		foreach($result as $r)
+			$stats[strtolower($r->Variable_name)] = $r->Value;
+		return $stats;
+	}
+
+	public function getMySqlConfig()
+	{
+		$result = $this->connection->query('SHOW VARIABLES')->fetchAll();
+		$stats = array();
+		foreach($result as $r)
+			$stats[strtolower($r->Variable_name)] = $r->Value;
+		return $stats;
+	}
+
+	public function calculateDbFields( &$drupalInfo )
+	{
+		switch($drupalInfo['dbDriver'])
+		{
+			case 'mysql': $drupalInfo['dbUptime'] = SiteCommanderUtils::formatUptime($drupalInfo['dbStats']['uptime']);
+										$drupalInfo['dbTotalQueries'] = SiteCommanderUtils::formatNumber($drupalInfo['dbStats']['questions']);
+										$drupalInfo['dbQPS'] = round($drupalInfo['dbStats']['questions'] / $drupalInfo['dbStats']['uptime'], 2);
+										$drupalInfo['dbTotalConnections'] = SiteCommanderUtils::formatNumber($drupalInfo['dbStats']['connections']);
+										$drupalInfo['dbBytesSent'] = format_size($drupalInfo['dbStats']['bytes_sent']);
+										$drupalInfo['dbBytesReceived'] = format_size($drupalInfo['dbStats']['bytes_received']);
+										$drupalInfo['dbQueryCacheHitRatio'] = round(($drupalInfo['dbStats']['qcache_hits'] / ($drupalInfo['dbStats']['com_select'] + $drupalInfo['dbStats']['qcache_hits'])) * 100, 2);
+
+										$per_thread_buffers =
+											@$drupalInfo['dbConfig']['record_buffer'] +
+											@$drupalInfo['dbConfig']['record_rnd_buffer'] +
+											@$drupalInfo['dbConfig']['sort_buffer'] +
+											@$drupalInfo['dbConfig']['thread_stack'] +
+											@$drupalInfo['dbConfig']['join_buffer_size'];
+
+										$total_per_thread_buffers = $per_thread_buffers * $drupalInfo['dbConfig']['max_connections'];
+										$max_total_per_thread_buffers = $per_thread_buffers * $drupalInfo['dbStats']['max_used_connections'];
+
+    								$max_tmp_table_size =
+      								( $drupalInfo['dbConfig']{'tmp_table_size'} > $drupalInfo['dbConfig']{'max_heap_table_size'} )
+      									? $drupalInfo['dbConfig']{'max_heap_table_size'}
+      									: $drupalInfo['dbConfig']{'tmp_table_size'};
+    								$server_buffers =
+      								$drupalInfo['dbConfig']{'key_buffer_size'} + $max_tmp_table_size;
+    								$server_buffers +=
+      								$drupalInfo['dbConfig']{'innodb_buffer_pool_size'}
+      								? $drupalInfo['dbConfig']{'innodb_buffer_pool_size'}
+      								: 0;
+    								$server_buffers +=
+      								$drupalInfo['dbConfig']{'innodb_additional_mem_pool_size'}
+      								? $drupalInfo['dbConfig']{'innodb_additional_mem_pool_size'}
+      								: 0;
+    								$server_buffers +=
+      								$drupalInfo['dbConfig']{'innodb_log_buffer_size'}
+      								? $drupalInfo['dbConfig']{'innodb_log_buffer_size'}
+      								: 0;
+    								$server_buffers +=
+      								$drupalInfo['dbConfig']{'query_cache_size'} ? $drupalInfo['dbConfig']{'query_cache_size'} : 0;
+    								$server_buffers +=
+      								@$drupalInfo['dbConfig']{'aria_pagecache_buffer_size'}
+      								? @$drupalInfo['dbConfig']{'aria_pagecache_buffer_size'}
+      								: 0;
+
+										$max_used_memory = $server_buffers + $max_total_per_thread_buffers + $this->getPerformanceSchemaMemory() + $this->getgCacheMemory();
+										$max_peak_memory = $server_buffers + $total_per_thread_buffers + $this->getPerformanceSchemaMemory() + $this->getgCacheMemory();
+
+										$drupalInfo['dbMaxMemoryUsage'] = format_size($max_used_memory);
+										$drupalInfo['dbMaxPossibleMemoryUsage'] = format_size($max_peak_memory);
+										break;
+		}
+	}
+
+	// TODO
+	public function getgCacheMemory()
+	{
+		return 0;
+	}
+
+	public function getPerformanceSchemaMemory()
+	{
+		$result = $this->connection->query('SHOW ENGINE PERFORMANCE_SCHEMA STATUS')->fetchAll();
+
+		foreach($result as $r)
+			if($r->Name == 'performance_schema.memory')
+				return $r->Status;
+	
+		return 0;
 	}
 
 	public function runCron()

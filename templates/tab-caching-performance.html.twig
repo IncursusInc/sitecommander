@@ -33,28 +33,21 @@
 		<div style="clear:both"></div>
 	</div>
 
-	<div class="redis-text-stats">
-		<div class="redis-text-stats-column">
-			<h3><label>Redis Version:</label> <span>v{{ drupalInfo.redisStats.redis_version }}</span></h3>
-			<h3><label>Uptime:</label> <span>{{ drupalInfo.redisStats.uptime_in_days }} day(s)</span></h3>
-			<h3><label>Connected Clients:</label> <span>{{ drupalInfo.redisStats.connected_clients }}</span></h3>
-			<h3><label>Connected Slaves:</label> <span>{{ drupalInfo.redisStats.connected_slaves }}</span></h3>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card text-center">Redis Version:<br /><span class="label label-info" id="redisVersion">{{ drupalInfo.redisStats.redis_version }}</span></div>
+			<div class="card text-center">Uptime:<br /><span class="label label-info" id="redisUptimeInDays">{{ drupalInfo.redisStats.uptime_in_days }} day(s)</span></div>
+			<div class="card text-center">Connected Clients:<br /><span class="label label-info" id="redisConnectedClients">{{ drupalInfo.redisStats.connected_clients }}</span></div>
+			<div class="card text-center">Connected Slaves:<br /><span class="label label-info" id="redisConnectedSlaves">{{ drupalInfo.redisStats.connected_slaves }}</span></div>
+			<div class="card text-center">Connections Rcvd:<br /><span class="label label-info" id="redisTotalConnectionsReceived">{{ drupalInfo.redisStats.total_connections_received }}</span></div>
+			<div class="card text-center">Commands Proc'd:<br /><span class="label label-info" id="redisTotalCommandsProcessed">{{ drupalInfo.redisStats.total_commands_processed }}</span></div>
+			<div class="card text-center">Total Net Input:<br /><span class="label label-info" id="redisTotalNetInput">{{ drupalInfo.redisStats.totalNetInputBytesFormatted }}</span></div>
+			<div class="card text-center">Total Net Output:<br /><span class="label label-info" id="redisTotalNetOutput">{{ drupalInfo.redisStats.totalNetOutputBytesFormatted }}</span></div>
+			<div class="card text-center">Cached Objects:<br /><span class="label label-info" id="redisCachedObjects">{{ drupalInfo.redisStats.numObjectsCached }}</span></div>
+			<div class="card text-center">Expired Keys:<br /><span class="label label-info" id="redisExpiredKeys">{{ drupalInfo.redisStats.expired_keys }}</span></div>
+			<div class="card text-center">Evicted Keys:<br /><span class="label label-info" id="redisEvictedKeys">{{ drupalInfo.redisStats.evicted_keys }}</span></div>
+			<div class="card text-center">Mem Fragm. Ratio:<br /><span class="label label-info" id="redisMemFragmentationRatio">{{ drupalInfo.redisStats.mem_fragmentation_ratio }}</span></div>
 		</div>
-	
-		<div class="redis-text-stats-column">
-			<h3><label>Total Connections Received:</label> <span>{{ drupalInfo.redisStats.total_connections_received }}</span></h3>
-			<h3><label>Total Commands Processed:</label> <span>{{ drupalInfo.redisStats.total_commands_processed }}</span></h3>
-			<h3><label>Total Net Input (Bytes):</label> <span>{{ drupalInfo.redisStats.totalNetInputBytesFormatted }}</span></h3>
-			<h3><label>Total Net Output (Bytes):</label> <span>{{ drupalInfo.redisStats.totalNetOutputBytesFormatted }}</span></h3>
-		</div>
-	
-		<div class="redis-text-stats-column">
-			<h3><label>Cached Objects:</label> <span>{{ drupalInfo.redisStats.numObjectsCached }}</span></h3>
-			<h3><label>Expired Keys:</label> <span>{{ drupalInfo.redisStats.expired_keys }}</span></h3>
-			<h3><label>Evicted Keys:</label> <span>{{ drupalInfo.redisStats.evicted_keys }}</span></h3>
-			<h3><label>Mem Fragmentation Ratio:</label> <span>{{ drupalInfo.redisStats.mem_fragmentation_ratio }}</span></h3>
-		</div>
-	
 	</div>
 
 {% endif %}

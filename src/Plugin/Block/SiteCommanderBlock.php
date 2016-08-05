@@ -87,7 +87,8 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 
 		$sc = new \Drupal\sitecommander\Controller\SiteCommanderController($this->connection, $this->moduleHandler, $this->entityQuery, $this->fileSystem, $this->configFactory, $this->state, $this->currentUser, $this->twig, $this->cron );
 
-		list($drupalInfo['nodeTypeNames'], $drupalInfo['publishedNodeCounts']) = $sc->getPublishedNodeCounts();
+		//list($drupalInfo['nodeTypeNames'], $drupalInfo['publishedNodeCounts']) = $sc->getPublishedNodeCounts();
+		$drupalInfo['publishedNodeCounts'] = $sc->getPublishedNodeCounts();
 		$drupalInfo['userCount'] = $sc->getUserCount();
 		$drupalInfo['installSize'] = $sc->getInstallSize();
 		$drupalInfo['oldFilesStorageSize'] = $sc->getOldFilesStorageSize();
@@ -101,11 +102,42 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$drupalInfo['numVisitorsOnline'] = $sc->getAnonymousUsers();
 		$drupalInfo['numCores'] = SiteCommanderUtils::getNumCores();
 		$drupalInfo['loadAverage'] = $sc->getCpuLoadAverage( $drupalInfo['numCores']);
+		$uptime = \Drupal\sitecommander\Controller\SiteCommanderController::getUptime( $drupalInfo['numCores'] );
+		$drupalInfo['uptime'] = $uptime['uptime'];
+		$drupalInfo['idletime'] = $uptime['idletime'];
+		$drupalInfo['idlepct'] = $uptime['idlepct'];
 		$drupalInfo['memInfo'] = $sc->getMemoryInfo();
 		$drupalInfo['redisStats'] = $sc->getRedisStats();
 		$drupalInfo['opCacheStats'] = $sc->getOpCacheStats();
 		$drupalInfo['apcStats'] = $sc->getApcStats();
 		$drupalInfo['storageHealth'] = $sc->getStorageHealth();
+		$drupalInfo['backupStorageSize'] = $sc->getBackupStorageSize();
+		$drupalInfo['minHoursBetweenBackups'] = $this->configFactory->get('sitecommander.settings')->get('minHoursBetweenBackups');
+		$drupalInfo['backupMaxAgeInDays'] = $this->configFactory->get('sitecommander.settings')->get('backupMaxAgeInDays');
+
+		$drupalInfo['dbDriver'] = $this->connection->driver();
+		$drupalInfo['dbStats'] = $sc->getDatabaseStats( $drupalInfo['dbDriver'] );
+		$drupalInfo['dbConfig'] = $sc->getDatabaseConfig( $drupalInfo['dbDriver'] );
+		$sc->calculateDbFields($drupalInfo);
+
+		// Let's figure out how many modules need to be (or can/should be) updated
+		$available = update_get_available(TRUE);
+		$project_data = update_calculate_project_data($available);
+
+		$drupalInfo['moduleUpdatesAvailable'] = 0;
+
+		foreach($project_data as $name => $project)
+		{
+			// Skip ones that are already up to date
+			if ($project['status'] == UPDATE_CURRENT) continue;
+  
+			$drupalInfo['moduleUpdatesAvailable']++;
+		}
+
+		if($this->state->get('sitecommander.timestamp_last_backup'))
+			$drupalInfo['timeStampNextBackup'] = date('Y.m.d H:i:s', $this->state->get('sitecommander.timestamp_last_backup') + ($drupalInfo['minHoursBetweenBackups'] * 60 * 60));
+		else
+			$drupalInfo['timeStampNextBackup'] = 'Unknown';
 
 		// Drupal settings
 		$drupalInfo['settings'] = array();
