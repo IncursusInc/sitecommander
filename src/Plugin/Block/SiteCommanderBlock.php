@@ -102,6 +102,10 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$drupalInfo['numVisitorsOnline'] = $sc->getAnonymousUsers();
 		$drupalInfo['numCores'] = SiteCommanderUtils::getNumCores();
 		$drupalInfo['loadAverage'] = $sc->getCpuLoadAverage( $drupalInfo['numCores']);
+		$uptime = \Drupal\sitecommander\Controller\SiteCommanderController::getUptime( $drupalInfo['numCores'] );
+		$drupalInfo['uptime'] = $uptime['uptime'];
+		$drupalInfo['idletime'] = $uptime['idletime'];
+		$drupalInfo['idlepct'] = $uptime['idlepct'];
 		$drupalInfo['memInfo'] = $sc->getMemoryInfo();
 		$drupalInfo['redisStats'] = $sc->getRedisStats();
 		$drupalInfo['opCacheStats'] = $sc->getOpCacheStats();

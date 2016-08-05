@@ -319,6 +319,11 @@ class SiteCommanderController extends ControllerBase {
 	public function updatePoll()
 	{
 		$drupalInfo['numCores'] = SiteCommanderUtils::getNumCores();
+		$uptime = \Drupal\sitecommander\Controller\SiteCommanderController::getUptime( $drupalInfo['numCores'] );
+		$drupalInfo['uptime'] = $uptime['uptime'];
+		$drupalInfo['idletime'] = $uptime['idletime'];
+		$drupalInfo['idlepct'] = $uptime['idlepct'];
+
 		$drupalInfo['loadAverage'] = \Drupal\sitecommander\Controller\SiteCommanderController::getCpuLoadAverage( $drupalInfo['numCores']);
 		$drupalInfo['memInfo'] = \Drupal\sitecommander\Controller\SiteCommanderController::getMemoryInfo();
 		$drupalInfo['redisStats'] = \Drupal\sitecommander\Controller\SiteCommanderController::getRedisStats();
@@ -484,6 +489,31 @@ class SiteCommanderController extends ControllerBase {
 
 			return $stats;
 		}
+	}
+
+	// Get uptime/idletime
+	public function getUptime( $numCores=1 )
+	{
+		if(preg_match('/.*nux.*/', php_uname()))
+		{
+			ob_start();
+			list($uptime, $idletime) = preg_split('/\s+/', system('cat /proc/uptime'));
+			ob_end_clean();
+
+			$now = time();
+
+			$idlepct = round( ($idletime/$numCores) / $uptime * 100, 2);
+			$uptime = SiteCommanderUtils::formatUptime($uptime);
+			$idletime = SiteCommanderUtils::formatUptime($idletime / $numCores);
+		}
+		else
+		{
+			$uptime = 'Unknown';
+			$idletime = 'Unknown';
+			$idlepct = 'Unknown';
+		}
+
+		return array('uptime' => $uptime, 'idletime' => $idletime, 'idlepct' => $idlepct);
 	}
 
 	public function getCpuLoadAverage( $numCores = 1 )

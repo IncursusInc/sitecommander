@@ -2,6 +2,19 @@
 <h2>Server Performance/Health</h2>
 
 <hr class="site-commander-hr" />
+	<h3 class="text-center">Uptime</h3>
+<hr class="site-commander-hr" />
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="card text-center"># CPU Cores:<br /><span class="label label-info" id="uptime">{{ drupalInfo.numCores }}</span></div>
+		<div class="card text-center">Uptime:<br /><span class="label label-info" id="uptime">{{ drupalInfo.uptime }}</span></div>
+		<div class="card text-center">Idletime:<br /><span class="label label-info" id="idletime">{{ drupalInfo.idletime }}</span></div>
+		<div class="card text-center">Idle %:<br /><span class="label label-info" id="idlepct">{{ drupalInfo.idlepct }}</span></div>
+	</div>
+</div>
+
+<hr class="site-commander-hr" />
 
 <h3 class="text-center">Raw CPU Load Averages</h3>
 <div class="gauges-container">
