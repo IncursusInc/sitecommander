@@ -132,7 +132,7 @@ class BackupController extends ControllerBase {
 		$mirrorEnabled = \Drupal::config('sitecommander.settings')->get('mirrorEnabled');
 		if($mirrorEnabled)
 		{
-			self::mirrorBackup( $backupDirectory . '/' . $archiveFileName );
+			self::mirrorFile( $backupDirectory . '/' . $archiveFileName );
 		}
 
 		// Create AJAX Response object.
@@ -205,7 +205,7 @@ class BackupController extends ControllerBase {
 		return $response;
 	}
 
-	public static function mirrorBackup( $fileName )
+	public static function mirrorFile( $fileName )
 	{
 		$mirrorMode = \Drupal::config('sitecommander.settings')->get('mirrorMode');
 		$remoteUserName = \Drupal::config('sitecommander.settings')->get('remoteUserName');

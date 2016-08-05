@@ -107,17 +107,20 @@ function sitecommander_cron() {
 	
 				// Build the drush command line
 				$archiveFileName = 'sitecommander-scheduled-backup.' . time() . '.tar.gz';
-				$cmd = $drushPath . ' archive-dump --destination=' . $backupDirectory . '/' . $archiveFileName;
-	
-				shell_exec('/usr/bin/nohup ' . $cmd . ' 2>/dev/null >/dev/null &');
+				$backupCmd = $drushPath . ' archive-dump --destination=' . $backupDirectory . '/' . $archiveFileName;
+				$syncCmd = $drushPath . ' sitecommander-backup-copy ' . $backupDirectory . '/' . $archiveFileName;
 
 				// Optional mirroring of backups
-				//$mirrorEnabled = \Drupal::config('sitecommander.settings')->get('mirrorEnabled');
-				//if($mirrorEnabled)
-				//{
-					//BackupController::mirrorBackup( $backupDirectory . '/' . $archiveFileName );
-				//}
-
+				$mirrorEnabled = \Drupal::config('sitecommander.settings')->get('enableMirroring');
+				if($mirrorEnabled)
+				{
+					shell_exec('(/usr/bin/nohup ' . $backupCmd . '; ' . $syncCmd .') 2>/dev/null >/dev/null &');
+				}
+				else
+				{
+					shell_exec('/usr/bin/nohup ' . $backupCmd . ' 2>/dev/null >/dev/null &');
+				}
+	
 			}
 		}
 	}
