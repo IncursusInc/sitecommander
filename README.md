@@ -26,7 +26,13 @@ SiteCommander features include:
 * Integration with the MailChimp module to see some high level statistics about your lists, subscribers, open rates, and click through rates.
 * Tabbed interface for ease of navigation
 * More to come!
- 
+
+# Requirements
+
+* Drupal 8.x
+* PHP 5.5 or higher (untested under PHP 7)
+* ssh2 module for PHP (optional, but needed for backup mirroring functionality)
+
 # Known Issues
 
 * Certain parts of the look/feel are going to depend on your theme, which means your install may not look like these screenshots. We are working on making the CSS more encapsulated to provide a more consistent experience.
