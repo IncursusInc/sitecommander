@@ -1,4 +1,8 @@
 <?
+/**
+ * @file
+ * Drush integration for SiteCommander
+ */
 
 use Drupal\sitecommander\Controller\BackupController;
 
@@ -7,8 +11,11 @@ use Drupal\sitecommander\Controller\BackupController;
  */
 function sitecommander_drush_command() {
 
+  $items = [];
+
   $items['sitecommander-backup-copy'] = array(
     'description' => 'Copies a backup image file to a remote location (as configured via admin/config/sitecommander).',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'aliases' => array('scbc'),
 		'arguments' => array(
 			'imageFile' => 'The fully qualified path and filename of a local backup image file (or any file for that matter).',
@@ -20,10 +27,23 @@ function sitecommander_drush_command() {
 
   $items['sitecommander-backup-reset'] = array(
     'description' => 'Resets the scheduled backup timestamp.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'aliases' => array('scbr')
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_drush_help().
+ */
+function sitecommander_drush_help($section) {
+  switch ($section) {
+    case 'drush:sitecommander-backup-copy':
+      return dt('Copies a backup image file to a remote location as configured in the admin panel (admin/config/sitecommander). Called via Cron after a scheduled backup if mirroring is enabled.');
+    case 'drush:sitecommander-backup-reset':
+      return dt('Resets the scheduled backup timestamp. Useful when testing your backup settings.');
+	}
 }
 
 /**

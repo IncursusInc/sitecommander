@@ -1,3 +1,7 @@
+body {
+	overflow-y: scroll !important;
+}
+
 .site-commander-logo-container {
 	/*background-image: url('../images/site-commander-logo.png');
 	height: 50px;
