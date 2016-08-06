@@ -339,7 +339,7 @@
 				
 
 				// Update users online table (only do the fade effect if it is currently visible!)
-				if($('#users-online').is(':visible')) {
+				if($('#users-online').is(':visible') && $('#users-online').hasClass('active')) {
 					$('#users-online').fadeOut(500, function() {
 						$(this).html( response[0].responseData.payload.usersOnlineTable ).fadeIn(500);
 					});

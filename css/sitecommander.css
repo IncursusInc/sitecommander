@@ -60,6 +60,20 @@ body {
 	overflow: hidden;
 }
 
+.sc-rounded-image-container img {
+	border-radius: 18px;
+	-webkit-box-shadow: 9px 9px 9px -7px rgba(0,0,0,0.4);
+	-moz-box-shadow: 9px 9px 9px -7px rgba(0,0,0,0.4);
+	box-shadow: 9px 9px 9px -7px rgba(0,0,0,0.4);
+}
+
+.sc-img-rounded {
+	border-radius: 18px !important;
+	-webkit-box-shadow: 9px 9px 9px -7px rgba(0,0,0,0.4);
+	-moz-box-shadow: 9px 9px 9px -7px rgba(0,0,0,0.4);
+	box-shadow: 9px 9px 9px -7px rgba(0,0,0,0.4);
+}
+
 .gauges-container {
 	background-color: #f5f5f5;
 	border-radius: 10px;

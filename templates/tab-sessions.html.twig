@@ -18,7 +18,7 @@
 		<tbody>
 		{% for su in drupalInfo.sessionedUsers %}
 			<tr id="{{ su.s.sid }}">
-				<td><img class="users-online-avatar img-rounded" src="{{ file_url(su.u.user_picture.entity.uri.value) }}"></td>
+				<td><img class="users-online-avatar sc-img-rounded" src="{{ file_url(su.u.user_picture.entity.uri.value) }}"></td>
 				<td>{{ su.u.name.value }}</td>
 				<td>{{ su.u.field_first_name.value }} {{ su.u.field_last_name.value }}</td>
 				<td>{{ su.u.mail.value }}</td>
