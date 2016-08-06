@@ -956,7 +956,9 @@ class SiteCommanderController extends ControllerBase {
 	{
 		switch($drupalInfo['dbDriver'])
 		{
-			case 'mysql': $drupalInfo['dbUptime'] = SiteCommanderUtils::formatUptime($drupalInfo['dbStats']['uptime']);
+			case 'mysql': $drupalInfo['dbVersion'] = $drupalInfo['dbConfig']['version'];
+										$drupalInfo['dbName'] = $drupalInfo['dbConfig']['version_comment'];
+										$drupalInfo['dbUptime'] = SiteCommanderUtils::formatUptime($drupalInfo['dbStats']['uptime']);
 										$drupalInfo['dbTotalQueries'] = SiteCommanderUtils::formatNumber($drupalInfo['dbStats']['questions']);
 										$drupalInfo['dbQPS'] = round($drupalInfo['dbStats']['questions'] / $drupalInfo['dbStats']['uptime'], 2);
 										$drupalInfo['dbTotalConnections'] = SiteCommanderUtils::formatNumber($drupalInfo['dbStats']['connections']);

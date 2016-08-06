@@ -1,5 +1,7 @@
-<h2>Database Performance (<span class="icon-green">{{ drupalInfo.dbDriver }}</span> driver)</h2>
+<h2>Database Performance</h2>
 
+<hr class="site-commander-hr" />
+<h4 class="text-center"><span class="icon-green">{{ drupalInfo.dbName }}</span>, v{{ drupalInfo.dbVersion }}, {{ drupalInfo.dbDriver }} PDO Driver</h4>
 <hr class="site-commander-hr" />
 
 {% if drupalInfo.dbDriver == 'mysql' %}
