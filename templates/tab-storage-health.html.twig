@@ -15,9 +15,9 @@
 
 		{% set barClass = 'progress-bar-success' %}
 
-		{% if fs.usePct >= 80 %}
+		{% if fs.usePct >= 90 %}
 			{% set barClass = 'progress-bar-danger' %}
-		{% elseif fs.usePct >= 70 %}
+		{% elseif fs.usePct >= 75 %}
 			{% set barClass = 'progress-bar-warning' %}
 		{% endif %}
 

@@ -241,6 +241,7 @@
 						min: 0,
 						max: drupalSettings.opCacheStats.memory_usage.allocatedMemory,
 						title: "Memory Usage (MB)",
+						levelColors: ["#a9d70b", "#a9d70b", "#f9c802", "#ff0000"],
 						label: 'Cache Size >>'
 					});
 				}
@@ -264,6 +265,7 @@
 						min: 0,
 						max: 100,
 						title: "MyISAM Key Buffer Used",
+						levelColors: ["#a9d70b", "#a9d70b", "#f9c802", "#ff0000"],
 						label: 'Percentage'
 					});
 	
@@ -273,6 +275,7 @@
 						min: 0,
 						max: 100,
 						title: "InnoDB Buffer Usage",
+						levelColors: ["#a9d70b", "#a9d70b", "#f9c802", "#ff0000"],
 						label: 'Percentage'
 					});
 	
