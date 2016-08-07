@@ -30,6 +30,7 @@ SiteCommander features include:
 # Requirements
 
 * Drupal 8.x
+* Drush installed
 * PHP 5.5 or higher (untested under PHP 7)
 * ssh2 module for PHP (optional, but needed for backup mirroring functionality)
 
