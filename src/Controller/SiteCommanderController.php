@@ -23,7 +23,7 @@ use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Entity\Query\QueryAggregateInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+//use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\sitecommander\Ajax\ReadMessageCommand;
 use Drupal\sitecommander\SiteCommanderUtils;
 use Drupal\Core\Template\TwigEnvironment;
@@ -956,7 +956,9 @@ class SiteCommanderController extends ControllerBase {
 	{
 		switch($drupalInfo['dbDriver'])
 		{
-			case 'mysql': $drupalInfo['dbUptime'] = SiteCommanderUtils::formatUptime($drupalInfo['dbStats']['uptime']);
+			case 'mysql': $drupalInfo['dbVersion'] = $drupalInfo['dbConfig']['version'];
+										$drupalInfo['dbName'] = $drupalInfo['dbConfig']['version_comment'];
+										$drupalInfo['dbUptime'] = SiteCommanderUtils::formatUptime($drupalInfo['dbStats']['uptime']);
 										$drupalInfo['dbTotalQueries'] = SiteCommanderUtils::formatNumber($drupalInfo['dbStats']['questions']);
 										$drupalInfo['dbQPS'] = round($drupalInfo['dbStats']['questions'] / $drupalInfo['dbStats']['uptime'], 2);
 										$drupalInfo['dbTotalConnections'] = SiteCommanderUtils::formatNumber($drupalInfo['dbStats']['connections']);
@@ -1036,6 +1038,7 @@ class SiteCommanderController extends ControllerBase {
 		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'runCron';
+		$responseData->timestamp_cron_last_run = SiteCommanderUtils::elapsedTime( $this->state->get('system.cron_last') );
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.

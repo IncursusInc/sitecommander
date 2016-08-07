@@ -1,3 +1,7 @@
+body {
+	overflow-y: scroll !important;
+}
+
 .site-commander-logo-container {
 	/*background-image: url('../images/site-commander-logo.png');
 	height: 50px;
@@ -54,6 +58,20 @@
 .rounded-container {
 	border-radius: 6px;
 	overflow: hidden;
+}
+
+.sc-rounded-image-container img {
+	border-radius: 18px;
+	-webkit-box-shadow: 9px 9px 9px -7px rgba(0,0,0,0.4);
+	-moz-box-shadow: 9px 9px 9px -7px rgba(0,0,0,0.4);
+	box-shadow: 9px 9px 9px -7px rgba(0,0,0,0.4);
+}
+
+.sc-img-rounded {
+	border-radius: 18px !important;
+	-webkit-box-shadow: 9px 9px 9px -7px rgba(0,0,0,0.4);
+	-moz-box-shadow: 9px 9px 9px -7px rgba(0,0,0,0.4);
+	box-shadow: 9px 9px 9px -7px rgba(0,0,0,0.4);
 }
 
 .gauges-container {

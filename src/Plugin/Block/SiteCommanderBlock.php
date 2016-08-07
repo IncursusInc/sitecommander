@@ -30,6 +30,7 @@ use Drupal\sitecommander\Controller\BackupController;
  * @Block(
  *   id = "sitecommander_block",
  *   admin_label = @Translation("SiteCommander Block"),
+ *   category = @Translation("SiteCommander")
  * )
  */
 class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInterface {
@@ -53,8 +54,10 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 	protected $twig;
 	protected $cron;
 
-	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state, AccountInterface $account,TwigEnvironment $twig, $cron ) 
+	public function __construct(array $configuration, $plugin_id, $plugin_definition, Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state, AccountInterface $account,TwigEnvironment $twig, $cron ) 
 	{
+		parent::__construct($configuration, $plugin_id, $plugin_definition);
+
 		$this->connection = $connection;
 		$this->moduleHandler = $moduleHandler;
 		$this->entityQuery = $entityQuery;
@@ -71,6 +74,9 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
+			$configuration,
+			$plugin_id,
+			$plugin_definition,
       $container->get('database'),
       $container->get('module_handler'),
       $container->get('entity.query'),
@@ -82,6 +88,15 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
       $container->get('cron')
     );
   }
+
+	public function defaultConfiguration() {
+		return array(
+			'status' => TRUE,
+			'info' => '',
+			'view_mode' => 'full',
+		);
+	}
+
 
   public function build() {
 
@@ -102,7 +117,7 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$drupalInfo['numVisitorsOnline'] = $sc->getAnonymousUsers();
 		$drupalInfo['numCores'] = SiteCommanderUtils::getNumCores();
 		$drupalInfo['loadAverage'] = $sc->getCpuLoadAverage( $drupalInfo['numCores']);
-		$uptime = \Drupal\sitecommander\Controller\SiteCommanderController::getUptime( $drupalInfo['numCores'] );
+		$uptime = $sc->getUptime( $drupalInfo['numCores'] );
 		$drupalInfo['uptime'] = $uptime['uptime'];
 		$drupalInfo['idletime'] = $uptime['idletime'];
 		$drupalInfo['idlepct'] = $uptime['idlepct'];
