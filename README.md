@@ -35,6 +35,8 @@ SiteCommander features include:
 
 # Known Issues
 
+* Currently, this module works best when the environment is running only ONE (1) Drupal server. If you are running multiple Drupal servers in a load-balanced configuration, it is highly recommended that you wait until we complete the multi-server support functionality.
+
 * Certain parts of the look/feel are going to depend on your theme, which means your install may not look like these screenshots. We are working on making the CSS more encapsulated to provide a more consistent experience.
 
 # Screenshots
