@@ -1038,6 +1038,7 @@ class SiteCommanderController extends ControllerBase {
 		$responseData = new \StdClass();
 		$responseData->command = 'readMessage';
 		$responseData->siteCommanderCommand = 'runCron';
+		$responseData->timestamp_cron_last_run = SiteCommanderUtils::elapsedTime( $this->state->get('system.cron_last') );
     $response->addCommand( new ReadMessageCommand($responseData));
 
 		// Return ajax response.

@@ -25,6 +25,11 @@
 			$('#timeStampNextBackup').toggleClass('label-success label-default');
 		}
 
+		if(response.responseData.siteCommanderCommand == 'runCron')
+		{
+			$('#cronLastRun').html(response.responseData.timestamp_cron_last_run);
+		}
+
 		if(response.responseData.siteCommanderCommand == 'rebuildDrupalCache')
 		{
 			$('#timestamp_cache_last_rebuild').html(response.responseData.timestamp_cache_last_rebuild);
