@@ -9,6 +9,19 @@
 
 			$('#site-commander-loading-message-container').fadeOut("medium", function() {
 
+				$('#btnBroadcast').click(function() {
+					$.ajax({
+						url: '/sitecommander/broadcastMessage',
+						method: 'POST',
+						data: { 
+							messageType: $('input[name=messageType]:checked').val(), 
+							messagePosition: $('input[name=messagePosition]:checked').val(), 
+							messageBody: $('#messageBody').val() 
+						},
+					}).done(function(data) {
+					});
+				});
+
 				$('#site-commander-tabs a[data-toggle="tab"]').click(function (e) {
 					e.preventDefault();
 					$(this).tab('show');

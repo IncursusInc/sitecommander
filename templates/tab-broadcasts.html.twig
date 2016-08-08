@@ -1,4 +1,86 @@
 <h2>Broadcast Manager</h2>
 <hr class="site-commander-hr" />
 
-<p>Still in development! Stay tuned ...</p>
+	<div class="col-md-12">
+		<h3 class="text-center">You are broadcasting to <span class="label label-info">{{ drupalInfo.pusherNumPublicSubscribers }}</span> visitors/users currently on your site.</h3>
+	</div>
+
+<hr class="site-commander-hr" />
+
+<div class="row">
+
+	<div class="col-md-2">
+
+		<h4 class="text-center">Message Type:</h4>
+
+		<div class="btn-group" data-toggle="buttons" style="width: 100%">
+			<table class="table table-condensed">
+			<tr>
+				<td class="text-center">
+					<label class="btn btn-info active" style="width: 100%">
+						<input type="radio" name="messageType" id="info" autocomplete="off" checked style="display:none; width:100%" value="info"> Info
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label class="btn btn-success" style="width: 100%">
+						<input type="radio" name="messageType" id="success" autocomplete="off" style="display:none; width:100%" value="success"> Success
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label class="btn btn-warning" style="width: 100%">
+						<input type="radio" name="messageType" id="warning" autocomplete="off" style="display:none; width:100%" value="warning"> Warning
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label class="btn btn-danger" style="width: 100%">
+						<input type="radio" name="messageType" id="error" autocomplete="off" style="display:none; width:100%" value="error"> Error
+					</label>
+				</td>
+			</tr>
+			</table>
+		</div>
+	</div>
+
+	<div class="col-md-3">
+
+		<h4 class="text-center">Message Position:</h4>
+
+		<div class="btn-group" data-toggle="buttons" style="width: 100%">
+			<table class="table table-condensed">
+				<tr>
+					<td colspan="3" class="text-center"><label style="width: 100%" class="btn btn-info"><input style="display:none" type="radio" name="messagePosition" id="messagePosition" autocomplete="off" value="toast-top-full-width">Top Full Width</label></td>
+				</tr>
+				<tr>
+					<td class="text-left"> <label class="btn btn-info"><input style="display:none" type="radio" name="messagePosition" id="messagePosition" autocomplete="off" value="toast-top-left">Top Left</label></td>
+					<td class="text-center"> <label class="btn btn-info"><input style="display:none" type="radio" name="messagePosition" id="messagePosition" autocomplete="off" value="toast-top-center">Top Center</label></td>
+					<td class="text-right"> <label class="btn btn-info active"><input style="display:none" type="radio" name="messagePosition" id="messagePosition" autocomplete="off" value="toast-top-right">Top Right</label></td>
+				</tr>
+				<tr>
+					<td class="text-left"> <label class="btn btn-info"><input style="display:none" type="radio" name="messagePosition" id="messagePosition" autocomplete="off" value="toast-bottom-left">Bot Left</label></td>
+					<td class="text-center"> <label class="btn btn-info"><input style="display:none" type="radio" name="messagePosition" id="messagePosition" autocomplete="off" value="toast-bottom-center">Bot Center</label></td>
+					<td class="text-right"> <label class="btn btn-info"><input style="display:none" type="radio" name="messagePosition" id="messagePosition" autocomplete="off" value="toast-bottom-right">Bot Right</label></td>
+				</tr>
+				<tr>
+					<td colspan="3" class="text-center"><label style="width: 100%" class="btn btn-info"><input style="display:none" type="radio" name="messagePosition" id="messagePosition" autocomplete="off" value="toast-bottom-full-width">Bottom Full Width</label></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<div class="col-md-1"></div>
+
+	<div class="col-md-6">
+		<h4 class="text-center">Message Content:</h4>
+		<hr class="site-commander-hr" />
+		<textarea id="messageBody" rows="5" style="width: 100%"></textarea>
+		<br />
+		<div class="text-center"><button id="btnBroadcast" class="btn btn-success">Broadcast Message!</button></div>
+	</div>
+
+</div><!-- /row -->

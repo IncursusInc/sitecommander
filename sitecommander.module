@@ -38,11 +38,18 @@ function sitecommander_theme($existing, $type, $theme, $path) {
 
 function sitecommander_page_attachments(&$page)
 {
-	if (!\Drupal::config('sitecommander.settings')->get('includeBootstrapCSS')) {
+	// Include Pusher
+	$config = \Drupal::config('sitecommander.settings');
+	$pusherAppKey = $config->get('pusherAppKey');
+
+	$page['#attached']['library'][] = 'sitecommander/sitecommander.Broadcast';
+	$page['#attached']['drupalSettings']['sitecommander']['pusherAppKey'] = $pusherAppKey;
+
+	if (!$config->get('includeBootstrapCSS')) {
 		return;
 	}
 
-	$page['#attached']['library'][] = 'sitecommander/BootstrapCSS';
+	$page['#attached']['library'][] = 'sitecommander/sitecommander.BootstrapCSS';
 }
 
 /**

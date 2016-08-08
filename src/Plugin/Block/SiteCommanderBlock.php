@@ -194,6 +194,11 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 		$backupDir = $this->configFactory->get('sitecommander.settings')->get('backupDirectory');
 		$drupalInfo['backupList'] = BackupController::getBackupList( $backupDir );
 
+		// Pusher App key (needed in .js)
+		$drupalInfo['pusherAppKey'] = $this->configFactory->get('sitecommander.settings')->get('pusherAppKey');
+
+		$drupalInfo['pusherNumPublicSubscribers'] = $sc->getPusherNumSubscribers();
+
 		// Attach Bootstrap CSS if they've configured it
 		if( $this->configFactory->get('sitecommander.settings')->get('includeBootstrapCSS') )
 			$library = 'sitecommander/sitecommander.BootstrapCSS';

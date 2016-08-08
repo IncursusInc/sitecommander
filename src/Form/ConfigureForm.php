@@ -84,7 +84,7 @@ class ConfigureForm extends ConfigFormBase {
 		$form['redis'] = array(
 			'#type' => 'fieldset',
 			'#title' => t('Redis Settings'),
-			'#markup' => t('Redis can be used to temporarily track IP addresses of non-authenticated visitors, for reporting visitor counts on the dashboard.')
+			'#markup' => t('Redis can be used to temporarily track IP addresses of non-authenticated visitors, for reporting visitor counts on the dashboard. If you do not have Redis installed, simply leave the following fields blank.')
 			//'#markup' => '<p>' . t('These are general settings.') . '</p>'
 		);
 
@@ -137,6 +137,23 @@ class ConfigureForm extends ConfigFormBase {
     			'#required' => FALSE,
 					'#default_value' => $config->get('visitorIpAddressTTL') ? $config->get('visitorIpAddressTTL') : 15,
 					'#description' => 'How many minutes should SiteCommander look backwards to track non-authenticated user IP addresses? Enter a number, in minutes.'
+				);
+
+		// Backup Manager settings
+		$form['serverPool'] = array(
+			'#type' => 'fieldset',
+			'#title' => t('Server Pool'),
+			//'#markup' => '<p>' . t('These are general settings.') . '</p>'
+		);
+
+				$form['serverPool']['serverPoolList'] = array(
+    			'#type' => 'textarea',
+    			'#title' => t('List of Drupal Servers in Your App Pool'),
+    			'#required' => FALSE,
+    			'#rows' => 10,
+					'#default_value' => $config->get('serverPoolList') ? $config->get('serverPoolList') : '',
+    			'#description' => t('List of hostnames for all Drupal servers in your pool. At a minimum, you should have "localhost" if running a single server setup. If running more than one server, use proper hostnames (not "localhost"). One entry per line.'),
+    			'#placeholder' => t('e.g. localhost'),
 				);
 
 		// Backup Manager settings
@@ -254,8 +271,32 @@ class ConfigureForm extends ConfigFormBase {
 		$form['broadcastManager'] = array(
 			'#type' => 'fieldset',
 			'#title' => t('Broadcast Manager Settings'),
-			'#markup' => t('In development ... stay tuned!')
+			'#markup' => t('In order to utilize message broadcasting in SiteCommander, you will need to create an account (free) at <a href="http://pusher.com" target="_blank">Pusher.com</a>.')
 		);
+
+				$form['broadcastManager']['pusherAppId'] = array(
+    			'#type' => 'textfield',
+    			'#title' => t('Pusher App ID'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('pusherAppId') ? $config->get('pusherAppId') : '',
+    			'#description' => t('The Pusher App ID you created at Pusher.com.'),
+				);
+
+				$form['broadcastManager']['pusherAppKey'] = array(
+    			'#type' => 'textfield',
+    			'#title' => t('Pusher App Key'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('pusherAppKey') ? $config->get('pusherAppKey') : '',
+    			'#description' => t('The Pusher App Key you created at Pusher.com.'),
+				);
+
+				$form['broadcastManager']['pusherAppSecret'] = array(
+    			'#type' => 'textfield',
+    			'#title' => t('Pusher App Secret'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('pusherAppSecret') ? $config->get('pusherAppSecret') : '',
+    			'#description' => t('The Pusher App Secret you created at Pusher.com.'),
+				);
 
 		return parent::buildForm($form, $form_state);
   }
@@ -302,7 +343,13 @@ class ConfigureForm extends ConfigFormBase {
 					->set('enableMirroring', $form_state->getValue('enableMirroring'))
 					->set('mirrorMode', $form_state->getValue('mirrorMode'))
 
+					// Server Pool
+					->set('serverPoolList', $form_state->getValue('serverPoolList'))
+
 					// Broadcast Manager settings
+					->set('pusherAppId', $form_state->getValue('pusherAppId'))
+					->set('pusherAppKey', $form_state->getValue('pusherAppKey'))
+					->set('pusherAppSecret', $form_state->getValue('pusherAppSecret'))
 
 					->save();
 

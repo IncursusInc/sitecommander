@@ -7,6 +7,7 @@
 
 namespace Drupal\sitecommander\Controller;
 
+use Pusher;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\File\FileSystem;
@@ -70,6 +71,11 @@ class SiteCommanderController extends ControllerBase {
       $container->get('cron')
     );
   }
+
+	public function processBroadcastCommand( $commandName )
+	{
+		return $this->$commandName();
+	}
 
 	// AJAX Callback to toggle maintenance mode
   public function toggleMaintenanceMode() {
@@ -1043,5 +1049,21 @@ class SiteCommanderController extends ControllerBase {
 
 		// Return ajax response.
 		return $response;
+	}
+
+	public function getPusherNumSubscribers( $channelName='site-commander')
+	{
+		$config = $this->configFactory->get('sitecommander.settings');
+		$pusherAppId = $config->get('pusherAppId');
+		$pusherAppKey = $config->get('pusherAppKey');
+		$pusherAppSecret = $config->get('pusherAppSecret');
+		$cluster = "ap1";
+
+		$options = array('cluster' => $cluster, 'encrypted' => true);
+
+		$pusher = new Pusher( $pusherAppKey, $pusherAppSecret, $pusherAppId, $options );
+
+		$info = $pusher->get_channel_info($channelName, array('info' => 'subscription_count'));
+		return $info->subscription_count;
 	}
 }
