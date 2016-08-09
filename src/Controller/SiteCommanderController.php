@@ -1068,4 +1068,48 @@ class SiteCommanderController extends ControllerBase {
 		$info = $pusher->get_channel_info($channelName, array('info' => 'subscription_count'));
 		return $info->subscription_count;
 	}
+
+	public function getTagCloudData()
+	{
+		$query = $this->connection->select('taxonomy_term_data','td');
+		$query->addExpression('COUNT(td.tid)', 'count');
+		$query->fields('td', array('tid'));
+		$query->fields('tfd', array('name'));
+
+		$query->join('taxonomy_index', 'tn', 'td.tid = tn.tid');
+		$query->join('node_field_data', 'n', 'tn.nid = n.nid');
+		$query->join('taxonomy_term_field_data', 'tfd', 'tfd.tid = tn.tid');
+
+		$query->condition('td.vid', 'tags');
+		$query->condition('n.status', 1);
+
+		$query->groupBy('td.tid')->groupBy('td.vid')->groupBy('tfd.name');
+
+		$query->having('COUNT(td.tid)>0');
+		$query->orderBy('count', 'DESC');
+		$query->range(0,25);
+
+		$result = $query->execute()->fetchAll();
+
+		$tagCloudData = array();
+		foreach($result as $r)
+		{
+			$term = \Drupal\taxonomy\Entity\Term::load($r->tid);
+			$tagCloudData[] = array(
+				'name' => $r->name,
+				'count' => $r->count,
+				'url' => \Drupal::url('entity.taxonomy_term.canonical', ['taxonomy_term' => $term->id()], array('absolute' => TRUE))
+			);
+		}
+
+		// Sort by name now (case insensitive)
+		$customSort = function($a, $b) {
+			return strcasecmp($a['name'], $b['name']);
+		};
+
+		uasort($tagCloudData, $customSort);
+
+		return $tagCloudData;
+	}
+
 }

@@ -9,6 +9,14 @@
 
 			$('#site-commander-loading-message-container').fadeOut("medium", function() {
 
+				// Tag cloud
+				$.fn.tagcloud.defaults = {
+					size: {start: 11, end: 18, unit: 'pt'},
+					color: {start: '#cde', end: '#428BCA'}
+				};
+
+				$('#tag-cloud a').tagcloud();
+
 				$('#btnBroadcast').click(function() {
 					$.ajax({
 						url: '/sitecommander/broadcastMessage',
