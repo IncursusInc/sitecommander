@@ -21,12 +21,29 @@ SiteCommander features include:
   - Shortcut to clear out old aggregated CSS/JS files that just take up space
   - See how much disk space your full Drupal install is taking up
   - Integration with the MailChimp module to see some high level statistics about your lists, subscribers, open rates, and click through rates.
-- Server Status Dashboard (CPU, load average gauges, memory usage, etc)
-- Database Performance Dashboard (visual metrics)
-- Caching Performance Dashboard (Integration with Redis, APC, and PHP OpCache)
-- Storage Health Dashboard (shows usage information on all attached/mounted storage devices)
-- Full featured Backup Manager, with 1 click backup/restore, backup scheduler
-- Live Broadcast Manager, which allows you to broadcast realtime growl messages to your current site visitors
+- Server Status Dashboard
+  - CPU load average gauges
+  - Server memory pool statistics
+- Database Performance Dashboard
+  - Connection statistics
+  - Memory usage
+  - Performance gauges (key buffers, query cache, etc.)
+  - Currently works with MySQL/MariaDB only. Other databases will be supported as needed/requested.
+- Caching Performance Dashboard
+  - Integration with Redis
+  - Integration with APC
+  - Integration with the PHP OpCache
+  - Visual metrics in gauges
+- Storage Health Dashboard
+  - Shows visual usage information on all attached/mounted storage devices
+- Full featured Backup Manager
+  - Run ad hoc backups in the background or foreground
+  - One click backup/restore
+  - Support for retention strategy
+  - Automated backup scheduler (with no cron delays for your users!)
+- Live Broadcast Manager
+  - Allows you to broadcast realtime growl-like messages to your current site visitors
+  - Control message type/color, and screen position for the notifications all from within SiteCommander
 - More to come!
 
 # Requirements
