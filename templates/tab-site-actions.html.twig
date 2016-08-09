@@ -134,7 +134,7 @@
 		</ul>
 
 		<ul class="list-group">
-			<li class="list-group-item active"><span class="fa fa-cloud"></span>&nbsp; <strong>Content Tag Cloud (Top 25 Terms)</strong></li>
+			<li class="list-group-item active"><span class="fa fa-tags"></span>&nbsp; <strong>Content Tag Cloud (Top {{ drupalInfo.settings.admin.tagCloudLimit }} Terms)</strong></li>
 			<li class="list-group-item">
 				<div id="tag-cloud" class="text-center">
 					{% for term in drupalInfo.tagCloudData %}

@@ -2,14 +2,12 @@ sitecommander:
   version: 1.0
   css:
     theme:
-      css/jqcloud.css: {}
       css/sitecommander.css: {}
       https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css: { type: external, minified: true }
       https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css: { type: external, minified: true }
   js:
     js/justgage.js: {}
     js/raphael-2.1.4.min.js: {}
-    js/jqcloud-1.0.4.js: {}
     js/jquery.tagcloud.js: {}
     js/sitecommander.js: {}
     js/hideThrobber.js: {}
@@ -23,14 +21,12 @@ sitecommander.BootstrapCSS:
   version: 1.0
   css:
     theme:
-      css/jqcloud.css: {}
       css/sitecommander.css: {}
       https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css: { type: external, minified: true }
       https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css: { type: external, minified: true }
   js:
     js/justgage.js: {}
     js/raphael-2.1.4.min.js: {}
-    js/jqcloud-1.0.4.js: {}
     js/jquery.tagcloud.js: {}
     js/sitecommander.js: {}
     js/hideThrobber.js: {}
@@ -45,14 +41,12 @@ sitecommander.jQueryBootstrapCSS:
   version: 1.0
   css:
     theme:
-      css/jqcloud.css: {}
       css/sitecommander.css: {}
       https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css: { type: external, minified: true }
       https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css: { type: external, minified: true }
   js:
     js/justgage.js: {}
     js/raphael-2.1.4.min.js: {}
-    js/jqcloud-1.0.4.js: {}
     js/jquery.tagcloud.js: {}
     js/sitecommander.js: {}
     js/hideThrobber.js: {}

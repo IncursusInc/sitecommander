@@ -1073,6 +1073,7 @@ class SiteCommanderController extends ControllerBase {
 	{
 		$config = $this->configFactory->get('sitecommander.settings');
 		$tagCloudVocabulary = $config->get('tagCloudVocabulary');
+		$tagCloudLimit = $config->get('tagCloudLimit');
 
 		$query = $this->connection->select('taxonomy_term_data','td');
 		$query->addExpression('COUNT(td.tid)', 'count');
@@ -1090,7 +1091,7 @@ class SiteCommanderController extends ControllerBase {
 
 		$query->having('COUNT(td.tid)>0');
 		$query->orderBy('count', 'DESC');
-		$query->range(0,25);
+		$query->range(0, $tagCloudLimit);
 
 		$result = $query->execute()->fetchAll();
 

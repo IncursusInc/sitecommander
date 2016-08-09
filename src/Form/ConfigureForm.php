@@ -73,18 +73,47 @@ class ConfigureForm extends ConfigFormBase {
 					'#description' => 'If your Drupal theme or perhaps a mod already includes jQuery, there is no need to check this. If things like the tabbed interface do not function properly, check this box, clear your cache, and try again - FYI.'
 				);
 
-				$form['general']['tagCloudVocabulary'] = array(
+				$form['general']['refreshRate'] = array(
+    			'#type' => 'number',
+    			'#title' => t('Dashboard AJAX Refresh Rate (in seconds)'),
+    			'#required' => TRUE,
+					'#default_value' => $config->get('refreshRate') ? $config->get('refreshRate') : 60
+				);
+
+		// Tag Cloud widget settings
+		$form['tagCloud'] = array(
+			'#type' => 'fieldset',
+			'#title' => t('Tag Cloud Widget Settings'),
+			'#markup' => t('The tag cloud widget reflects content based on tag frequency.')
+			//'#markup' => '<p>' . t('These are general settings.') . '</p>'
+		);
+
+				$form['tagCloud']['tagCloudVocabulary'] = array(
     			'#type' => 'textfield',
     			'#title' => t('Name of the taxonomy vocabulary to use in the tag cloud widget'),
     			'#required' => FALSE,
 					'#default_value' => $config->get('tagCloudVocabulary') ? $config->get('tagCloudVocabulary') : 'tags'
 				);
 
-				$form['general']['refreshRate'] = array(
-    			'#type' => 'number',
-    			'#title' => t('Dashboard AJAX Refresh Rate (in seconds)'),
-    			'#required' => TRUE,
-					'#default_value' => $config->get('refreshRate') ? $config->get('refreshRate') : 60
+				$form['tagCloud']['tagCloudLimit'] = array(
+    			'#type' => 'textfield',
+    			'#title' => t('Restrict the tag cloud to this many entries'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('tagCloudLimit') ? $config->get('tagCloudLimit') : 25
+				);
+
+				$form['tagCloud']['tagCloudStartingColor'] = array(
+    			'#type' => 'textfield',
+    			'#title' => t('Starting color for tags (smallest frequency).'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('tagCloudStartingColor') ? $config->get('tagCloudStartingColor') : '#999999'
+				);
+
+				$form['tagCloud']['tagCloudEndingColor'] = array(
+    			'#type' => 'textfield',
+    			'#title' => t('Ending color for tags (largest frequency).'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('tagCloudEndingColor') ? $config->get('tagCloudEndingColor') : '#428BCA'
 				);
 
 		// Redis settings
@@ -325,8 +354,13 @@ class ConfigureForm extends ConfigFormBase {
 		$config->set('excludedContentTypes', $form_state->getValue('excludedContentTypes'))
 					->set('includeBootstrapCSS', $form_state->getValue('includeBootstrapCSS'))
 					->set('includejQuery', $form_state->getValue('includejQuery'))
-					->set('tagCloudVocabulary', $form_state->getValue('tagCloudVocabulary'))
 					->set('refreshRate', $form_state->getValue('refreshRate'))
+
+					// Tag cloud widget settings
+					->set('tagCloudVocabulary', $form_state->getValue('tagCloudVocabulary'))
+					->set('tagCloudLimit', $form_state->getValue('tagCloudLimit'))
+					->set('tagCloudStartingColor', $form_state->getValue('tagCloudStartingColor'))
+					->set('tagCloudEndingColor', $form_state->getValue('tagCloudEndingColor'))
 
 					// Redis settings
 					->set('redisHostName', $form_state->getValue('redisHostName'))
