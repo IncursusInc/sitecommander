@@ -73,6 +73,13 @@ class ConfigureForm extends ConfigFormBase {
 					'#description' => 'If your Drupal theme or perhaps a mod already includes jQuery, there is no need to check this. If things like the tabbed interface do not function properly, check this box, clear your cache, and try again - FYI.'
 				);
 
+				$form['general']['tagCloudVocabulary'] = array(
+    			'#type' => 'textfield',
+    			'#title' => t('Name of the taxonomy vocabulary to use in the tag cloud widget'),
+    			'#required' => FALSE,
+					'#default_value' => $config->get('tagCloudVocabulary') ? $config->get('tagCloudVocabulary') : 'tags'
+				);
+
 				$form['general']['refreshRate'] = array(
     			'#type' => 'number',
     			'#title' => t('Dashboard AJAX Refresh Rate (in seconds)'),
@@ -318,6 +325,7 @@ class ConfigureForm extends ConfigFormBase {
 		$config->set('excludedContentTypes', $form_state->getValue('excludedContentTypes'))
 					->set('includeBootstrapCSS', $form_state->getValue('includeBootstrapCSS'))
 					->set('includejQuery', $form_state->getValue('includejQuery'))
+					->set('tagCloudVocabulary', $form_state->getValue('tagCloudVocabulary'))
 					->set('refreshRate', $form_state->getValue('refreshRate'))
 
 					// Redis settings

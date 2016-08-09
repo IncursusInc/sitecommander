@@ -1071,6 +1071,9 @@ class SiteCommanderController extends ControllerBase {
 
 	public function getTagCloudData()
 	{
+		$config = $this->configFactory->get('sitecommander.settings');
+		$tagCloudVocabulary = $config->get('tagCloudVocabulary');
+
 		$query = $this->connection->select('taxonomy_term_data','td');
 		$query->addExpression('COUNT(td.tid)', 'count');
 		$query->fields('td', array('tid'));
@@ -1080,7 +1083,7 @@ class SiteCommanderController extends ControllerBase {
 		$query->join('node_field_data', 'n', 'tn.nid = n.nid');
 		$query->join('taxonomy_term_field_data', 'tfd', 'tfd.tid = tn.tid');
 
-		$query->condition('td.vid', 'tags');
+		$query->condition('td.vid', $tagCloudVocabulary);
 		$query->condition('n.status', 1);
 
 		$query->groupBy('td.tid')->groupBy('td.vid')->groupBy('tfd.name');

@@ -364,3 +364,9 @@ body {
 #backupMaxAgeInDays, #minHoursBetweenBackups, #timeStampNextBackup {
 	font-weight: bold;
 }
+
+#tag-cloud {
+	background-color: #eee;
+	border-radius: 10px;
+	padding: 5px;
+}
