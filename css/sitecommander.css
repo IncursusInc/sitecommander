@@ -234,6 +234,10 @@ body {
 .tab-content > div {float: left; width: 100%;}
 .tab-content h4 {width: 100%; margin: 10px 0; color: #333;}
 
+.tab-title {
+	margin: 5px 0px;
+}
+
 #table-users-online > tbody > tr > td {
 	vertical-align: middle;
 }
