@@ -6,9 +6,13 @@ NOTE: We have applied to have the project be promoted from a sandbox project to 
 SiteCommander features include:
 
 * Implemented as a Drupal block, so you can put it on the same page as other blocks to make your own dashboard
+* Tabbed interface for ease of navigation
+* Main Dashboard
+** Test
 * Full featured Backup Manager, with 1 click backup/restore, backup scheduler
 * Live Broadcast Manager, which allows you to broadcast realtime growl messages to your current site visitors
 * Breakdown of published nodes by type, with shortcuts to create new nodes, or browse nodes by type
+* Interactive content tag cloud (based on tags/taxonomy)
 * Quickly see how many modules you have installed and a shortcut to install new ones
 * Quickly see how many authenticated users are currently online (and view a list of them)
 * Quickly see how many visitors (non authenticated) are currently online (if using Redis as a caching backend)
@@ -25,7 +29,6 @@ SiteCommander features include:
 * Shortcut to clear out old aggregated CSS/JS files that just take up space
 * See how much disk space your full Drupal install is taking up
 * Integration with the MailChimp module to see some high level statistics about your lists, subscribers, open rates, and click through rates.
-* Tabbed interface for ease of navigation
 * More to come!
 
 # Requirements
