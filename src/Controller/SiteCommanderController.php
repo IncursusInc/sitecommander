@@ -353,6 +353,8 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['dbConfig'] = $this->getDatabaseConfig( $drupalInfo['dbDriver'] );
 		$this->calculateDbFields($drupalInfo);
 
+		$drupalInfo['pusherNumPublicSubscribers'] = $this->getPusherNumSubscribers();
+
 		// Let's figure out how many modules need to be (or can/should be) updated
 		$available = update_get_available(TRUE);
 		$project_data = update_calculate_project_data($available);
