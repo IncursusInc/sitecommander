@@ -6,7 +6,10 @@ NOTE: We have applied to have the project be promoted from a sandbox project to 
 SiteCommander features include:
 
 - Implemented as a Drupal block, so you can put it on the same page as other blocks to make your own dashboard
-- Tabbed interface for ease of navigation
+- Interface
+  - Tabbed interface for ease of navigation
+  - Most data elements are updated via AJAX in near-realtime
+  - Most site actions are performed via AJAX for a seamless experience
 - Main Dashboard for primary site actions
   - Breakdown of published nodes by type, with shortcuts to create new nodes, or browse nodes by type
   - Interactive content tag cloud (based on tags/taxonomy)
@@ -18,9 +21,11 @@ SiteCommander features include:
   - See when cron last ran and a shortcut to manually run it
   - See when the updates checker last ran, and a shortcut to manually check for updates
   - Shortcut to clear/rebuild the Drupal cache
+  - Shortcut to clear the Redis cache (if installed and used as a backend cache for Drupal)
+  - Shortcut to clear the PHP OpCache (if enabled)
   - Shortcut to clear out old aggregated CSS/JS files that just take up space
   - See how much disk space your full Drupal install is taking up
-  - Integration with the MailChimp module to see some high level statistics about your lists, subscribers, open rates, and click through rates.
+  - Integration with the MailChimp module for high level stats about lists, subscribers, open rates, & click through rates
 - Server Status Dashboard
   - CPU load average gauges
   - Server memory pool statistics
