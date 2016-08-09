@@ -10,6 +10,30 @@ use Drupal\sitecommander\Controller\BackupController;
 use Drupal\sitecommander\SiteCommanderUtils;
 
 /**
+   * {@inheritdoc}
+   */
+function defaultConfiguration() {
+	$default_config = \Drupal::config('sitecommander.settings');
+	return array(
+		'includeBootstrapCSS' => $default_config('includeBootstrapCSS'),
+		'includejQuery' => $default_config('includejQuery'),
+		'refreshRate' => $default_config('refreshRate'),
+		'enableAnonymousUserTracking' => $default_config('enableAnonymousUserTracking'),
+		'visitorIpAddressTTL' => $default_config('visitorIpAddressTTL'),
+		'backupMaxAgeInDays' => $default_config('backupMaxAgeInDays'),
+		'enableScheduledBackups' => $default_config('enableScheduledBackups'),
+		'minHoursBetweenBackups' => $default_config('minHoursBetweenBackups'),
+		'enableMirroring' => $default_config('enableMirroring'),
+		'mirrorMode' => $default_config('mirrorMode'),
+		'tagCloudVocabulary' => $default_config('tagCloudVocabulary'),
+		'tagCloudLimit' => $default_config('tagCloudLimit'),
+		'tagCloudBackgroundColor' => $default_config('tagCloudBackgroundColor'),
+		'tagCloudStartingColor' => $default_config('tagCloudStartingColor'),
+		'tagCloudEndingColor' => $default_config('tagCloudEndingColor')
+	);
+}
+
+/**
  * Theme hook
  */
 

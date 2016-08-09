@@ -15,7 +15,16 @@
 					color: {start: drupalSettings.settings.admin.tagCloudStartingColor, end: drupalSettings.settings.admin.tagCloudEndingColor}
 				};
 
-				$('#tag-cloud a').tagcloud();
+				$('#tag-cloud a').tagcloud(
+					{
+						size: {start: 11, end: 18, unit: 'pt'},
+						color: {start: drupalSettings.settings.admin.tagCloudStartingColor, end: drupalSettings.settings.admin.tagCloudEndingColor}
+					},
+					function( options )
+					{
+						$('#tag-cloud').fadeIn("slow");
+					}
+				);
 
 				$('#btnBroadcast').click(function() {
 					$.ajax({
