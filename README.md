@@ -90,8 +90,8 @@ SiteCommander features include:
 # Installation Instructions
 
 1. Download and install the module (./modules/custom/sitecommander)
-2. Configure it either on the modules page, or via admin/config/sitecommander
-3. Create a new page (e.g. /system-status), and add the Site Commander block to it. It is a full-width block, so put it in the main content area, etc. If you are also using our Redistat module, they can both be on the same page, as they are blocks. :)
-4. Be sure to restrict access to the new page to admins only or what not.
-5. Many of the icons on the page are interactive, so click on them to add new nodes, put the system in maintenance mode, etc.
-6. NOTE: currently, certain features such as the CPU load average is a feature of Linux/UNIX based systems. We're working on a Windows solution, but there is no ETA on that.
+2. Run an update with Drush to pull in dependencies: "drush up" (Be sure to have the Composer Manager module installed!)
+3. Configure it either on the modules page, or via admin/config/sitecommander
+4. Create a new page (e.g. /system-status), and add the Site Commander block to it. It is a full-width block, so put it in the main content area, etc. If you are also using our Redistat module, they can both be on the same page, as they are blocks. :)
+5. Be sure to restrict access to the new page to admins only or what not.
+6. Many of the icons on the page are interactive, so click on them to add new nodes, put the system in maintenance mode, etc.
