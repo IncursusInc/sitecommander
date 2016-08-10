@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Sitecommander by IncursusInc</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Sitecommander</h1>
+          <h2>SiteCommander is an interactive dashboard to manage and monitor your Drupal 8 sites.</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/IncursusInc/sitecommander/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/IncursusInc/sitecommander/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/IncursusInc/sitecommander" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a id="sitecommander" class="anchor" href="#sitecommander" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SiteCommander</h1>
+
+<p>SiteCommander is an interactive dashboard module to manage and monitor your Drupal 8 sites.</p>
+
+<p>NOTE: We have applied to have the project be promoted from a sandbox project to a full project on Drupal.org. Stay tuned!</p>
+
+<p>SiteCommander features include:</p>
+
+<ul>
+<li>Implemented as a Drupal block, so you can put it on the same page as other blocks to make your own dashboard</li>
+<li>Interface
+
+<ul>
+<li>Tabbed interface for ease of navigation</li>
+<li>Most data elements are updated via AJAX in near-realtime</li>
+<li>Most site actions are performed via AJAX for a seamless experience</li>
+</ul>
+</li>
+<li>Main Dashboard for primary site actions
+
+<ul>
+<li>Breakdown of published nodes by type, with shortcuts to create new nodes, or browse nodes by type</li>
+<li>Interactive content tag cloud (based on tags/taxonomy)</li>
+<li>Quickly see how many modules you have installed and a shortcut to install new ones</li>
+<li>Quickly see how many authenticated users are currently online (and view a list of them)</li>
+<li>Quickly see how many visitors (non authenticated) are currently online (if using Redis as a caching backend)</li>
+<li>Quickly browse active sessions (by user) and optionally terminate them</li>
+<li>Quickly see today's top site searches</li>
+<li>See when cron last ran and a shortcut to manually run it</li>
+<li>See when the updates checker last ran, and a shortcut to manually check for updates</li>
+<li>Shortcut to clear/rebuild the Drupal cache</li>
+<li>Shortcut to clear the Redis cache (if installed and used as a backend cache for Drupal)</li>
+<li>Shortcut to clear the PHP OpCache (if enabled)</li>
+<li>Shortcut to clear out old aggregated CSS/JS files that just take up space</li>
+<li>See how much disk space your full Drupal install is taking up</li>
+<li>Integration with the MailChimp module for high level stats about lists, subscribers, open rates, &amp; click through rates</li>
+</ul>
+</li>
+<li>Server Status Dashboard
+
+<ul>
+<li>CPU load average gauges</li>
+<li>Server memory pool statistics</li>
+</ul>
+</li>
+<li>Database Performance Dashboard
+
+<ul>
+<li>Connection statistics</li>
+<li>Memory usage</li>
+<li>Performance gauges (key buffers, query cache, etc.)</li>
+<li>Currently works with MySQL/MariaDB only. Other databases will be supported as needed/requested.</li>
+</ul>
+</li>
+<li>Caching Performance Dashboard
+
+<ul>
+<li>Integration with Redis</li>
+<li>Integration with APC</li>
+<li>Integration with the PHP OpCache</li>
+<li>Visual metrics in gauges</li>
+</ul>
+</li>
+<li>Storage Health Dashboard
+
+<ul>
+<li>Shows visual usage information on all attached/mounted storage devices</li>
+</ul>
+</li>
+<li>Full featured Backup Manager
+
+<ul>
+<li>Run ad hoc backups in the background or foreground</li>
+<li>One click backup/restore</li>
+<li>Support for retention strategy</li>
+<li>Automated backup scheduler (with no cron delays for your users!)</li>
+</ul>
+</li>
+<li>Live Broadcast Manager
+
+<ul>
+<li>Allows you to broadcast realtime growl-like messages to your current site visitors</li>
+<li>Control message type/color, and screen position for the notifications all from within SiteCommander</li>
+</ul>
+</li>
+<li>More to come!</li>
+</ul>
+
+<h1>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Requirements</h1>
+
+<ul>
+<li>Drupal 8.x</li>
+<li>Drush installed</li>
+<li>PHP 5.5 or higher (untested under PHP 7)</li>
+<li>Composer Manager Module</li>
+<li>ssh2 module for PHP (optional, but needed for backup mirroring functionality)</li>
+</ul>
+
+<h1>
+<a id="known-issues" class="anchor" href="#known-issues" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Known Issues</h1>
+
+<ul>
+<li><p>Certain functionality, such as CPU Load Averages, currently only works in Linux/UNIX environments. Support for Windoze servers will be added soon.</p></li>
+<li><p>Currently, this module works best when the environment is running only ONE (1) Drupal server. If you are running multiple Drupal servers in a load-balanced configuration, please keep in mind that only limited testing has been done in such environments. Feedback and testing help is appreciated!</p></li>
+<li><p>Certain parts of the look/feel are going to depend on your theme, which means your install may not look like these screenshots. We are working on making the CSS more encapsulated to provide a more consistent experience.</p></li>
+</ul>
+
+<h1>
+<a id="screenshots" class="anchor" href="#screenshots" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Screenshots</h1>
+
+<p><img src="http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot1_2.png?itok=BpuRa1jE" alt="alt text" title="SiteCommander Screenshot"></p>
+
+<p><img src="http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot2_1.png?itok=BpuRa1jE" alt="alt text" title="SiteCommander Screenshot"></p>
+
+<p><img src="http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot3_1.png?itok=BpuRa1jE" alt="alt text" title="SiteCommander Screenshot"></p>
+
+<p><img src="http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot4_0.png?itok=BpuRa1jE" alt="alt text" title="SiteCommander Screenshot"></p>
+
+<p><img src="http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot5_1.png?itok=BpuRa1jE" alt="alt text" title="SiteCommander Screenshot"></p>
+
+<p><img src="http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot6_1.png?itok=BpuRa1jE" alt="alt text" title="SiteCommander Screenshot"></p>
+
+<p><img src="http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot7_1.png?itok=BpuRa1jE" alt="alt text" title="SiteCommander Screenshot"></p>
+
+<p><img src="http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot8_0.png?itok=BpuRa1jE" alt="alt text" title="SiteCommander Screenshot"></p>
+
+<p><img src="http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot9_0.png?itok=BpuRa1jE" alt="alt text" title="SiteCommander Screenshot"></p>
+
+<h1>
+<a id="installation-instructions" class="anchor" href="#installation-instructions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation Instructions</h1>
+
+<ol>
+<li>Download and install the module (./modules/custom/sitecommander)</li>
+<li>Create a new page (e.g. /system-status), and add the Site Commander block to it. It is a full-width block, so put it in the main content area, etc. If you are also using our Redistat module, they can both be on the same page, as they are blocks. :)</li>
+<li>Be sure to restrict access to the new page to admins only or what not.</li>
+<li>Many of the icons on the page are interactive, so click on them to add new nodes, put the system in maintenance mode, etc.</li>
+<li>NOTE: currently, the CPU load averages is a feature of Linux/UNIX based systems. We're working on a Windows solution, but there is no ETA on that.</li>
+</ol>
+        </section>
+
+        <footer>
+          Sitecommander is maintained by <a href="https://github.com/IncursusInc">IncursusInc</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
