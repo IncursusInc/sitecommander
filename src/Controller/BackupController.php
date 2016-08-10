@@ -114,9 +114,9 @@ class BackupController extends ControllerBase {
   public function makeBackup( $backgroundMode = false) {
 
 		// Get the config options we need
-		$backupDirectory = $this->configFactory->get('sitecommander.settings')->get('backupDirectory');
-		$drushPath = $this->configFactory->get('sitecommander.settings')->get('drushPath');
-		$backupMaxAgeInDays = $this->configFactory->get('sitecommander.settings')->get('backupMaxAgeInDays');
+		$config = $this->configFactory->get('sitecommander.settings');
+		$backupDirectory = $config->get('backupDirectory');
+		$drushPath = $config->get('drushPath');
 
 		// Build the drush command line
 		$archiveFileName = 'sitecommander-backup.' . time() . '.tar.gz';
@@ -134,7 +134,7 @@ class BackupController extends ControllerBase {
 		}
 
 		// Optional mirroring of backups
-		$mirrorEnabled = \Drupal::config('sitecommander.settings')->get('mirrorEnabled');
+		$mirrorEnabled = $config->get('mirrorEnabled');
 		if($mirrorEnabled)
 		{
 			self::mirrorFile( $backupDirectory . '/' . $archiveFileName );
@@ -212,12 +212,13 @@ class BackupController extends ControllerBase {
 
 	public static function mirrorFile( $fileName )
 	{
-		$mirrorMode = \Drupal::config('sitecommander.settings')->get('mirrorMode');
-		$remoteUserName = \Drupal::config('sitecommander.settings')->get('remoteUserName');
-		$remotePassword = \Drupal::config('sitecommander.settings')->get('remotePassword');
-		$remoteHost = \Drupal::config('sitecommander.settings')->get('remoteHost');
-		$remotePort = \Drupal::config('sitecommander.settings')->get('remotePort');
-		$remoteDir = \Drupal::config('sitecommander.settings')->get('remoteDir');
+		$config = \Drupal::config('sitecommander.settings');
+		$mirrorMode = $config->get('mirrorMode');
+		$remoteUserName = $config->get('remoteUserName');
+		$remotePassword = $config->get('remotePassword');
+		$remoteHost = $config->get('remoteHost');
+		$remotePort = $config->get('remotePort');
+		$remoteDir = $config->get('remoteDir');
 
 		if($mirrorMode == 'SFTP')
 		{

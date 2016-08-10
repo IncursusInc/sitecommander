@@ -62,7 +62,7 @@ class ConfigureForm extends ConfigFormBase {
     			'#title' => t('Include Bootstrap CSS via CDN'),
     			'#required' => FALSE,
 					'#default_value' => $config->get('includeBootstrapCSS'),
-					'#description' => 'If your Drupal theme is built around Bootstrap CSS, there is no need to check this. The side effect of it loading twice will be that modals will disappear as soon as they appear, and the module might format strangely - FYI.'
+					'#description' => t('If your Drupal theme is built around Bootstrap CSS, there is no need to check this. The side effect of it loading twice will be that modals will disappear as soon as they appear, and the module might format strangely - FYI.')
 				);
 
 				$form['general']['includejQuery'] = array(
@@ -70,7 +70,7 @@ class ConfigureForm extends ConfigFormBase {
     			'#title' => t('Include jQuery via CDN'),
     			'#required' => FALSE,
 					'#default_value' => $config->get('includejQuery'),
-					'#description' => 'If your Drupal theme or perhaps a mod already includes jQuery, there is no need to check this. If things like the tabbed interface do not function properly, check this box, clear your cache, and try again - FYI.'
+					'#description' => t('If your Drupal theme or perhaps a mod already includes jQuery, there is no need to check this. If things like the tabbed interface do not function properly, check this box, clear your cache, and try again - FYI.')
 				);
 
 				$form['general']['refreshRate'] = array(
@@ -143,7 +143,7 @@ class ConfigureForm extends ConfigFormBase {
     			'#title' => t('Redis Database Index to Use'),
     			'#required' => FALSE,
 					'#default_value' => $config->get('redisDatabaseIndex') ? $config->get('redisDatabaseIndex') : 0,
-					'#description' => 'The numeric database index to use - default is database 0. If you do not know what you are doing, leave this alone! When you clear the Redis cache from SiteCommander, this database will get cleared!'
+					'#description' => t('The numeric database index to use - default is database 0. If you do not know what you are doing, leave this alone! When you clear the Redis cache from SiteCommander, this database will get cleared!')
 				);
 
 				$form['redis']['redisPort'] = array(
@@ -172,7 +172,7 @@ class ConfigureForm extends ConfigFormBase {
     			'#title' => t('Timeframe for tracking visitors'),
     			'#required' => FALSE,
 					'#default_value' => $config->get('visitorIpAddressTTL') ? $config->get('visitorIpAddressTTL') : 15,
-					'#description' => 'How many minutes should SiteCommander look backwards to track non-authenticated user IP addresses? Enter a number, in minutes.'
+					'#description' => t('How many minutes should SiteCommander look backwards to track non-authenticated user IP addresses? Enter a number, in minutes.')
 				);
 
 		// Backup Manager settings
@@ -229,7 +229,7 @@ class ConfigureForm extends ConfigFormBase {
     			'#title' => t('Max backup age (in days)'),
     			'#required' => FALSE,
 					'#default_value' => $config->get('backupMaxAgeInDays') ? $config->get('backupMaxAgeInDays') : 7,
-					'#description' => 'The maximum age for backup files. Backups older than this will be automatically purged.'
+					'#description' => t('The maximum age for backup files. Backups older than this will be automatically purged.')
 				);
 
 				$form['backupManager']['enableScheduledBackups'] = array(

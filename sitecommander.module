@@ -93,10 +93,11 @@ function sitecommander_rebuild() {
 function sitecommander_cron() {
 
 	// Handle Backup Manager archive retention strategy
-	$backupDirectory = \Drupal::config('sitecommander.settings')->get('backupDirectory');
-	$maxAge = \Drupal::config('sitecommander.settings')->get('backupMaxAgeInDays');
+	$config = \Drupal::config('sitecommander.settings');
+	$backupDirectory = $config->get('backupDirectory');
+	$maxAge = $config->get('backupMaxAgeInDays');
 
-	if(\Drupal::config('sitecommander.settings')->get('backupMaxAgeInDays') && \Drupal::config('sitecommander.settings')->get('backupDirectory'))
+	if($backupDirectory && $maxAge)
 	{
 		$cutOff = strtotime($maxAge . ' days ago');
 
