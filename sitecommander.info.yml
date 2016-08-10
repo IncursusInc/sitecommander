@@ -3,4 +3,3 @@ type: module
 description: Interactive dashboard for managing your Drupal site.
 package: SiteCommander
 core: 8.x
-configure: sitecommander_configure

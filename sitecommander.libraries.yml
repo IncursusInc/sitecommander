@@ -7,12 +7,12 @@ sitecommander:
       https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css: { type: external, minified: true }
   js:
     js/justgage.js: {}
-    js/raphael-2.1.4.min.js: {}
     js/jquery.tagcloud.js: {}
     js/sitecommander.js: {}
     js/hideThrobber.js: {}
     js/commands.js: {}
     https://use.fontawesome.com/2675f3c443.js: { type: external, minified: true }
+    https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js: { type: external, minified: true }
   dependencies:
     - core/jquery
     - core/drupal.ajax
@@ -26,13 +26,13 @@ sitecommander.BootstrapCSS:
       https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css: { type: external, minified: true }
   js:
     js/justgage.js: {}
-    js/raphael-2.1.4.min.js: {}
     js/jquery.tagcloud.js: {}
     js/sitecommander.js: {}
     js/hideThrobber.js: {}
     js/commands.js: {}
     https://use.fontawesome.com/2675f3c443.js: { type: external, minified: true }
     https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js: { type: external, minified: true }
+    https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js: { type: external, minified: true }
   dependencies:
     - core/jquery
     - core/drupal.ajax
@@ -46,7 +46,6 @@ sitecommander.jQueryBootstrapCSS:
       https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css: { type: external, minified: true }
   js:
     js/justgage.js: {}
-    js/raphael-2.1.4.min.js: {}
     js/jquery.tagcloud.js: {}
     js/sitecommander.js: {}
     js/hideThrobber.js: {}
@@ -54,6 +53,7 @@ sitecommander.jQueryBootstrapCSS:
     https://use.fontawesome.com/2675f3c443.js: { type: external, minified: true }
     https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js: { type: external, minified: true }
     https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js: { type: external, minified: true }
+    https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js: { type: external, minified: true }
   dependencies:
     - core/jquery
     - core/drupal.ajax
