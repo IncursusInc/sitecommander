@@ -508,8 +508,6 @@ class SiteCommanderController extends ControllerBase {
 			list($uptime, $idletime) = preg_split('/\s+/', system('cat /proc/uptime'));
 			ob_end_clean();
 
-			$now = time();
-
 			$idlepct = round( ($idletime/$numCores) / $uptime * 100, 2);
 			$uptime = SiteCommanderUtils::formatUptime($uptime);
 			$idletime = SiteCommanderUtils::formatUptime($idletime / $numCores);
@@ -627,7 +625,6 @@ class SiteCommanderController extends ControllerBase {
 
 				$label = $tmpArray[0];
 				$value = $tmpArray[1];
-				$sizeLabel = $tmpArray[2];
 				
 				$label = str_replace(':', '', $label);
 
@@ -666,11 +663,12 @@ class SiteCommanderController extends ControllerBase {
 	// Count users active within the defined period.
 	public function getUsersOnline()
 	{
-		$interval = time() - 900;
+		// Calculate 15 minutes ago
+		$interval = time() - 15*60;
 
 		// First, find all users who have had activity in the last 15 minutes
 		$query = $this->entityQuery->get('user');
-		$query->condition('access', strtotime('15 minutes ago'), '>=');
+		$query->condition('access', $interval, '>=');
 		$uids = $query->execute();
 		$activeUsers = entity_load_multiple('user', $uids);
 

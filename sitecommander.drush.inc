@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * @file
  * Drush integration for SiteCommander
@@ -63,5 +63,3 @@ function drush_sitecommander_backup_reset() {
 	\Drupal::state()->set('sitecommander.timestamp_last_backup', 0);
 	echo "Timestamp of last scheduled backup reset to 0\n\n";
 }
-
-?>

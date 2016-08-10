@@ -87,7 +87,7 @@ class BroadcastController extends ControllerBase {
 
 		$presenceData = array('user_id' => $_POST['socket_id']);
 
-		$jsonResponse = $pusher->socket_auth($_POST['channel_name'], $_POST['socket_id'], $presenceData);
+		$pusher->socket_auth($_POST['channel_name'], $_POST['socket_id'], $presenceData);
 
 		//echo $pusher->presence_auth($_POST['channel_name'], $_POST['socket_id'], $_POST['socket_id'], $presenceData);
 		echo $pusher->presence_auth($_POST['channel_name'], $_POST['socket_id'], $_POST['socket_id'], $presenceData);
@@ -188,7 +188,6 @@ class BroadcastController extends ControllerBase {
 		// TODO: HTTP basic auth
 		//curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		//curl_setopt($curl, CURLOPT_USERPWD, "username:password");
-
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
