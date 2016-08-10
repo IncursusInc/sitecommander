@@ -4,6 +4,8 @@
 
 <hr class="site-commander-hr" />
 
+{% if drupalInfo.settings.admin.pusherAppId and drupalInfo.settings.admin.pusherAppKey and drupalInfo.settings.admin.pusherAppSecret %}
+
 	<div class="col-md-12">
 		<h3 class="text-center">You are broadcasting to <span class="label label-info" id="pusherNumPublicSubscribers">{{ drupalInfo.pusherNumPublicSubscribers }}</span> visitors/users currently on your site.</h3>
 	</div>
@@ -87,3 +89,9 @@
 	</div>
 
 </div><!-- /row -->
+
+{% else %}
+
+	<div class="alert alert-info"><span class="fa fa-info-circle"></span> You have not properly configured your Pusher settings. <a href="/admin/config/sitecommander">Click here</a> to edit them now.</div>
+
+{% endif %}

@@ -106,7 +106,7 @@ class BroadcastController extends ControllerBase {
 		$cluster = "ap1";
 
 		$messageType = \Drupal::request()->request->get('messageType', 'info');
-		$messagePosition = \Drupal::request()->request->get('messagePosition', 'top-right');
+		$messagePosition = \Drupal::request()->request->get('messagePosition', 'toast-top-right');
 		$messageBody = \Drupal::request()->request->get('messageBody', 'No message provided!');
 
 		$options = array('cluster' => $cluster, 'encrypted' => true);
