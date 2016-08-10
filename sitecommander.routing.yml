@@ -6,6 +6,38 @@ sitecommander_configure:
   requirements:
     _permission: 'administer site configuration'
 
+sitecommander.pusherAuth:
+  path: '/sitecommander/pusherAuth'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\BroadcastController::pusherAuth'
+    _title: 'Pusher User Authentication'
+  requirements:
+    _permission: 'access content'
+
+sitecommander.broadcastMessage:
+  path: '/sitecommander/broadcastMessage'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\BroadcastController::broadcastMessage'
+    _title: 'Broadcast a message'
+  requirements:
+    _permission: 'administer site configuration'
+
+sitecommander.broadcastCommand:
+  path: '/sitecommander/broadcastCommand/{commandName}'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\BroadcastController::broadcastCommand'
+    _title: 'Broadcast a command'
+  requirements:
+    _permission: 'administer site configuration'
+
+sitecommander.processBroadcastCommand:
+  path: '/sitecommander/processBroadcastCommand/{commandName}'
+  defaults:
+    _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::processBroadcastCommand'
+    _title: 'Process a broadcast command'
+  requirements:
+    _permission: 'access content'
+
 sitecommander.deleteBackup:
   path: '/sitecommander/delete-backup/{fileName}'
   defaults:
@@ -31,7 +63,7 @@ sitecommander.ajaxToggleScheduledBackups:
     _permission: 'access administration pages'
 
 sitecommander.ajaxRebuildCache:
-  path: '/sitecommander/rebuild-drupal-cache'
+  path: '/sitecommander/rebuildDrupalCache'
   defaults:
     _controller: '\Drupal\sitecommander\Controller\SiteCommanderController::rebuildDrupalCache'
     _title: 'Rebuild Drupal Cache'

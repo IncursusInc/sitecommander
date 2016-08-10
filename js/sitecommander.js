@@ -9,6 +9,36 @@
 
 			$('#site-commander-loading-message-container').fadeOut("medium", function() {
 
+				// Tag cloud
+				$.fn.tagcloud.defaults = {
+					size: {start: 11, end: 18, unit: 'pt'},
+					color: {start: drupalSettings.settings.admin.tagCloudStartingColor, end: drupalSettings.settings.admin.tagCloudEndingColor}
+				};
+
+				$('#tag-cloud a').tagcloud(
+					{
+						size: {start: 11, end: 18, unit: 'pt'},
+						color: {start: drupalSettings.settings.admin.tagCloudStartingColor, end: drupalSettings.settings.admin.tagCloudEndingColor}
+					},
+					function( options )
+					{
+						$('#tag-cloud').fadeIn("slow");
+					}
+				);
+
+				$('#btnBroadcast').click(function() {
+					$.ajax({
+						url: '/sitecommander/broadcastMessage',
+						method: 'POST',
+						data: { 
+							messageType: $('input[name=messageType]:checked').val(), 
+							messagePosition: $('input[name=messagePosition]:checked').val(), 
+							messageBody: $('#messageBody').val() 
+						},
+					}).done(function(data) {
+					});
+				});
+
 				$('#site-commander-tabs a[data-toggle="tab"]').click(function (e) {
 					e.preventDefault();
 					$(this).tab('show');

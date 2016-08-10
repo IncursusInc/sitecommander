@@ -82,28 +82,28 @@
 </div>
 <div class="clearfix"></div>
 
-<div class="col-md-6 text-left">
-	{% if drupalInfo.settings.admin.enableScheduledBackups %}
-		{% set iconName = 'fa-toggle-on' %}
-		{% set iconClass = 'icon-green' %}
-		{% set iconTitle = 'Click to disable scheduled backups' %}
-	{% else %}
-		{% set iconName = 'fa-toggle-off' %}
-		{% set iconClass = 'site-commander-icon-noaction' %}
-		{% set iconTitle = 'Click to enable scheduled backups' %}
-	{% endif %}
+<div class="well">
+		{% if drupalInfo.settings.admin.enableScheduledBackups %}
+			{% set iconName = 'fa-toggle-on' %}
+			{% set iconClass = 'icon-green' %}
+			{% set iconTitle = 'Click to disable scheduled backups' %}
+		{% else %}
+			{% set iconName = 'fa-toggle-off' %}
+			{% set iconClass = 'site-commander-icon-noaction' %}
+			{% set iconTitle = 'Click to enable scheduled backups' %}
+		{% endif %}
+	
+		<h2 class="tab-title pull-left"><span class="fa fa-archive"></span> Backup Manager <a href="/sitecommander/toggle-scheduled-backups" class="use-ajax site-commander-icon-action"><span id="backupKillSwitch" class="fa {{ iconName }} {{ iconClass }}" title="{{ iconTitle }}"></span></a></h2> 
 
-	<h2 style="margin: 10px 0px">Backup Manager <a href="/sitecommander/toggle-scheduled-backups" class="use-ajax site-commander-icon-action"><span id="backupKillSwitch" class="fa {{ iconName }} {{ iconClass }}" title="{{ iconTitle }}"></span></a></h2> 
-</div>
+  	{% if drupalInfo.isBackupRunning %}
+			{% set disabledClass = 'disabled' %}
+		{% else %}
+			{% set disabledClass = '' %}
+		{% endif %}
+		<h2 style="margin: 0px 0px" class="pull-right"><a id="btn-create-backup" class="btn btn-md btn-success {{ disabledClass }}" role="button" data-toggle="modal" data-target="#modalBackup" alt="Create New Backup Image" title="Create New Backup Image"><span class="fa fa-archive"></span> Create New Backup</a>
+		<a id="btn-create-backup-background" class="btn btn-md btn-success {{ disabledClass }}" role="button" data-toggle="modal" data-target="#modalBackupBackground" alt="Create New Backup Image (Background)" title="Create New Backup Image (Background)"><span class="fa fa-archive"></span> Create New Backup (Background)</a></h2>
 
-<div class="col-md-6 text-right">
-  {% if drupalInfo.isBackupRunning %}
-		{% set disabledClass = 'disabled' %}
-	{% else %}
-		{% set disabledClass = '' %}
-	{% endif %}
-	<a id="btn-create-backup" class="btn btn-md btn-success {{ disabledClass }}" role="button" data-toggle="modal" data-target="#modalBackup" alt="Create New Backup Image" title="Create New Backup Image"><span class="fa fa-archive"></span> Create New Backup</a>
-	<a id="btn-create-backup-background" class="btn btn-md btn-success {{ disabledClass }}" role="button" data-toggle="modal" data-target="#modalBackupBackground" alt="Create New Backup Image (Background)" title="Create New Backup Image (Background)"><span class="fa fa-archive"></span> Create New Backup (Background)</a>
+	<div class="clearfix"></div>
 </div>
 
 <hr class="site-commander-hr" />

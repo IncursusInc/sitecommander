@@ -1,0 +1,6 @@
+{
+		"name": "drupal/sitecommander",
+    "require": {
+        "pusher/pusher-php-server": "^2.4"
+    }
+}

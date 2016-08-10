@@ -1,0 +1,15 @@
+includeBootstrapCSS: 0
+includejQuery: 0
+refreshRate: '60'
+enableAnonymousUserTracking: 0
+visitorIpAddressTTL: '15'
+backupMaxAgeInDays: '7'
+enableScheduledBackups: 0
+minHoursBetweenBackups: '24'
+enableMirroring: 0
+mirrorMode: null
+tagCloudVocabulary: tags
+tagCloudLimit: '25'
+tagCloudBackgroundColor: '#eeeeee'
+tagCloudStartingColor: '#bbbbbb'
+tagCloudEndingColor: '#428BCA'

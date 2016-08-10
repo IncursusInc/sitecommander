@@ -7,6 +7,7 @@
 
 namespace Drupal\sitecommander\Controller;
 
+use Pusher;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\File\FileSystem;
@@ -70,6 +71,11 @@ class SiteCommanderController extends ControllerBase {
       $container->get('cron')
     );
   }
+
+	public function processBroadcastCommand( $commandName )
+	{
+		return $this->$commandName();
+	}
 
 	// AJAX Callback to toggle maintenance mode
   public function toggleMaintenanceMode() {
@@ -346,6 +352,8 @@ class SiteCommanderController extends ControllerBase {
 		$drupalInfo['dbStats'] = $this->getDatabaseStats( $drupalInfo['dbDriver'] );
 		$drupalInfo['dbConfig'] = $this->getDatabaseConfig( $drupalInfo['dbDriver'] );
 		$this->calculateDbFields($drupalInfo);
+
+		$drupalInfo['pusherNumPublicSubscribers'] = $this->getPusherNumSubscribers();
 
 		// Let's figure out how many modules need to be (or can/should be) updated
 		$available = update_get_available(TRUE);
@@ -1044,4 +1052,68 @@ class SiteCommanderController extends ControllerBase {
 		// Return ajax response.
 		return $response;
 	}
+
+	public function getPusherNumSubscribers( $channelName='site-commander')
+	{
+		$config = $this->configFactory->get('sitecommander.settings');
+		$pusherAppId = $config->get('pusherAppId');
+		$pusherAppKey = $config->get('pusherAppKey');
+		$pusherAppSecret = $config->get('pusherAppSecret');
+		$cluster = "ap1";
+
+		$options = array('cluster' => $cluster, 'encrypted' => true);
+
+		$pusher = new Pusher( $pusherAppKey, $pusherAppSecret, $pusherAppId, $options );
+
+		$info = $pusher->get_channel_info($channelName, array('info' => 'subscription_count'));
+		return $info->subscription_count;
+	}
+
+	public function getTagCloudData()
+	{
+		$config = $this->configFactory->get('sitecommander.settings');
+		$tagCloudVocabulary = $config->get('tagCloudVocabulary');
+		$tagCloudLimit = $config->get('tagCloudLimit');
+
+		$query = $this->connection->select('taxonomy_term_data','td');
+		$query->addExpression('COUNT(td.tid)', 'count');
+		$query->fields('td', array('tid'));
+		$query->fields('tfd', array('name'));
+
+		$query->join('taxonomy_index', 'tn', 'td.tid = tn.tid');
+		$query->join('node_field_data', 'n', 'tn.nid = n.nid');
+		$query->join('taxonomy_term_field_data', 'tfd', 'tfd.tid = tn.tid');
+
+		$query->condition('td.vid', $tagCloudVocabulary);
+		$query->condition('n.status', 1);
+
+		$query->groupBy('td.tid')->groupBy('td.vid')->groupBy('tfd.name');
+
+		$query->having('COUNT(td.tid)>0');
+		$query->orderBy('count', 'DESC');
+		$query->range(0, $tagCloudLimit);
+
+		$result = $query->execute()->fetchAll();
+
+		$tagCloudData = array();
+		foreach($result as $r)
+		{
+			$term = \Drupal\taxonomy\Entity\Term::load($r->tid);
+			$tagCloudData[] = array(
+				'name' => $r->name,
+				'count' => $r->count,
+				'url' => \Drupal::url('entity.taxonomy_term.canonical', ['taxonomy_term' => $term->id()], array('absolute' => TRUE))
+			);
+		}
+
+		// Sort by name now (case insensitive)
+		$customSort = function($a, $b) {
+			return strcasecmp($a['name'], $b['name']);
+		};
+
+		uasort($tagCloudData, $customSort);
+
+		return $tagCloudData;
+	}
+
 }
