@@ -1,8 +1,12 @@
 // Set up broadcasting framework
+//
+var pusher;
+var scChannel;
+
 if(drupalSettings.sitecommander.pusherAppKey)
 {
-	var pusher = new Pusher(drupalSettings.sitecommander.pusherAppKey, { cluster: "ap1", authEndpoint: '/sitecommander/pusherAuth' });
-	var scChannel = pusher.subscribe('site-commander');
+	pusher = new Pusher(drupalSettings.sitecommander.pusherAppKey, { cluster: "ap1", authEndpoint: '/sitecommander/pusherAuth' });
+	scChannel = pusher.subscribe('site-commander');
 
 	pusher.bind('broadcastMessage', function(data) {
 
