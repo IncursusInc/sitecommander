@@ -24,7 +24,6 @@ use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Entity\Query\QueryAggregateInterface;
-//use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\sitecommander\Ajax\ReadMessageCommand;
 use Drupal\sitecommander\SiteCommanderUtils;
 use Drupal\Core\Template\TwigEnvironment;
@@ -200,23 +199,27 @@ class SiteCommanderController extends ControllerBase {
 	// Clear Redis cache
 	public function clearRedisCache()
 	{
-		$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
-		$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
-		$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
+		// Try to get existing Redis connection, if one is available
+		$redis = \Drupal\redis\ClientFactory::getClient();
 
-		if (class_exists('Redis') && $redisHostName && $redisPort) {
+		if (!$redis)
+		{
+			$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
+			$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
+			$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
 
-			$redis = new \Redis();
+			if (class_exists('Redis') && $redisHostName && $redisPort) {
 
-			$redis->connect($redisHostName, $redisPort);
-			$redis->select($redisDatabaseIndex);
+				$redis = new \Redis();
 
-			// Do not allow PhpRedis serialize itself data, we are going to do it
-			// ourself. This will ensure less memory footprint on Redis size when
-			// we will attempt to store small values.
-			$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
-
-			$redis->flushDb();
+				$redis->connect($redisHostName, $redisPort);
+				$redis->select($redisDatabaseIndex);
+				$redis->flushAll();
+			}
+		}
+		else
+		{
+			$redis->flushAll();
 		}
 
     // Create AJAX Response object.
@@ -414,22 +417,30 @@ class SiteCommanderController extends ControllerBase {
 	// Get Redis stats if they are using it as a caching backend
 	public function getRedisStats()
 	{
-		$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
-		$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
-		$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
+		$redis = \Drupal\redis\ClientFactory::getClient();
 
-		if (class_exists('Redis') && $redisHostName && $redisPort) {
+		if (!$redis)
+		{
+			$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
+			$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
+			$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
 
-			$redis = new \Redis();
+			if (class_exists('Redis') && $redisHostName && $redisPort) {
 
-			$redis->connect($redisHostName, $redisPort);
-			$redis->select($redisDatabaseIndex);
+				$redis = new \Redis();
 
-			// Do not allow PhpRedis serialize itself data, we are going to do it
-			// ourself. This will ensure less memory footprint on Redis size when
-			// we will attempt to store small values.
-			$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
+				$redis->connect($redisHostName, $redisPort);
+				$redis->select($redisDatabaseIndex);
 
+				// Do not allow PhpRedis serialize itself data, we are going to do it
+				// ourself. This will ensure less memory footprint on Redis size when
+				// we will attempt to store small values.
+				$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
+			}
+		}
+
+		if($redis)
+		{
 			$redisInfo = $redis->info();
 			$redisConfig = $redis->config('GET', '*');
 
@@ -462,6 +473,8 @@ class SiteCommanderController extends ControllerBase {
 			$redisInfo = array_merge($redisStats, $redisInfo);
 			return $redisInfo;
 		}
+
+		return array();
 	}
 
 	// Get APC stats if they are using it
