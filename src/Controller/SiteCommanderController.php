@@ -199,15 +199,15 @@ class SiteCommanderController extends ControllerBase {
 	// Clear Redis cache
 	public function clearRedisCache()
 	{
+		$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
+		$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
+		$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
+
 		// Try to get existing Redis connection, if one is available
 		$redis = \Drupal\redis\ClientFactory::getClient();
 
 		if (!$redis)
 		{
-			$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
-			$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
-			$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
-
 			if (class_exists('Redis') && $redisHostName && $redisPort) {
 
 				$redis = new \Redis();
@@ -219,6 +219,7 @@ class SiteCommanderController extends ControllerBase {
 		}
 		else
 		{
+			$redis->select($redisDatabaseIndex);
 			$redis->flushAll();
 		}
 
@@ -419,12 +420,12 @@ class SiteCommanderController extends ControllerBase {
 	{
 		$redis = \Drupal\redis\ClientFactory::getClient();
 
+		$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
+		$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
+		$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
+
 		if (!$redis)
 		{
-			$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
-			$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
-			$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
-
 			if (class_exists('Redis') && $redisHostName && $redisPort) {
 
 				$redis = new \Redis();
