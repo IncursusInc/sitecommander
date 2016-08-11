@@ -69,23 +69,7 @@ SiteCommander features include:
 
 # Screenshots
 
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot1_2.png?itok=BpuRa1jE "SiteCommander Screenshot")
-
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot2_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
-
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot3_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
-
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot4_0.png?itok=BpuRa1jE "SiteCommander Screenshot")
-
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot5_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
-
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot6_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
-
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot7_1.png?itok=BpuRa1jE "SiteCommander Screenshot")
-
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot8_0.png?itok=BpuRa1jE "SiteCommander Screenshot")
-
-![alt text](http://incurs.us/sites/default/files/styles/juicebox_small/public/2016-07/sitecommander-screenshot9_0.png?itok=BpuRa1jE "SiteCommander Screenshot")
+For screenshots, [click here](https://github.com/IncursusInc/sitecommander).
 
 # Installation Instructions
 
