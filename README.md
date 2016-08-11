@@ -69,7 +69,7 @@ SiteCommander features include:
 
 # Screenshots
 
-For screenshots, [click here](https://github.com/IncursusInc/sitecommander).
+For screenshots, [click here](http://incurs.us/open-source-projects/sitecommander).
 
 # Installation Instructions
 
