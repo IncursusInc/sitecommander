@@ -4,4 +4,4 @@ description: Interactive dashboard for managing your Drupal site.
 package: SiteCommander
 core: 8.x
 dependencies:
-  - push_integration:pusher_integration
+  - pusher_integration:pusher_integration
