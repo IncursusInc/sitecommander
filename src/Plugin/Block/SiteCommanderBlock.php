@@ -189,6 +189,7 @@ class SiteCommanderBlock extends BlockBase implements ContainerFactoryPluginInte
 
 		// Load up SiteCommander config settings so we can pass them to the .js
 		$drupalInfo['settings']['admin'] = $this->configFactory->get('sitecommander.settings')->get();
+		$drupalInfo['settings']['pusher'] = $this->configFactory->get('pusher_integration.settings')->get();
 
 		// Get list of backups
 		$backupDir = $this->configFactory->get('sitecommander.settings')->get('backupDirectory');

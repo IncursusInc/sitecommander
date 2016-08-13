@@ -7,7 +7,7 @@
 
 namespace Drupal\sitecommander\Controller;
 
-use Pusher;
+//use Pusher;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\File\FileSystem;
@@ -26,6 +26,7 @@ use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Entity\Query\QueryAggregateInterface;
 use Drupal\sitecommander\Ajax\ReadMessageCommand;
 use Drupal\sitecommander\SiteCommanderUtils;
+use Drupal\pusher_integration\Controller\PusherController;
 use Drupal\Core\Template\TwigEnvironment;
 
 class SiteCommanderController extends ControllerBase {
@@ -40,6 +41,7 @@ class SiteCommanderController extends ControllerBase {
 	protected $currentUser;
 	protected $twig;
 	protected $cron;
+	public		$pusher;
 
 	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state, $account, TwigEnvironment $twig, $cron )
 	{
@@ -52,6 +54,8 @@ class SiteCommanderController extends ControllerBase {
 		$this->currentUser = $account;
 		$this->twig = $twig;
 		$this->cron = $cron;
+
+		$this->pusher = new PusherController( $this->configFactory, $this->currentUser );
 	}
 
   /**
@@ -199,15 +203,15 @@ class SiteCommanderController extends ControllerBase {
 	// Clear Redis cache
 	public function clearRedisCache()
 	{
+		$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
+		$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
+		$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
+
 		// Try to get existing Redis connection, if one is available
 		$redis = \Drupal\redis\ClientFactory::getClient();
 
 		if (!$redis)
 		{
-			$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
-			$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
-			$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
-
 			if (class_exists('Redis') && $redisHostName && $redisPort) {
 
 				$redis = new \Redis();
@@ -219,6 +223,7 @@ class SiteCommanderController extends ControllerBase {
 		}
 		else
 		{
+			$redis->select($redisDatabaseIndex);
 			$redis->flushAll();
 		}
 
@@ -419,12 +424,12 @@ class SiteCommanderController extends ControllerBase {
 	{
 		$redis = \Drupal\redis\ClientFactory::getClient();
 
+		$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
+		$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
+		$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
+
 		if (!$redis)
 		{
-			$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
-			$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
-			$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
-
 			if (class_exists('Redis') && $redisHostName && $redisPort) {
 
 				$redis = new \Redis();
@@ -1066,17 +1071,7 @@ class SiteCommanderController extends ControllerBase {
 
 	public function getPusherNumSubscribers( $channelName='site-commander')
 	{
-		$config = $this->configFactory->get('sitecommander.settings');
-		$pusherAppId = $config->get('pusherAppId');
-		$pusherAppKey = $config->get('pusherAppKey');
-		$pusherAppSecret = $config->get('pusherAppSecret');
-		$cluster = "ap1";
-
-		$options = array('cluster' => $cluster, 'encrypted' => true);
-
-		$pusher = new Pusher( $pusherAppKey, $pusherAppSecret, $pusherAppId, $options );
-
-		$info = $pusher->get_channel_info($channelName, array('info' => 'subscription_count'));
+		$info = $this->pusher->getChannelInfo($channelName, array('info' => 'subscription_count'));
 		return $info->subscription_count;
 	}
 

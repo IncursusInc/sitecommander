@@ -11,6 +11,10 @@ services:
     class: Drupal\sitecommander\Controller\BackupController
     arguments: ['@database', '@file_system', '@config.factory']
 
+  sitecommander.broadcast_controller:
+    class: 'Drupal\sitecommander\Controller\BroadcastController'
+    arguments: ['@config.factory', '@current_user']
+
   sitecommander.listener:
     class: 'Drupal\sitecommander\EventSubscriber\SiteCommanderListener'
     arguments: ['@current_user','@config.factory']

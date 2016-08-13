@@ -57,6 +57,7 @@ SiteCommander features include:
 * Drush installed
 * PHP 5.5 or higher (untested under PHP 7)
 * Composer Manager Module
+* Pusher Integration Module
 * ssh2 module for PHP (optional, but needed for backup mirroring functionality)
 
 # Known Issues
