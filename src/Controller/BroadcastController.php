@@ -10,25 +10,13 @@ namespace Drupal\sitecommander\Controller;
 use Pusher;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\File\FileSystem;
-use Drupal\Core\Cron;
 use Drupal\Core\Ajax\AjaxResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Drupal\Core\State\StateInterface;
-use Drupal\Core\Database\Database;
-use Drupal\Core\Database\Connection;
-use Drupal\Core\Database\Statement;
 use Drupal\Core\Config\ConfigFactory;
-use Drupal\Core\Extension\ModuleHandler;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
-use Drupal\Core\Entity\Query\QueryInterface;
-use Drupal\Core\Entity\Query\QueryFactory;
-use Drupal\Core\Entity\Query\QueryAggregateInterface;
-//use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\sitecommander\Ajax\ReadMessageCommand;
 use Drupal\sitecommander\SiteCommanderUtils;
-use Drupal\Core\Template\TwigEnvironment;
+use Drupal\pusher_integration\Controller\PusherController;
 
 class BroadcastController extends ControllerBase {
 
@@ -42,18 +30,14 @@ class BroadcastController extends ControllerBase {
 	protected $currentUser;
 	protected $twig;
 	protected $cron;
+	public		$pusher;
 
-	public function __construct( Connection $connection, ModuleHandler $moduleHandler, QueryFactory $entityQuery, FileSystem $fileSystem, ConfigFactory $configFactory, StateInterface $state, $account, TwigEnvironment $twig, $cron )
+	public function __construct( ConfigFactory $configFactory, AccountInterface $account )
 	{
-		$this->connection = $connection;
-		$this->moduleHandler = $moduleHandler;
-		$this->entityQuery = $entityQuery;
-		$this->fileSystem = $fileSystem;
 		$this->configFactory = $configFactory;
-		$this->state = $state;
 		$this->currentUser = $account;
-		$this->twig = $twig;
-		$this->cron = $cron;
+
+		$this->pusher = new PusherController( $this->configFactory, $this->currentUser );
 	}
 
   /**
@@ -61,27 +45,20 @@ class BroadcastController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('database'),
-      $container->get('module_handler'),
-      $container->get('entity.query'),
-      $container->get('file_system'),
       $container->get('config.factory'),
-      $container->get('state'),
-      $container->get('current_user'),
-      $container->get('twig'),
-      $container->get('cron')
+      $container->get('current_user')
     );
   }
 
 	public function pusherAuth()
 	{
-		$config = $this->configFactory->get('sitecommander.settings');
+		$config = $this->configFactory->get('pusher_integration.settings');
 		$pusherAppId = $config->get('pusherAppId');
 		$pusherAppKey = $config->get('pusherAppKey');
 		$pusherAppSecret = $config->get('pusherAppSecret');
-		$cluster = "ap1";
+		$clusterName = $config->get('clusterName');
 
-		$options = array('cluster' => $cluster, 'encrypted' => true);
+		$options = array('cluster' => $clusterName, 'encrypted' => true);
 
 		$pusher = new Pusher( $pusherAppKey, $pusherAppSecret, $pusherAppId, $options );
 
@@ -99,37 +76,16 @@ class BroadcastController extends ControllerBase {
 
 	public function broadcastMessage()
 	{
-		$config = $this->configFactory->get('sitecommander.settings');
-		$pusherAppId = $config->get('pusherAppId');
-		$pusherAppKey = $config->get('pusherAppKey');
-		$pusherAppSecret = $config->get('pusherAppSecret');
-		$cluster = "ap1";
-
-		$messageType = \Drupal::request()->request->get('messageType', 'info');
-		$messagePosition = \Drupal::request()->request->get('messagePosition', 'toast-top-right');
-		$messageBody = \Drupal::request()->request->get('messageBody', 'No message provided!');
-
-		$options = array('cluster' => $cluster, 'encrypted' => true);
-
-		$pusher = new Pusher( $pusherAppKey, $pusherAppSecret, $pusherAppId, $options );
-
 		$data = array(
-			'messageType' => $messageType,
-			'messageBody' => $messageBody,
-			'messagePosition' => $messagePosition
+			'messageType' => \Drupal::request()->request->get('messageType', 'info'),
+			'messagePosition' => \Drupal::request()->request->get('messagePosition', 'toast-top-right'),
+			'messageBody' => \Drupal::request()->request->get('messageBody', 'No message provided!')
 		);
 
-		$pusher->trigger( 'site-commander', 'broadcastMessage', $data );
+		$this->pusher->broadcastMessage( $this->configFactory, 'site-commander', 'broadcastMessage', $data );
 
     // Create AJAX Response object.
     $response = new AjaxResponse();
-
-    // Call the SiteCommanderAjaxCommand javascript function.
-		$responseData = new \StdClass();
-		$responseData->command = 'readMessage';
-		$responseData->siteCommanderCommand = 'broadcastMessage';
-    $response->addCommand( new ReadMessageCommand($responseData));
-
 		return $response;
 	}
 
