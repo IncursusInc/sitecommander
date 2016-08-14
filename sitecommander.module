@@ -65,8 +65,10 @@ function sitecommander_page_attachments(&$page)
 	// Include Pusher
 	$config = \Drupal::config('sitecommander.settings');
 	$pusherAppKey = $config->get('pusherAppKey');
+	$enableBroadcastManager = $config->get('enableBroadcastManager');
 
 	$page['#attached']['library'][] = 'sitecommander/sitecommander.Broadcast';
+	$page['#attached']['drupalSettings']['sitecommander']['enableBroadcastManager'] = $enableBroadcastManager;
 	$page['#attached']['drupalSettings']['sitecommander']['pusherAppKey'] = $pusherAppKey;
 
 	if (!$config->get('includeBootstrapCSS')) {
