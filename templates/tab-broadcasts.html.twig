@@ -4,7 +4,7 @@
 
 <hr class="site-commander-hr" />
 
-{% if drupalInfo.settings.pusher.pusherAppId and drupalInfo.settings.pusher.pusherAppKey and drupalInfo.settings.pusher.pusherAppSecret %}
+{% if drupalInfo.settings.sitecommander.enableBroadcastManager %}
 
 	<div class="col-md-12">
 		<h3 class="text-center">You are broadcasting to <span class="label label-info" id="pusherNumPublicSubscribers">{{ drupalInfo.pusherNumPublicSubscribers }}</span> visitors/users currently on your site.</h3>
@@ -92,6 +92,6 @@
 
 {% else %}
 
-	<div class="alert alert-info"><span class="fa fa-info-circle"></span> You have not properly configured your Pusher settings. <a href="/admin/config/pusher_integration">Click here</a> to edit them now.</div>
+	<div class="alert alert-info"><span class="fa fa-info-circle"></span> You have not properly configured your Pusher settings and/or Broadcast Manager is disabled in your configuration. <a href="/admin/config/pusher_integration">Click here</a> to edit your Pusher settings. <a href="/admin/config/sitecommander">Click here</a> to edit SiteCommander settings.</div>
 
 {% endif %}

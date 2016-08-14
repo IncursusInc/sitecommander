@@ -310,28 +310,11 @@ class ConfigureForm extends ConfigFormBase {
 			'#markup' => t('In order to utilize message broadcasting in SiteCommander, you will need to create an account (free) at <a href="http://pusher.com" target="_blank">Pusher.com</a>.')
 		);
 
-				$form['broadcastManager']['pusherAppId'] = array(
-    			'#type' => 'textfield',
-    			'#title' => t('Pusher App ID'),
+				$form['broadcastManager']['enableBroadcastManager'] = array(
+    			'#type' => 'checkbox',
+    			'#title' => t('Enable the Broadcast Manager (if enabled, it will try to establish a connection to Pusher on page loads)'),
     			'#required' => FALSE,
-					'#default_value' => $config->get('pusherAppId') ? $config->get('pusherAppId') : '',
-    			'#description' => t('The Pusher App ID you created at Pusher.com.'),
-				);
-
-				$form['broadcastManager']['pusherAppKey'] = array(
-    			'#type' => 'textfield',
-    			'#title' => t('Pusher App Key'),
-    			'#required' => FALSE,
-					'#default_value' => $config->get('pusherAppKey') ? $config->get('pusherAppKey') : '',
-    			'#description' => t('The Pusher App Key you created at Pusher.com.'),
-				);
-
-				$form['broadcastManager']['pusherAppSecret'] = array(
-    			'#type' => 'textfield',
-    			'#title' => t('Pusher App Secret'),
-    			'#required' => FALSE,
-					'#default_value' => $config->get('pusherAppSecret') ? $config->get('pusherAppSecret') : '',
-    			'#description' => t('The Pusher App Secret you created at Pusher.com.'),
+					'#default_value' => $config->get('enableBroadcastManager')
 				);
 
 		return parent::buildForm($form, $form_state);
@@ -389,6 +372,7 @@ class ConfigureForm extends ConfigFormBase {
 					->set('serverPoolList', $form_state->getValue('serverPoolList'))
 
 					// Broadcast Manager settings
+					->set('enableBroadcastManager', $form_state->getValue('enableBroadcastManager'))
 					->set('pusherAppId', $form_state->getValue('pusherAppId'))
 					->set('pusherAppKey', $form_state->getValue('pusherAppKey'))
 					->set('pusherAppSecret', $form_state->getValue('pusherAppSecret'))

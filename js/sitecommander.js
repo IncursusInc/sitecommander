@@ -14,13 +14,13 @@
 				// Tag cloud
 				$.fn.tagcloud.defaults = {
 					size: {start: 11, end: 18, unit: 'pt'},
-					color: {start: drupalSettings.settings.admin.tagCloudStartingColor, end: drupalSettings.settings.admin.tagCloudEndingColor}
+					color: {start: drupalSettings.settings.sitecommander.tagCloudStartingColor, end: drupalSettings.settings.sitecommander.tagCloudEndingColor}
 				};
 
 				$('#tag-cloud a').tagcloud(
 					{
 						size: {start: 11, end: 18, unit: 'pt'},
-						color: {start: drupalSettings.settings.admin.tagCloudStartingColor, end: drupalSettings.settings.admin.tagCloudEndingColor}
+						color: {start: drupalSettings.settings.sitecommander.tagCloudStartingColor, end: drupalSettings.settings.sitecommander.tagCloudEndingColor}
 					},
 					function( options )
 					{
@@ -326,8 +326,8 @@
 		setInterval(function() {
 
 			// Sanity check, so we don't end up spamming AJAX calls if the refreshRate gets clobbered somehow
-			if (!drupalSettings.settings.admin.refreshRate)
-				drupalSettings.settings.admin.refreshRate = 60;
+			if (!drupalSettings.settings.sitecommander.refreshRate)
+				drupalSettings.settings.sitecommander.refreshRate = 60;
 	
 			$.get('sitecommander/update-poll', function (response) { 
 				dsg1.refresh(response[0].responseData.payload.loadAverage[0] * 100);
@@ -391,7 +391,7 @@
 				});
 	
 			});
-		}, drupalSettings.settings.admin.refreshRate * 1000);
+		}, drupalSettings.settings.sitecommander.refreshRate * 1000);
 
 	});
 
