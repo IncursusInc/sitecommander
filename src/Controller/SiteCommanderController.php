@@ -55,7 +55,9 @@ class SiteCommanderController extends ControllerBase {
 		$this->twig = $twig;
 		$this->cron = $cron;
 
-		$this->pusher = new PusherController( $this->configFactory, $this->currentUser );
+		// Create connection to Pusher (if it is enabled)
+		if($this->configFactory->get('sitecommander.settings')->get('enableBroadcastManager'))
+			$this->pusher = new PusherController( $this->configFactory, $this->currentUser );
 	}
 
   /**
@@ -1071,8 +1073,14 @@ class SiteCommanderController extends ControllerBase {
 
 	public function getPusherNumSubscribers( $channelName='site-commander')
 	{
-		$info = $this->pusher->getChannelInfo($channelName, array('info' => 'subscription_count'));
-		return $info->subscription_count;
+		if($this->pusher)
+		{
+			$info = $this->pusher->getChannelInfo($channelName, array('info' => 'subscription_count'));
+			if(isset($info->subscription_count))
+				return $info->subscription_count;
+		}
+
+		return 1;
 	}
 
 	public function getTagCloudData()

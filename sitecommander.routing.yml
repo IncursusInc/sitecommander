@@ -6,14 +6,6 @@ sitecommander_configure:
   requirements:
     _permission: 'administer site configuration'
 
-sitecommander.pusherAuth:
-  path: '/sitecommander/pusherAuth'
-  defaults:
-    _controller: '\Drupal\sitecommander\Controller\BroadcastController::pusherAuth'
-    _title: 'Pusher User Authentication'
-  requirements:
-    _permission: 'access content'
-
 sitecommander.broadcastMessage:
   path: '/sitecommander/broadcastMessage'
   defaults:

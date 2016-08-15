@@ -20,16 +20,8 @@ use Drupal\pusher_integration\Controller\PusherController;
 
 class BroadcastController extends ControllerBase {
 
-	protected $connection;
-	protected $moduleHandler;
-	protected $entityQuery;
-	protected $fileSystem;
 	protected $configFactory;
-	protected $state;
-	protected $translation;
 	protected $currentUser;
-	protected $twig;
-	protected $cron;
 	public		$pusher;
 
 	public function __construct( ConfigFactory $configFactory, AccountInterface $account )
@@ -49,30 +41,6 @@ class BroadcastController extends ControllerBase {
       $container->get('current_user')
     );
   }
-
-	public function pusherAuth()
-	{
-		$config = $this->configFactory->get('pusher_integration.settings');
-		$pusherAppId = $config->get('pusherAppId');
-		$pusherAppKey = $config->get('pusherAppKey');
-		$pusherAppSecret = $config->get('pusherAppSecret');
-		$clusterName = $config->get('clusterName');
-
-		$options = array('cluster' => $clusterName, 'encrypted' => true);
-
-		$pusher = new Pusher( $pusherAppKey, $pusherAppSecret, $pusherAppId, $options );
-
-		$presenceData = array('user_id' => $_POST['socket_id']);
-
-		$pusher->socket_auth($_POST['channel_name'], $_POST['socket_id'], $presenceData);
-
-		//echo $pusher->presence_auth($_POST['channel_name'], $_POST['socket_id'], $_POST['socket_id'], $presenceData);
-		echo $pusher->presence_auth($_POST['channel_name'], $_POST['socket_id'], $_POST['socket_id'], $presenceData);
-
-    // Create AJAX Response object.
-    $response = new AjaxResponse();
-		return $response;
-	}
 
 	public function broadcastMessage()
 	{
