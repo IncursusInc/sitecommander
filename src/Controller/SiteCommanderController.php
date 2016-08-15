@@ -1076,10 +1076,11 @@ class SiteCommanderController extends ControllerBase {
 		if($this->pusher)
 		{
 			$info = $this->pusher->getChannelInfo($channelName, array('info' => 'subscription_count'));
-			return $info->subscription_count;
+			if(isset($info->subscription_count)
+				return $info->subscription_count;
 		}
 
-		return 0;
+		return 1;
 	}
 
 	public function getTagCloudData()
