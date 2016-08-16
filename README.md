@@ -121,3 +121,68 @@ Pretty self-explanatory. Terms with the lowest number of occurances in the tag c
 
 Terms with the largest number of occurances will end up with this color. Terms will be shaded to some color between the starting color and ending color, again, depending on how often they are used/seen.
 
+## Redis Settings
+
+Redis can be used as both a backend cache for Drupal, as well as a mechanism to allow SiteCommander to track how many visitors are on your site. We highly recommend it! If you need help setting up, we even <a href="http://incurs.us/articles/implementing-redis-caching-backend-drupal-8">wrote an article</a> to help you!
+
+### Redis Hostname
+
+For most folks, this can simply be "localhost", if you are running Redis on the same physical server as Drupal. Of course, you can specify whatever hostname Redis is running on if it is deployed elsewhere.
+
+### Redis Port
+
+This is the TCP/IP port that Redis is listening on. The default is 6379, and for most folks, this will be fine.
+
+### Redis Database to Use
+
+Redis gives you sixteen (16) databases or "buckets" to use. When in doubt, just pick a number between 0 and 15. But for more advanced Redis users, you may want to isolate Drupal/SiteCommander's use of Redis to a particular bucket, since when we tend to take an "all or nothing" approach to flushing it when you request us to do so! You don't want to inadvertently lose data from other apps.
+
+## Anonymous User Tracking
+
+As mentioned previously, SiteCommander can track the number of visitors to your site. There are two ways we can do this. The first, is by using Redis. In this case, what we do is add a Redis entry for each visitor (by IP address). Those entries are kept for a configurable amount of time. The problem with this is obvious. We simply count up how many of these entries are in Redis to determine the number of visitors. The visitor may very well have moved on, but there entry in Redis hasn't yet expired.
+
+The second, and more accurate method, is by using Pusher (see Pusher.com for more info). By using Pusher, the statistics are realtime. If a user has one of your pages open, he/she will be counted as a visitor. Visit Pusher.com to set up your free (or paid) account. Most sites can probably get away with a free account. We highly recommend this service, however. It's uses are endless! Please note that in order to use Pusher with SiteCommander, you will need to also install our pusher_integration module!
+
+## Server Pool
+
+This is currently unused, but will be used in the future. For now, feel free to just plop the name of your host in there (or "localhost" for most smaller sites with just one Drupal app server).
+
+## Backup Manager Settings
+
+SiteCommander can use "drush" (required) to create and restore backup images for you. Install drush if you haven't already - it's worth it!
+
+### Backup Directory
+
+This is the path where SiteCommander will store backup image files. For larger sites, we highly recommend you have a separate storage host/device to store your backups. Simply mount the remote share using SAMBA/SMBCLIENT/etc. to your Drupal server. That way, if something actually happens to your Drupal host(s), your backups aren't lost!
+
+### Path to drush
+
+Self-explanatory. This is the full path/filename to your drush executable. The default is /usr/local/bin/drush.
+
+### Max Backup Age (in Days)
+
+Again, pretty straightforward. Backups older than this value, in days, will be periodically pruned/removed to save space. The default is seven (7) days.
+
+### Enable Scheduled Backups
+
+### Minimum Number of Hours Between Backups
+
+### Enable Mirroring Backup Files to a Remote Host
+
+### Interface to Use For Mirroring Backup Files to a Remote Host
+
+### Remote Port #
+
+### Remote Mirror Host
+
+### Remote Directory
+
+### Remote Username
+
+### Remote Password
+
+## Broadcast Manager Settings
+
+
+
+
