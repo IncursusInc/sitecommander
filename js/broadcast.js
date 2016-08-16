@@ -5,7 +5,7 @@ if (pusher)
 {
 	scChannel = pusher.subscribe('site-commander');
 
-	pusher.bind('broadcastMessage', function(data) {
+	scChannel.bind('broadcastMessage', function(data) {
 
 		toastr.options = {
 			'closeButton': true,

@@ -157,19 +157,26 @@ class ConfigureForm extends ConfigFormBase {
 		$form['userTracking'] = array(
 			'#type' => 'fieldset',
 			'#title' => t('Anonymous User Tracking'),
-			'#markup' => '<p>' . t('Currently, Redis is required for tracking/reporting of anonymous visitors. If you do not have Redis installed, do not enable this feature!') . '</p>'
+			'#markup' => '<p>' . t('Currently, Redis or Pusher is required for tracking/reporting of anonymous visitors.') . '</p>'
 		);
 
-				$form['userTracking']['enableAnonymousUserTracking'] = array(
-    			'#type' => 'checkbox',
+				$options = array(
+					'disabled' => 'Disable',
+					'redis' => 'Redis',
+					'pusher' => 'Pusher'
+				);
+
+				$form['userTracking']['anonymousUserTrackingMode'] = array(
+    			'#type' => 'radios',
     			'#title' => t('Enable tracking of anonymous users'),
+    			'#options' => $options,
     			'#required' => FALSE,
-					'#default_value' => $config->get('enableAnonymousUserTracking')
+					'#default_value' => $config->get('anonymousUserTrackingMode') ? $config->get('anonymousUserTrackingMode') : 'disabled'
 				);
 
 				$form['userTracking']['visitorIpAddressTTL'] = array(
     			'#type' => 'number',
-    			'#title' => t('Timeframe for tracking visitors'),
+    			'#title' => t('Timeframe for tracking visitors (Redis only, as Pusher is realtime)'),
     			'#required' => FALSE,
 					'#default_value' => $config->get('visitorIpAddressTTL') ? $config->get('visitorIpAddressTTL') : 15,
 					'#description' => t('How many minutes should SiteCommander look backwards to track non-authenticated user IP addresses? Enter a number, in minutes.')
@@ -317,6 +324,13 @@ class ConfigureForm extends ConfigFormBase {
 					'#default_value' => $config->get('enableBroadcastManager')
 				);
 
+		// Pusher settings
+		$form['pusher'] = array(
+			'#type' => 'fieldset',
+			'#title' => t('Pusher.com Settings'),
+			'#markup' => '<p>' . t('If you have enabled the Broadcast Manager, you need to configure pusher: <a href="/admin/config/pusher_integration" target="_blank">click here</a>. Be sure to add this line to your channel/page mapping!<br /><pre>site-commander:.*</pre>') . '</p>'
+		);
+
 		return parent::buildForm($form, $form_state);
   }
 
@@ -351,7 +365,7 @@ class ConfigureForm extends ConfigFormBase {
 					->set('redisDatabaseIndex', $form_state->getValue('redisDatabaseIndex'))
 
 					// Anonymous user tracking settings
-					->set('enableAnonymousUserTracking', $form_state->getValue('enableAnonymousUserTracking'))
+					->set('anonymousUserTrackingMode', $form_state->getValue('anonymousUserTrackingMode'))
 					->set('visitorIpAddressTTL', $form_state->getValue('visitorIpAddressTTL'))
 
 					// Backup Manager settings

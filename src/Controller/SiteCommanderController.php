@@ -562,28 +562,42 @@ class SiteCommanderController extends ControllerBase {
 
 	public function getAnonymousUsers()
 	{
-		$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
-		$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
-		$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
+		$mode = $this->configFactory->get('sitecommander.settings')->get('anonymousUserTrackingMode');
 
-		if (class_exists('Redis') && $redisHostName && $redisPort) {
+		if ($mod == 'redis') {
 
-			$redis = new \Redis();
+			$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
+			$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
+			$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
 
-			$redis->connect($redisHostName, $redisPort);
-			$redis->select($redisDatabaseIndex);
+			if (class_exists('Redis') && $redisHostName && $redisPort) {
 
-			// Do not allow PhpRedis serialize itself data, we are going to do it
-			// ourself. This will ensure less memory footprint on Redis size when
-			// we will attempt to store small values.
-			$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
+				$redis = new \Redis();
 
-			$anonUserKeys = $redis->keys('siteCommander_anon_user_*');
+				$redis->connect($redisHostName, $redisPort);
+				$redis->select($redisDatabaseIndex);
 
-			if(!isset($anonUserKeys) || !count($anonUserKeys))
-				return 0;
-			else
-				return count($anonUserKeys);
+				// Do not allow PhpRedis serialize itself data, we are going to do it
+				// ourself. This will ensure less memory footprint on Redis size when
+				// we will attempt to store small values.
+				$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
+
+				$anonUserKeys = $redis->keys('siteCommander_anon_user_*');
+
+				if(!isset($anonUserKeys) || !count($anonUserKeys))
+					return 0;
+				else
+					return count($anonUserKeys);
+			}
+		} elseif( $mode == 'pusher') {
+			if($this->pusher)
+			{
+				$info = $this->pusher->getChannelInfo('site-commander', array('info' => 'subscription_count'));
+				if(isset($info->subscription_count))
+					return $info->subscription_count;
+			}
+
+			return 1;
 		}
 	}
 
@@ -1071,7 +1085,7 @@ class SiteCommanderController extends ControllerBase {
 		return $response;
 	}
 
-	public function getPusherNumSubscribers( $channelName='site-commander')
+	public function getPusherNumSubscribers( $channelName='site-commander' )
 	{
 		if($this->pusher)
 		{
