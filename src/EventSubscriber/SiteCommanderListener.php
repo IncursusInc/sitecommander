@@ -26,9 +26,10 @@ class SiteCommanderListener implements EventSubscriberInterface
     return $events;
 	}
 
+  // If we have a response to send out, let's track the visitor via Redis (if configured)
 	public function onKernelResponse( $event )
 	{
-		if(!$this->configFactory->get('sitecommander.settings')->get('enableAnonymousUserTracking'))
+		if($this->configFactory->get('sitecommander.settings')->get('anonymousUserTrackingMode') != 'redis')
 			return;
 
 		if($this->currentUser->isAnonymous() === TRUE)
