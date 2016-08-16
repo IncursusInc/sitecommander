@@ -165,24 +165,42 @@ Again, pretty straightforward. Backups older than this value, in days, will be p
 
 ### Enable Scheduled Backups
 
+SiteCommander can perform scheduled backups for you. What's great about this, is the backups are performed in the background via Drupal cron, so they won't tie up your system.
+
 ### Minimum Number of Hours Between Backups
+
+Whenever visitors visit your site, Drupal cron kicks off to see if there are any tasks it needs to perform. SiteCommander will not run another scheduled backup until *at least* this many hours has passed since the last backup was created. The default is 24.
 
 ### Enable Mirroring Backup Files to a Remote Host
 
+For data redundancy, we recommend mirroring your scheduled backups to a remote host. Again, if something happens to your local Drupal host, you don't want to lose your backup files!
+
 ### Interface to Use For Mirroring Backup Files to a Remote Host
+
+Currently, only sftp is supported.
 
 ### Remote Port #
 
+The remote port # to use. By default, this is 22 for sftp.
+
 ### Remote Mirror Host
+
+The hostname of the remote host that sftp will connect to for mirroring backups.
 
 ### Remote Directory
 
+The full path, on the remote host, where you want to store your mirrored backup files.
+
 ### Remote Username
+
+The username to use when remotely connecting to your mirror host.
 
 ### Remote Password
 
+The password for the above user.
+
 ## Broadcast Manager Settings
 
-
+SiteCommander features a really cool tool called Broadcast Manager which enables you to send realtime "growl"-like messages to current site visitors. To enable, simply use the checkbox. Note: this requires that you have our pusher_integration module installed, as well as an account (free or paid) at Pusher.com.
 
 
