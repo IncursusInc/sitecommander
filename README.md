@@ -103,3 +103,21 @@ Most people, if not everyone, won't need to check this, but if for some bizarre 
 
 Most of the SiteCommander statistics will refresh automatically/periodically. Just provide some sensible value here. We recommend the default, which is every 60 seconds, but edit to taste.
 
+## Tag Cloud Widget Settings
+
+### Name of the Taxonomy Vocabulary to Use in the Tag Cloud Widget
+
+By default, SiteCommander will use the "tags" vocabulary to generate the tag cloud. However, you are free to specify whatever vocabulary you wish. The only caveat is that the terms in the vocabulary actually be tied to content types.
+
+### Restrict the Tag Cloud to This Many Entries
+
+This simply limits the tag cloud to a certain number of terms (important if you have a boat load of terms in your vocabulary!).
+
+### Starting Color for Tags (Smallest Frequency)
+
+Pretty self-explanatory. Terms with the lowest number of occurances in the tag cloud will start out at this color.
+
+### Ending Color for Tags (Largest Frequency)
+
+Terms with the largest number of occurances will end up with this color. Terms will be shaded to some color between the starting color and ending color, again, depending on how often they are used/seen.
+
