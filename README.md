@@ -80,3 +80,26 @@ For screenshots, [click here](http://incurs.us/open-source-projects/sitecommande
 4. Create a new page (e.g. /system-status), and add the Site Commander block to it. It is a full-width block, so put it in the main content area, etc. If you are also using our Redistat module, they can both be on the same page, as they are blocks. :)
 5. Be sure to restrict access to the new page to admins only or what not.
 6. Many of the icons on the page are interactive, so click on them to add new nodes, put the system in maintenance mode, etc.
+
+# Configuration
+
+Again, to configure, click the gears icon on your SiteCommander page, go to the configuration page and look for SiteCommander, or just navigate to /admin/config/sitecommander.
+
+## General Settings
+
+### Exclude Specific Content Types From Dashboard
+
+Select the content types that would like to exclude from appearing on the dashboard. Currently, this only affects the "Content Items By Type" widget.
+
+### Include Bootstrap CSS via CDN
+
+SiteCommander uses the most-awesome Bootstrap CSS framework. If you have a theme that is based on Bootstrap, you won't need to check this box. If you already have a theme using Bootstrap, and you check this box, it will still work, but modals will disappear as soon as they appear. Also, there is no reason for an extra page request, so disable it if you are already using it elsewhere!
+
+### Include jQuery via CDN
+
+Most people, if not everyone, won't need to check this, but if for some bizarre reason, you aren't using jQuery in Drupal, check this box.
+
+### Dashboard AJAX Refresh Rate (in seconds)
+
+Most of the SiteCommander statistics will refresh automatically/periodically. Just provide some sensible value here. We recommend the default, which is every 60 seconds, but edit to taste.
+
