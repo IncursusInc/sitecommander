@@ -36,6 +36,12 @@ class ConfigureForm extends ConfigFormBase {
 
 		$config = $this->config('sitecommander.settings');
 
+		// Pusher settings
+		$form['pusher'] = array(
+			'#type' => 'fieldset',
+			'#title' => t('Pusher.com Settings'),
+			'#markup' => '<p>' . t('To configure pusher, <a href="/admin/config/pusher_integration" target="_blank">click here</a>. Be sure to add this line to your channel/page mapping!<br /><pre>site-commander:.*</pre>') . '</p>'
+		);
 		// General settings
 		$form['general'] = array(
 			'#type' => 'fieldset',
