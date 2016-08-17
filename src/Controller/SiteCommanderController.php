@@ -554,6 +554,7 @@ class SiteCommanderController extends ControllerBase {
 		}
 		else
 		{
+			// TODO - Windows
 			$loadAverage = array(0, 0, 0, 0, 0, 0);
 		}
 
@@ -894,10 +895,20 @@ class SiteCommanderController extends ControllerBase {
 	// Get # of authenticated users online right now (we look at the number of sessions that were last updated within the past 15 minutes)
 	public function getNumAuthUsersOnline()
 	{
-		$query = $this->connection->select('sessions','s');
-		$query->addExpression('COUNT( uid )');
-		$query->condition('timestamp', strtotime('15 minutes ago'), '>');
-		$query->condition('uid', 0, '>');
+		$mode = $this->configFactory->get('sitecommander.settings')->get('anonymousUserTrackingMode');
+
+		if ($mod == 'pusher') {
+
+			return $this->getPusherNumSubscribers();
+
+		} else {
+
+			$query = $this->connection->select('sessions','s');
+			$query->addExpression('COUNT( uid )');
+			$query->condition('timestamp', strtotime('15 minutes ago'), '>');
+			$query->condition('uid', 0, '>');
+
+		}
 
 		return $query->execute()->fetchField();
 	}

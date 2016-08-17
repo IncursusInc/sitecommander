@@ -64,8 +64,13 @@ class SiteCommanderUtils {
 			$process = @popen('wmic cpu get NumberOfCores', 'rb');
 			if (false !== $process)
 			{
+				// Skip header line
+				fgets($process);
+
+				// Get number of cores
 				fgets($process);
 				$numCores = intval(fgets($process));
+
 				pclose($process);
 			}
 		}
