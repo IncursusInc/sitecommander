@@ -18,7 +18,7 @@ function defaultConfiguration() {
 		'includeBootstrapCSS' => $default_config('includeBootstrapCSS'),
 		'includejQuery' => $default_config('includejQuery'),
 		'refreshRate' => $default_config('refreshRate'),
-		'enableAnonymousUserTracking' => $default_config('enableAnonymousUserTracking'),
+		'anonymousUserTrackingMode' => $default_config('anonymousUserTrackingMode'),
 		'visitorIpAddressTTL' => $default_config('visitorIpAddressTTL'),
 		'backupMaxAgeInDays' => $default_config('backupMaxAgeInDays'),
 		'enableScheduledBackups' => $default_config('enableScheduledBackups'),
