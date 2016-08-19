@@ -2,65 +2,73 @@
 
 namespace Drupal\sitecommander\EventSubscriber;
 
+use Drupal\redis\ClientFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Config\ConfigFactory;
 
-class SiteCommanderListener implements EventSubscriberInterface
-{
-	protected $currentUser;
-	protected $configFactory;
+/**
+ *
+ */
+class SiteCommanderListener implements EventSubscriberInterface {
+  protected $currentUser;
+  protected $configFactory;
 
-	public function __construct( AccountInterface $account, ConfigFactory $configFactory ) {
-		$this->currentUser = $account;
-		$this->configFactory = $configFactory;
-	}
+  /**
+   *
+   */
+  public function __construct(AccountInterface $account, ConfigFactory $configFactory) {
+    $this->currentUser = $account;
+    $this->configFactory = $configFactory;
+  }
 
-	public static function getSubscribedEvents()
-	{
-		$events[KernelEvents::RESPONSE][] = array('onKernelResponse', 1000);
+  /**
+   *
+   */
+  public static function getSubscribedEvents() {
+
+    $events[KernelEvents::RESPONSE][] = array('onKernelResponse', 1000);
     return $events;
-	}
+  }
 
-  // If we have a response to send out, let's track the visitor via Redis (if configured)
-	public function onKernelResponse( $event )
-	{
-		if($this->configFactory->get('sitecommander.settings')->get('anonymousUserTrackingMode') != 'redis')
-			return;
+  /**
+   * If we have a response to send out, let's track the visitor via Redis (if configured)
+   */
+  public function onKernelResponse($event) {
 
-		if($this->currentUser->isAnonymous() === TRUE)
-		{
-			$visitorIpAddressTTL = $this->configFactory->get('sitecommander.settings')->get('visitorIpAddressTTL');
-			$redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
+    if ($this->configFactory->get('sitecommander.settings')->get('anonymousUserTrackingMode') != 'redis') {
+      return;
+    }
 
-			// Try to get existing Redis connection, if one is available
-			$redis = \Drupal\redis\ClientFactory::getClient();
+    if ($this->currentUser->isAnonymous() === TRUE) {
+      $visitorIpAddressTTL = $this->configFactory->get('sitecommander.settings')->get('visitorIpAddressTTL');
+      $redisDatabaseIndex = $this->configFactory->get('sitecommander.settings')->get('redisDatabaseIndex');
 
-			if (!$redis)
-			{
-				// We might need to connect manually
-				$redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
-				$redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
+      // Try to get existing Redis connection, if one is available.
+      $redis = ClientFactory::getClient();
 
-				$redis = new \Redis();
-				$redis->connect($redisHostName, $redisPort);
-			}
-			$redis->select($redisDatabaseIndex);
+      if (!$redis) {
+        // We might need to connect manually.
+        $redisHostName = $this->configFactory->get('sitecommander.settings')->get('redisHostName');
+        $redisPort = $this->configFactory->get('sitecommander.settings')->get('redisPort');
 
-			// Do not allow PhpRedis serialize itself data, we are going to do it
-			// ourself. This will ensure less memory footprint on Redis size when
-			// we will attempt to store small values.
-			$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
+        $redis = new \Redis();
+        $redis->connect($redisHostName, $redisPort);
+      }
+      $redis->select($redisDatabaseIndex);
 
-			$ipAddress = \Drupal::request()->getClientIp();
+      // Do not allow PhpRedis serialize itself data, we are going to do it
+      // ourself. This will ensure less memory footprint on Redis size when
+      // we will attempt to store small values.
+      $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
 
-			// Sets key & value, with 15 minute TTL
-			// TODO - make the 15 minute interval configurable
-			$redis->setEx('siteCommander_anon_user_' . $ipAddress, $visitorIpAddressTTL * 60, '1'); 
-		}
-	}
+      $ipAddress = \Drupal::request()->getClientIp();
+
+      // Sets key & value, with 15 minute TTL
+      // TODO - make the 15 minute interval configurable.
+      $redis->setEx('siteCommander_anon_user_' . $ipAddress, $visitorIpAddressTTL * 60, '1');
+    }
+  }
+
 }

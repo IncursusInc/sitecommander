@@ -1,36 +1,35 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\sitecommander\Controller\SiteCommanderController.
- */
-
 namespace Drupal\sitecommander\Controller;
 
 use Pusher;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Ajax\AjaxResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\sitecommander\Ajax\ReadMessageCommand;
-use Drupal\sitecommander\SiteCommanderUtils;
 use Drupal\pusher_integration\Controller\PusherController;
 
+/**
+ *
+ */
 class BroadcastController extends ControllerBase {
 
-	protected $configFactory;
-	protected $currentUser;
-	public		$pusher;
+  protected $configFactory;
+  protected $currentUser;
+  public        $pusher;
 
-	public function __construct( ConfigFactory $configFactory, AccountInterface $account )
-	{
-		$this->configFactory = $configFactory;
-		$this->currentUser = $account;
+  /**
+   *
+   */
+  public function __construct(ConfigFactory $configFactory, AccountInterface $account) {
 
-		$this->pusher = new PusherController( $this->configFactory, $this->currentUser );
-	}
+    $this->configFactory = $configFactory;
+    $this->currentUser = $account;
+
+    $this->pusher = new PusherController($this->configFactory, $this->currentUser);
+  }
 
   /**
    * {@inheritdoc}
@@ -42,87 +41,93 @@ class BroadcastController extends ControllerBase {
     );
   }
 
-	public function broadcastMessage()
-	{
-		$data = array(
-			'messageType' => \Drupal::request()->request->get('messageType', 'info'),
-			'messagePosition' => \Drupal::request()->request->get('messagePosition', 'toast-top-right'),
-			'messageBody' => \Drupal::request()->request->get('messageBody', 'No message provided!')
-		);
+  /**
+   *
+   */
+  public function broadcastMessage() {
 
-		$this->pusher->broadcastMessage( $this->configFactory, 'site-commander', 'broadcastMessage', $data );
+    $data = array(
+      'messageType' => \Drupal::request()->request->get('messageType', 'info'),
+      'messagePosition' => \Drupal::request()->request->get('messagePosition', 'toast-top-right'),
+      'messageBody' => \Drupal::request()->request->get('messageBody', 'No message provided!'),
+    );
+
+    $this->pusher->broadcastMessage($this->configFactory, 'site-commander', 'broadcastMessage', $data);
 
     // Create AJAX Response object.
     $response = new AjaxResponse();
-		return $response;
-	}
+    return $response;
+  }
 
-	// AJAX Callback to toggle maintenance mode
-  public function broadcastCommand( $commandName ) {
+  /**
+   * AJAX Callback to toggle maintenance mode.
+   */
+  public function broadcastCommand($commandName) {
 
-		$error = false;
-		$data = null;
+    $error = FALSE;
+    $data = NULL;
 
-		$serverPoolList = $this->configFactory->get('sitecommander.settings')->get('serverPoolList');
+    $serverPoolList = $this->configFactory->get('sitecommander.settings')->get('serverPoolList');
 
-		if(!$serverPoolList)
-		{
-			$error = true;
-		}
-		else
-		{
-			$hostNames = preg_split('/\n/', $serverPoolList);
-			
-			// Kill empty entries
-			$hostNames = array_filter($hostNames);
+    if (!$serverPoolList) {
+      $error = TRUE;
+    }
+    else {
+      $hostNames = preg_split('/\n/', $serverPoolList);
 
-			// Filter our dupes
-			$hostNames = array_unique($hostNames);
+      // Kill empty entries.
+      $hostNames = array_filter($hostNames);
 
-			foreach($hostNames as $host)
-			{
-				$url = 'http://' . $host . '/sitecommander/processBroadcastCommand/' . $commandName;
-				$this->callURL( $url, $data );
-			}
-		}
+      // Filter our dupes.
+      $hostNames = array_unique($hostNames);
+
+      foreach ($hostNames as $host) {
+        $url = 'http://' . $host . '/sitecommander/processBroadcastCommand/' . $commandName;
+        $this->callUrl($url, $data);
+      }
+    }
 
     // Create AJAX Response object.
     $response = new AjaxResponse();
 
     // Call the SiteCommanderAjaxCommand javascript function.
-		$responseData = new \StdClass();
-		$responseData->command = 'readMessage';
-		$responseData->siteCommanderCommand = 'broadcastCommand';
-		$responseData->commandPayload = $commandName;
-    $response->addCommand( new ReadMessageCommand($responseData));
+    $responseData = new \StdClass();
+    $responseData->command = 'readMessage';
+    $responseData->siteCommanderCommand = 'broadcastCommand';
+    $responseData->commandPayload = $commandName;
+    $response->addCommand(new ReadMessageCommand($responseData));
 
-		// Return ajax response.
-		return $response;
-	}
+    // Return ajax response.
+    return $response;
+  }
 
-	public function callURL( $url, $data = null )
-	{
-		$curl = curl_init();
+  /**
+   *
+   */
+  public function callUrl($url, $data = NULL) {
 
-		curl_setopt($curl, CURLOPT_POST, 1);
+    $curl = curl_init();
 
-		if ($data)
-			curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($curl, CURLOPT_POST, 1);
 
-		// TODO: HTTP basic auth
-		//curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		//curl_setopt($curl, CURLOPT_USERPWD, "username:password");
-		curl_setopt($curl, CURLOPT_URL, $url);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($curl, CURLOPT_HEADER, false);
-		curl_setopt($curl, CURLOPT_NOBODY, true);
-		curl_setopt($curl, CURLOPT_FRESH_CONNECT, true);
-		curl_setopt($curl, CURLOPT_NOSIGNAL, 1);
-		curl_setopt($curl, CURLOPT_TIMEOUT_MS, 50);
+    if ($data) {
+      curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+    }
 
-		curl_exec($curl);
-		curl_close($curl);
-	}
+    // TODO: HTTP basic auth
+    // curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    // curl_setopt($curl, CURLOPT_USERPWD, "username:password");.
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
+    curl_setopt($curl, CURLOPT_HEADER, FALSE);
+    curl_setopt($curl, CURLOPT_NOBODY, TRUE);
+    curl_setopt($curl, CURLOPT_FRESH_CONNECT, TRUE);
+    curl_setopt($curl, CURLOPT_NOSIGNAL, 1);
+    curl_setopt($curl, CURLOPT_TIMEOUT_MS, 50);
+
+    curl_exec($curl);
+    curl_close($curl);
+  }
 
 }
