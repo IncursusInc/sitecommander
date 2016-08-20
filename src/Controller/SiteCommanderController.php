@@ -232,13 +232,21 @@ class SiteCommanderController extends ControllerBase {
         $redis = new \Redis();
 
         $redis->connect($redisHostName, $redisPort);
-        $redis->select($redisDatabaseIndex);
-        $redis->flushAll();
       }
     }
-    else {
-      $redis->select($redisDatabaseIndex);
-      $redis->flushAll();
+
+    $redis->select($redisDatabaseIndex);
+
+    $prefix = \Drupal\Core\Site\Settings::get('cache_prefix');
+
+    if (!is_array($prefix)) {
+      $keys = $redis->keys('*' . $prefix . '*');
+      $redis->delete($keys);
+    } else {
+      foreach ($prefix as $bin => $p) {
+        $keys = $redis->keys('*' . $p . '*');
+        $redis->delete($keys);
+      }
     }
 
     // Create AJAX Response object.
