@@ -6,3 +6,5 @@ core: 8.x
 configure: sitecommander_configure
 dependencies:
   - pusher_integration:pusher_integration
+  - composer_manager:composer_manager
+  - entity:entity

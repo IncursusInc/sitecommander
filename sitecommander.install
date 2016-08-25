@@ -1,0 +1,13 @@
+<?php
+
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_install().
+ */
+function sitecommander_install() {
+  $url = Url::fromRoute('sitecommander_configure');
+
+  drupal_set_message(t('Congrats! SiteCommander settings are available under ' . \Drupal::l('the configuration menu', $url)));
+}
+

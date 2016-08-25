@@ -1,7 +1,7 @@
 # SiteCommander
 SiteCommander is an interactive dashboard module to manage and monitor your Drupal 8 sites.
 
-NOTE: We have applied to have the project be promoted from a sandbox project to a full project on Drupal.org. Stay tuned!
+NOTE: While fully functional at this time, this module is still in development, and should be considered in a beta state.
 
 SiteCommander features include:
 
@@ -56,13 +56,13 @@ SiteCommander features include:
 * Drupal 8.x
 * Drush installed
 * PHP 5.5 or higher (untested under PHP 7)
-* Composer Manager Module
-* Pusher Integration Module
+* <a href="https://www.drupal.org/project/composer_manager">Composer Manager Module</a>
+* <a href="https://www.drupal.org/project/pusher_integration">Pusher Integration Module</a>
 * ssh2 module for PHP (optional, but needed for backup mirroring functionality)
 
 # Known Issues
 
-* Certain functionality, such as CPU Load Averages, currently only works in Linux/UNIX environments. Support for Windoze servers will be added soon.
+* Certain functionality, such as CPU Load Averages, currently only works in Linux environments. Support for Windoze servers is on the roadmap.
 
 * Currently, this module works best when the environment is running only ONE (1) Drupal server. If you are running multiple Drupal servers in a load-balanced configuration, please keep in mind that only limited testing has been done in such environments. Feedback and testing help is appreciated!
 
